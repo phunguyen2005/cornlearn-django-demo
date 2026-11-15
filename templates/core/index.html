@@ -11,17 +11,6 @@
     </ol>
 </nav>
 
-{% if request.user.is_superuser or request.user.is_lecturer %}
-<div class="manage-wrap d-flex justify-content-between align-items-center">
-    <span class="small text-muted d-none d-md-inline">
-        <i class="fas fa-bullhorn me-1 text-primary"></i>Quản lý thông báo và sự kiện học vụ toàn trường
-    </span>
-    <a class="btn btn-primary btn-sm px-3" href="{% url 'add_item' %}">
-        <i class="fas fa-plus me-1"></i>Đăng tin / Sự kiện mới
-    </a>
-</div>
-{% endif %}
-
 <!-- Hero Welcome Banner (#164E80 Institutional Navy Gradient) -->
 <div class="card border-0 mb-4 text-white overflow-hidden"
      style="background: linear-gradient(135deg, #164E80 0%, #003761 100%) !important; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(22, 78, 128, 0.16) !important;">
