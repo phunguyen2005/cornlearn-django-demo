@@ -56,12 +56,12 @@
     </div>
     {% endif %}
 
-    <form action="#" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data" id="mc-question-form">
         {% csrf_token %}
 
         {% if form.errors %}
         <div class="alert alert-danger mb-4">
-            <i class="fas fa-exclamation-circle me-1"></i> {% trans 'Correct the error(s) below.' %}
+            <i class="fas fa-exclamation-circle me-1"></i> {% trans 'Vui lòng kiểm tra lại thông tin bị lỗi bên dưới.' %}
         </div>
         {% endif %}
 
@@ -105,20 +105,23 @@
 
                             <div class="d-flex flex-column gap-3">
                                 {% for fs in formset %}
-                                <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
+                                <div class="mcq-choice-card" id="choice-card-{{ forloop.counter }}">
                                     {% for hidden in fs.hidden_fields %}{{ hidden }}{% endfor %}
                                     <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761;">
-                                            {% trans 'Phương án' %} #{{ forloop.counter }}
-                                        </span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="mcq-choice-badge">
+                                                {% if forloop.counter == 1 %}A{% elif forloop.counter == 2 %}B{% elif forloop.counter == 3 %}C{% elif forloop.counter == 4 %}D{% else %}{{ forloop.counter }}{% endif %}
+                                            </span>
+                                            <span class="small fw-bold text-dark">{% trans 'Phương án' %} {{ forloop.counter }}</span>
+                                        </div>
                                         <div class="d-flex align-items-center gap-3">
-                                            <label class="d-flex align-items-center gap-1 small fw-semibold text-success mb-0" style="cursor: pointer;">
+                                            <label class="d-flex align-items-center gap-1.5 small fw-semibold text-success mb-0 choice-label" style="cursor: pointer;">
                                                 {{ fs.correct }}
-                                                <span>{% trans 'Correct' %}</span>
+                                                <span><i class="fas fa-check-circle me-1"></i>{% trans 'Đáp án đúng' %}</span>
                                             </label>
-                                            <label class="d-flex align-items-center gap-1 small fw-medium text-danger mb-0" style="cursor: pointer;">
+                                            <label class="d-flex align-items-center gap-1.5 small fw-medium text-danger mb-0 choice-label" style="cursor: pointer;">
                                                 {{ fs.DELETE }}
-                                                <span>{% trans 'Delete' %}</span>
+                                                <span><i class="fas fa-trash-alt me-1"></i>{% trans 'Xóa' %}</span>
                                             </label>
                                         </div>
                                     </div>
@@ -142,30 +145,60 @@
             <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary px-4 py-2">
                 {% trans 'Hoàn tất & Quay lại' %}
             </a>
-            <button type="submit" formnovalidate name="another" class="btn btn-outline-primary px-4 py-2 fw-semibold">
-                <i class="fas fa-plus-circle me-1"></i> Save and add another
+            <button type="submit" formnovalidate name="another" id="save-another-btn" class="btn btn-outline-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2">
+                <i class="fas fa-plus-circle"></i>
+                <span>{% trans 'Lưu & Thêm câu hỏi tiếp' %}</span>
             </button>
-            <button class="btn btn-primary px-4 py-2 fw-semibold" type="submit">
-                <i class="fas fa-save me-1"></i> {% trans 'Save' %}
+            <button class="btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" id="save-mc-btn" type="submit">
+                <i class="fas fa-save"></i>
+                <span>{% trans 'Lưu câu hỏi' %}</span>
             </button>
         </div>
     </form>
 
 </div>
 
-<style>
-    .choice-input-wrap input[type="text"] {
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #CBD5E1;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        background-color: #FFFFFF;
-    }
-    .choice-input-wrap input[type="text"]:focus {
-        border-color: #2563EB;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Highlight active correct choices
+        function syncChoiceStyles() {
+            document.querySelectorAll('.mcq-choice-card').forEach(function(card) {
+                const correctCheckbox = card.querySelector('input[type="checkbox"][name$="-correct"]');
+                if (correctCheckbox && correctCheckbox.checked) {
+                    card.classList.add('is-correct');
+                } else {
+                    card.classList.remove('is-correct');
+                }
+            });
+        }
+
+        // Attach listener to correct checkboxes
+        document.querySelectorAll('input[type="checkbox"][name$="-correct"]').forEach(function(cb) {
+            cb.addEventListener('change', syncChoiceStyles);
+        });
+
+        // Ensure choice inputs have proper class
+        document.querySelectorAll('.choice-input-wrap input[type="text"]').forEach(function(inp) {
+            inp.classList.add('form-control');
+        });
+
+        syncChoiceStyles();
+
+        // Submit spinner
+        const form = document.getElementById("mc-question-form");
+        const saveBtn = document.getElementById("save-mc-btn");
+        const anotherBtn = document.getElementById("save-another-btn");
+
+        if (form) {
+            form.addEventListener("submit", function(e) {
+                const clickedBtn = document.activeElement;
+                if (clickedBtn && clickedBtn.id === "save-another-btn") {
+                    anotherBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> {% trans "Đang lưu..." %}';
+                } else if (saveBtn) {
+                    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> {% trans "Đang lưu..." %}';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

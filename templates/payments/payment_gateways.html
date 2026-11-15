@@ -42,7 +42,7 @@
                     {% endif %}
                 </div>
                 <h1 class="h4 fw-bold mb-1 text-white">
-                    <i class="fas fa-credit-card me-2"></i>Payment GateWays — {% trans 'Chọn phương thức thanh toán' %}
+                    <i class="fas fa-credit-card me-2"></i>{% trans 'Cổng thanh toán — Chọn phương thức thanh toán' %}
                 </h1>
                 <p class="mb-0 small" style="color: #D2E4FF;">
                     {% trans 'Hỗ trợ thanh toán học phí qua thẻ quốc tế Stripe, ví điện tử PayPal, tiền mã hóa Coinbase, Paylike và GoPay.' %}
@@ -91,7 +91,7 @@
                             <span class="badge badge-success">Visa / MasterCard</span>
                         </div>
                         <p class="text-muted small mb-4">
-                            {% trans 'Make payment with stripe and get jobs done. Cổng thanh toán thẻ quốc tế tiêu chuẩn PCI-DSS.' %}
+                            {% trans 'Cổng thanh toán thẻ quốc tế tiêu chuẩn PCI-DSS an toàn và nhanh chóng.' %}
                         </p>
                     </div>
                     <div>
@@ -127,7 +127,7 @@
                     </div>
                     <div>
                         <a href="{% url 'coinbase' %}" class="btn btn-primary w-100 fw-semibold">
-                            <span class="fw-bold me-1">C</span> {% trans 'Thanh toán qua CoinBase' %}
+                            <i class="fab fa-bitcoin me-1"></i> {% trans 'Thanh toán qua CoinBase' %}
                         </a>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                         <form method="POST" action="{{ gopay_payment_url|default:gopay_charge_url }}">
                             {% csrf_token %}
                             <button name="pay" type="submit" class="btn btn-institutional w-100 fw-semibold">
-                                <i class="fas fa-paper-plane me-1"></i> Zaplatit / {% trans 'Thanh toán qua GoPay' %}
+                                <i class="fas fa-paper-plane me-1"></i> {% trans 'Thanh toán qua GoPay' %}
                             </button>
                         </form>
                         <script type="text/javascript" src="https://gw.sandbox.gopay.com/gp-gw/js/embed.js"></script>

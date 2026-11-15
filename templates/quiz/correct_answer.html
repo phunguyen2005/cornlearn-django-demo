@@ -17,7 +17,7 @@
                     </td>
                     <td class="text-end">
                         <span class="badge badge-success">
-                            <i class="fas fa-check me-1"></i>{% trans "This is the correct answer" %}
+                            <i class="fas fa-check me-1"></i>{% trans "Đáp án chính xác" %}
                         </span>
                     </td>
                 </tr>
@@ -28,7 +28,7 @@
                         {% if previous.question_type.MCQuestion %}
                             {% if answer.id|add:"0" == previous.previous_answer|add:"0" %}
                             <span class="badge badge-danger">
-                                <i class="fas fa-user-times me-1"></i>{% trans "This was your answer." %}
+                                <i class="fas fa-user-times me-1"></i>{% trans "Lựa chọn của bạn" %}
                             </span>
                             {% endif %}
                         {% endif %}
@@ -43,7 +43,7 @@
 {% if user_was_incorrect %}
 <div class="alert alert-danger py-2 px-3 mb-0 small d-flex align-items-center gap-2">
     <i class="fas fa-exclamation-circle"></i>
-    <strong>{% trans "You answered the above question incorrectly" %}</strong>
+    <strong>{% trans "Bạn đã trả lời chưa chính xác câu hỏi trên" %}</strong>
 </div>
 {% endif %}
 {% endif %}

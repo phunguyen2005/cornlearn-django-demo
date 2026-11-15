@@ -22,7 +22,7 @@
                 <div class="col-12 col-lg-8">
                     <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                         <span class="badge badge-info">
-                            <i class="fas fa-tag me-1"></i>{% trans "Category" %}: {{ sitting.quiz.category|default:"Exam"|title }}
+                            <i class="fas fa-tag me-1"></i>{% trans "Danh mục" %}: {{ sitting.quiz.category|default:"Bài kiểm tra"|title }}
                         </span>
                         {% if sitting.check_if_passed %}
                         <span class="badge badge-success">
@@ -35,7 +35,7 @@
                         {% endif %}
                     </div>
                     <h1 class="h4 fw-bold text-dark mb-1">
-                        {% trans "Quiz title" %}: {{ sitting.quiz.title }}
+                        {% trans "Đề thi / Bài kiểm tra" %}: {{ sitting.quiz.title }}
                     </h1>
                     {% if sitting.quiz.description %}
                     <p class="text-muted small mb-0">{{ sitting.quiz.description }}</p>
@@ -53,7 +53,7 @@
             <div class="row g-3">
                 <div class="col-12 col-sm-4">
                     <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
-                        <div class="small text-muted">{% trans "Sinh viên thực hiện" %} ({% trans "User" %})</div>
+                        <div class="small text-muted">{% trans "Sinh viên thực hiện" %}</div>
                         <div class="fw-bold text-dark mt-1">
                             <i class="fas fa-user-graduate text-primary me-1"></i>{{ sitting.user.get_full_name|default:sitting.user }} ({{ sitting.user }})
                         </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-12 col-sm-4">
                     <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
-                        <div class="small text-muted">{% trans "Thời gian nộp bài" %} ({% trans "Completed" %})</div>
+                        <div class="small text-muted">{% trans "Thời gian nộp bài" %}</div>
                         <div class="fw-bold text-dark mt-1">
                             <i class="far fa-clock text-primary me-1"></i>{{ sitting.end|date:"d/m/Y H:i"|default:sitting.end|date }}
                         </div>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-12 col-sm-4">
                     <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
-                        <div class="small text-muted">{% trans "Điểm tổng kết" %} ({% trans "Score" %})</div>
+                        <div class="small text-muted">{% trans "Điểm tổng kết" %}</div>
                         <div class="fw-bold fs-5 mt-1 {% if sitting.check_if_passed %}text-success{% else %}text-danger{% endif %}">
                             <i class="fas fa-poll me-1"></i>{{ sitting.get_percent_correct }}%
                             <span class="small fw-normal text-muted">({{ sitting.get_current_score }}/{{ sitting.get_max_score }})</span>
@@ -91,8 +91,8 @@
                 <thead>
                     <tr>
                         <th style="width: 56px;">#</th>
-                        <th>{% trans "Question" %}</th>
-                        <th>{% trans "User answer" %}</th>
+                        <th>{% trans "Nội dung câu hỏi" %}</th>
+                        <th>{% trans "Đáp án của sinh viên" %}</th>
                         <th class="text-center" style="width: 150px;">{% trans "Trạng thái" %}</th>
                         <th class="text-end" style="width: 220px;">{% trans "Chấm lại / Đảo trạng thái" %}</th>
                     </tr>
@@ -121,11 +121,11 @@
                         <td class="text-center">
                             {% if question.id in sitting.get_incorrect_questions %}
                             <span class="badge badge-danger">
-                                <i class="fas fa-times-circle me-1"></i>{% trans "incorrect" %}
+                                <i class="fas fa-times-circle me-1"></i>{% trans "Chưa chính xác" %}
                             </span>
                             {% else %}
                             <span class="badge badge-success">
-                                <i class="fas fa-check-circle me-1"></i>{% trans "Correct" %}
+                                <i class="fas fa-check-circle me-1"></i>{% trans "Chính xác" %}
                             </span>
                             {% endif %}
                         </td>
@@ -134,7 +134,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="qid" value="{{ question.id }}">
                                 <button type="submit" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-exchange-alt me-1"></i>{% trans "Toggle whether correct" %}
+                                    <i class="fas fa-exchange-alt me-1"></i>{% trans "Đổi kết quả đúng / sai" %}
                                 </button>
                             </form>
                         </td>

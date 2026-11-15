@@ -24,7 +24,7 @@
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
         <div>
             <span class="badge badge-info mb-2">
-                <i class="fas fa-Sliders-h me-1"></i> {{ course.code }} — {{ course.title }}
+                <i class="fas fa-sliders me-1"></i> {{ course.code }} — {{ course.title }}
             </span>
             <h1 class="h4 fw-bold text-dark mb-1">
                 <i class="fas fa-file-signature text-primary me-2"></i>{% trans 'Thiết lập bài kiểm tra cho học phần' %} {{ course|truncatechars:40 }}
@@ -123,11 +123,26 @@
             <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary px-4 py-2">
                 {% trans 'Hủy bỏ' %}
             </a>
-            <button class="btn btn-primary px-4 py-2 fw-semibold" id="btn-transition" type="submit">
-                <i class="fas fa-save me-1"></i> {% trans 'Save' %} &amp; {% trans 'Continue' %}
+            <button class="btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" id="btn-save-quiz" type="submit">
+                <i class="fas fa-save"></i>
+                <span>{% trans 'Lưu & Tiếp tục soạn câu hỏi' %}</span>
             </button>
         </div>
     </form>
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form");
+        const submitBtn = document.getElementById("btn-save-quiz");
+        if (form && submitBtn) {
+            form.addEventListener("submit", function() {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{% trans "Đang lưu cấu hình..." %}';
+                form.submit();
+            });
+        }
+    });
+</script>
 {% endblock %}

@@ -18,7 +18,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Username",
+        label="Tên đăng nhập (Mã GV)",
         required=False,
     )
 
@@ -30,7 +30,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="First Name",
+        label="Họ & tên đệm",
     )
 
     last_name = forms.CharField(
@@ -41,16 +41,17 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Last Name",
+        label="Tên",
     )
 
     gender = forms.CharField(
         widget=forms.Select(
             choices=GENDERS,
             attrs={
-                "class": "browser-default custom-select form-control",
+                "class": "form-select",
             },
         ),
+        label="Giới tính",
     )
 
     address = forms.CharField(
@@ -61,7 +62,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Address",
+        label="Địa chỉ thường trú",
     )
 
     phone = forms.CharField(
@@ -72,7 +73,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Mobile No.",
+        label="Số điện thoại",
     )
 
     email = forms.CharField(
@@ -83,7 +84,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Email",
+        label="Địa chỉ Email",
     )
 
     password1 = forms.CharField(
@@ -94,7 +95,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Password",
+        label="Mật khẩu",
         required=False,
     )
 
@@ -106,7 +107,7 @@ class StaffAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Password Confirmation",
+        label="Xác nhận mật khẩu",
         required=False,
     )
 
@@ -135,18 +136,18 @@ class StudentAddForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={"type": "text", "class": "form-control", "id": "username_id"}
         ),
-        label="Username",
+        label="Tên đăng nhập (MSSV)",
         required=False,
     )
     address = forms.CharField(
-        max_length=30,
+        max_length=60,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
                 "class": "form-control",
             }
         ),
-        label="Address",
+        label="Địa chỉ thường trú",
     )
 
     phone = forms.CharField(
@@ -157,7 +158,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Mobile No.",
+        label="Số điện thoại",
     )
 
     first_name = forms.CharField(
@@ -168,7 +169,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="First name",
+        label="Họ & tên đệm",
     )
 
     last_name = forms.CharField(
@@ -179,7 +180,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Last name",
+        label="Tên",
     )
 
     gender = forms.CharField(
@@ -189,6 +190,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-select",
             },
         ),
+        label="Giới tính",
     )
 
     level = forms.CharField(
@@ -198,6 +200,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-select",
             },
         ),
+        label="Hệ / Trình độ đào tạo",
     )
 
     program = forms.ModelChoiceField(
@@ -205,7 +208,7 @@ class StudentAddForm(UserCreationForm):
         widget=forms.Select(
             attrs={"class": "form-select"}
         ),
-        label="Program",
+        label="Chương trình đào tạo",
     )
 
     email = forms.EmailField(
@@ -215,7 +218,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Email Address",
+        label="Địa chỉ Email",
     )
 
     password1 = forms.CharField(
@@ -226,7 +229,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control has-password-toggle",
             }
         ),
-        label="Password",
+        label="Mật khẩu khởi tạo",
         required=False,
     )
 
@@ -238,7 +241,7 @@ class StudentAddForm(UserCreationForm):
                 "class": "form-control has-password-toggle",
             }
         ),
-        label="Password Confirmation",
+        label="Xác nhận mật khẩu",
         required=False,
     )
 
@@ -281,7 +284,7 @@ class ProfileUpdateForm(UserChangeForm):
                 "class": "form-control",
             }
         ),
-        label="Email Address",
+        label="Địa chỉ Email",
     )
 
     first_name = forms.CharField(
@@ -291,7 +294,7 @@ class ProfileUpdateForm(UserChangeForm):
                 "class": "form-control",
             }
         ),
-        label="First Name",
+        label="Họ & tên đệm",
     )
 
     last_name = forms.CharField(
@@ -301,16 +304,17 @@ class ProfileUpdateForm(UserChangeForm):
                 "class": "form-control",
             }
         ),
-        label="Last Name",
+        label="Tên",
     )
 
     gender = forms.CharField(
         widget=forms.Select(
             choices=GENDERS,
             attrs={
-                "class": "browser-default custom-select form-control",
+                "class": "form-select",
             },
         ),
+        label="Giới tính",
     )
 
     phone = forms.CharField(
@@ -320,7 +324,7 @@ class ProfileUpdateForm(UserChangeForm):
                 "class": "form-control",
             }
         ),
-        label="Phone No.",
+        label="Số điện thoại",
     )
 
     address = forms.CharField(
@@ -330,7 +334,7 @@ class ProfileUpdateForm(UserChangeForm):
                 "class": "form-control",
             }
         ),
-        label="Address / city",
+        label="Địa chỉ thường trú",
     )
 
     class Meta:
@@ -350,9 +354,9 @@ class ProgramUpdateForm(UserChangeForm):
     program = forms.ModelChoiceField(
         queryset=Program.objects.all(),
         widget=forms.Select(
-            attrs={"class": "browser-default custom-select form-control"}
+            attrs={"class": "form-select"}
         ),
-        label="Program",
+        label="Chương trình đào tạo",
     )
 
     class Meta:
@@ -378,7 +382,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Username",
+        label="Tên đăng nhập",
     )
     address = forms.CharField(
         max_length=30,
@@ -388,7 +392,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Address",
+        label="Địa chỉ thường trú",
     )
 
     phone = forms.CharField(
@@ -399,7 +403,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Mobile No.",
+        label="Số điện thoại",
     )
 
     first_name = forms.CharField(
@@ -410,7 +414,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="First name",
+        label="Họ & tên đệm",
     )
 
     last_name = forms.CharField(
@@ -421,7 +425,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Last name",
+        label="Tên",
     )
 
     email = forms.EmailField(
@@ -431,24 +435,25 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Email Address",
+        label="Địa chỉ Email",
     )
 
     student = forms.ModelChoiceField(
         queryset=Student.objects.all(),
         widget=forms.Select(
-            attrs={"class": "browser-default custom-select form-control"}
+            attrs={"class": "form-select"}
         ),
-        label="Student",
+        label="Học sinh / Sinh viên",
     )
 
     relation_ship = forms.CharField(
         widget=forms.Select(
             choices=RELATION_SHIP,
             attrs={
-                "class": "browser-default custom-select form-control",
+                "class": "form-select",
             },
         ),
+        label="Quan hệ với sinh viên",
     )
 
     password1 = forms.CharField(
@@ -459,7 +464,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Password",
+        label="Mật khẩu",
     )
 
     password2 = forms.CharField(
@@ -470,7 +475,7 @@ class ParentAddForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
-        label="Password Confirmation",
+        label="Xác nhận mật khẩu",
     )
 
     # def validate_email(self):

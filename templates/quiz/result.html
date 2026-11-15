@@ -11,13 +11,16 @@
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
             <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none text-secondary">{% trans 'Khóa học của tôi' %}</a></li>
+            {% else %}
             <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-secondary">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% endif %}
             {% if course.program %}
             <li class="breadcrumb-item"><a href="{% url 'program_detail' course.program.id %}" class="text-decoration-none text-secondary">{{ course.program }}</a></li>
             {% endif %}
             <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a></li>
             <li class="breadcrumb-item"><a href="{% url 'quiz_index' course.slug %}" class="text-decoration-none text-secondary">{% trans 'Bài kiểm tra' %}</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'quiz_take' course.id quiz.slug %}" class="text-decoration-none text-secondary">{{ quiz.title|title }}</a></li>
             <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Kết quả' %}</li>
         </ol>
     </nav>
@@ -45,7 +48,7 @@
 
                     <h1 class="h3 fw-bold text-dark mb-2">{{ quiz.title|title }}</h1>
                     <p class="text-muted mb-3">
-                        {% trans "You answered" %} <strong class="text-dark">{{ score }}</strong> {% trans "questions correctly out of" %} <strong class="text-dark">{{ max_score }}</strong>, {% trans "giving you" %} <strong class="text-primary">{{ percent }}%</strong> {% trans "correct" %}.
+                        Bạn đã trả lời đúng <strong class="text-dark">{{ score }}</strong> trên tổng số <strong class="text-dark">{{ max_score }}</strong> câu hỏi, đạt tỷ lệ chính xác <strong class="text-primary">{{ percent }}%</strong>.
                     </p>
 
                     {% if quiz.pass_mark %}
@@ -100,7 +103,7 @@
 
     {% if possible %}
     <div class="alert alert-info mb-4">
-        {% trans "Your session score is" %} <strong>{{ session }}</strong> {% trans "out of a possible" %} <strong>{{ possible }}</strong>
+        Điểm số phiên làm bài của bạn là <strong>{{ session }}</strong> trên tổng điểm tối đa <strong>{{ possible }}</strong>.
     </div>
     {% endif %}
 
@@ -108,22 +111,22 @@
     {% if previous.answers %}
     <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-header">
-            <i class="fas fa-check-double text-primary me-1"></i> {% trans "The previous question" %}
+            <i class="fas fa-check-double text-primary me-1"></i> {% trans "Câu hỏi trước đó" %}
         </div>
         <div class="card-body p-4">
             <p class="fw-semibold text-dark">{{ previous.previous_question }}</p>
             <p class="small mb-3">
-                {% trans "Your answer was" %}
-                <strong>{{ previous.previous_outcome|yesno:"correct,incorrect" }}</strong>
+                {% trans "Câu trả lời của bạn là:" %}
+                <strong>{{ previous.previous_outcome|yesno:"Chính xác,Chưa chính xác" }}</strong>
             </p>
             {% include 'quiz/correct_answer.html' %}
             <div class="mt-3 p-3 rounded-3" style="background-color: #FEFCE8; border: 1px solid #FEF08A;">
-                <strong>{% trans "Explanation" %}:</strong>
+                <strong>{% trans "Giải thích chi tiết" %}:</strong>
                 <p class="mb-0 small mt-1">
                     {% if previous.previous_question.explanation %}
                         {{ previous.previous_question.explanation }}
                     {% else %}
-                        {% trans "No explanation set to this question." %}
+                        {% trans "Chưa có phần giải thích cho câu hỏi này." %}
                     {% endif %}
                 </p>
             </div>
@@ -156,7 +159,7 @@
                 {% if question.user_answer %}
                 <div class="mb-3">
                     <span class="badge rounded-pill px-3 py-2" style="background-color: #F2F3FF; color: #164E80; border: 1px solid #D2E4FF;">
-                        <i class="fas fa-user-check me-1"></i> {% trans "Your answer" %}: <strong>{{ question|answer_choice_to_string:question.user_answer }}</strong>
+                        <i class="fas fa-user-check me-1"></i> {% trans "Câu trả lời của bạn" %}: <strong>{{ question|answer_choice_to_string:question.user_answer }}</strong>
                     </span>
                 </div>
                 {% endif %}
@@ -164,11 +167,11 @@
                 {% correct_answer_for_all question %}
 
                 <div class="mt-3 p-3 rounded-3" style="background-color: #F8FAFC; border-left: 4px solid #2563EB;">
-                    <div class="small fw-bold text-dark mb-1"><i class="fas fa-info-circle text-primary me-1"></i> {% trans "Explanation" %}:</div>
+                    <div class="small fw-bold text-dark mb-1"><i class="fas fa-info-circle text-primary me-1"></i> {% trans "Giải thích chi tiết" %}:</div>
                     {% if question.explanation %}
                     <div class="small text-secondary">{{ question.explanation|safe }}</div>
                     {% else %}
-                    <div class="small text-muted fst-italic">{% trans "No explanation set for this question." %}</div>
+                    <div class="small text-muted fst-italic">{% trans "Chưa có phần giải thích cho câu hỏi này." %}</div>
                     {% endif %}
                 </div>
             </div>
@@ -179,3 +182,11 @@
 
 </div>
 {% endblock %}
+
+{% block js %}
+<script>
+    if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem('cornlearn_quiz_timer_{{ quiz.id }}');
+    }
+</script>
+{% endblock js %}

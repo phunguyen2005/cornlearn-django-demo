@@ -19,7 +19,7 @@
             <div>
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
-                        <i class="fas fa-graduation-cap me-1"></i> {{ student.level }} {% trans 'Result' %}
+                        <i class="fas fa-graduation-cap me-1"></i> {{ student.level }}
                     </span>
                     {% if student.program %}
                     <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
@@ -28,7 +28,7 @@
                     {% endif %}
                 </div>
                 <h1 class="h4 fw-bold mb-1 text-white">
-                    <i class="fas fa-award me-2"></i>{% trans 'Grade Results' %} — {% trans 'Bảng điểm chính thức' %}
+                    <i class="fas fa-award me-2"></i>{% trans 'Bảng điểm chính thức (GPA / CGPA)' %}
                 </h1>
                 <p class="mb-0 small" style="color: #D2E4FF;">
                     {% trans 'Tổng hợp kết quả điểm chữ, tín chỉ tích lũy, điểm trung bình học kỳ (GPA) và điểm trung bình tích lũy (CGPA).' %}
@@ -106,7 +106,7 @@
                         <i class="fas fa-award fa-lg"></i>
                     </div>
                     <div>
-                        <div class="small text-muted">{% trans 'Previous CGPA:' %}</div>
+                        <div class="small text-muted">{% trans 'Điểm tích lũy kỳ trước (CGPA):' %}</div>
                         <div class="h4 fw-bold text-primary mb-0">{{ previousCGPA }}</div>
                     </div>
                 </div>
@@ -118,13 +118,13 @@
     <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <span class="fw-bold text-dark">
-                <i class="fas fa-calendar-alt text-primary me-2"></i>{% trans 'First Semester:' %} ({% trans 'Học kỳ I' %})
+                <i class="fas fa-calendar-alt text-primary me-2"></i>{% trans 'Học kỳ I' %}
             </span>
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <span class="badge badge-info">{% trans 'Total first semester credit:' %} {{ total_first_semester_credit }}</span>
+                <span class="badge badge-info">{% trans 'Tổng tín chỉ HK I:' %} {{ total_first_semester_credit }}</span>
                 {% for result in results %}
                     {% if result.semester == "First" %}
-                    <span class="badge badge-success">{% trans 'First Semester GPA:' %} {{ result.gpa }}</span>
+                    <span class="badge badge-success">{% trans 'GPA Học kỳ I:' %} {{ result.gpa }}</span>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -134,12 +134,12 @@
                 <thead>
                     <tr>
                         <th style="width: 56px;">#</th>
-                        <th>{% trans 'Course Title' %}</th>
-                        <th>{% trans 'Course Code' %}</th>
-                        <th class="text-center">{% trans 'Cr.Hr' %}</th>
-                        <th class="text-center">{% trans 'Grade' %}</th>
-                        <th class="text-center">{% trans 'Points' %}</th>
-                        <th class="text-end">{% trans 'Comment' %}</th>
+                        <th>{% trans 'Tên học phần' %}</th>
+                        <th>{% trans 'Mã học phần' %}</th>
+                        <th class="text-center">{% trans 'Số TC' %}</th>
+                        <th class="text-center">{% trans 'Điểm chữ' %}</th>
+                        <th class="text-center">{% trans 'Hệ 4' %}</th>
+                        <th class="text-end">{% trans 'Kết quả' %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -162,9 +162,9 @@
                         <td class="text-center fw-semibold text-dark">{{ course.point }}</td>
                         <td class="text-end">
                             {% if course.comment == 'PASS' %}
-                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{% trans 'PASS' %}</span>
+                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{% trans 'ĐẠT' %} (PASS)</span>
                             {% elif course.comment == 'FAIL' %}
-                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{% trans 'FAIL' %}</span>
+                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{% trans 'HỌC LẠI' %} (FAIL)</span>
                             {% else %}
                             <span class="text-muted">—</span>
                             {% endif %}
@@ -179,7 +179,7 @@
                     <tr style="background-color: #F8FAFC;">
                         <th colspan="3" class="text-end text-muted">{% trans 'Tổng kết Học kỳ I:' %}</th>
                         <th class="text-center text-dark">{{ total_first_semester_credit }} TC</th>
-                        <th colspan="3" class="text-end text-primary fw-bold">{% trans 'First Semester GPA:' %} {{ result.gpa }}</th>
+                        <th colspan="3" class="text-end text-primary fw-bold">{% trans 'GPA Học kỳ I:' %} {{ result.gpa }}</th>
                     </tr>
                     {% endif %}
                     {% endfor %}
@@ -192,17 +192,17 @@
     <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <span class="fw-bold text-dark">
-                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans 'Second Semester:' %} ({% trans 'Học kỳ II' %})
+                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans 'Học kỳ II' %}
             </span>
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <span class="badge badge-info">{% trans 'Total second semester credit:' %} {{ total_sec_semester_credit }}</span>
-                <span class="badge badge-info">{% trans 'Total Credit:' %} {{ total_first_and_second_semester_credit }}</span>
+                <span class="badge badge-info">{% trans 'Tổng tín chỉ HK II:' %} {{ total_sec_semester_credit }}</span>
+                <span class="badge badge-info">{% trans 'Tổng năm học:' %} {{ total_first_and_second_semester_credit }}</span>
                 {% for result in results %}
                     {% if result.semester == "Second" %}
-                    <span class="badge badge-success">{% trans 'Second Semester GPA:' %} {{ result.gpa }}</span>
+                    <span class="badge badge-success">{% trans 'GPA Học kỳ II:' %} {{ result.gpa }}</span>
                     {% endif %}
                 {% endfor %}
-                <span class="badge badge-warning">{% trans 'Previous CGPA:' %} {{ previousCGPA }}</span>
+                <span class="badge badge-warning">{% trans 'CGPA tích lũy:' %} {{ previousCGPA }}</span>
             </div>
         </div>
         <div class="table-responsive">
@@ -210,12 +210,12 @@
                 <thead>
                     <tr>
                         <th style="width: 56px;">#</th>
-                        <th>{% trans 'Course Title' %}</th>
-                        <th>{% trans 'Course Code' %}</th>
-                        <th class="text-center">{% trans 'Cr.Hr' %}</th>
-                        <th class="text-center">{% trans 'GRADE' %}</th>
-                        <th class="text-center">{% trans 'Points' %}</th>
-                        <th class="text-end">{% trans 'Comment' %}</th>
+                        <th>{% trans 'Tên học phần' %}</th>
+                        <th>{% trans 'Mã học phần' %}</th>
+                        <th class="text-center">{% trans 'Số TC' %}</th>
+                        <th class="text-center">{% trans 'Điểm chữ' %}</th>
+                        <th class="text-center">{% trans 'Hệ 4' %}</th>
+                        <th class="text-end">{% trans 'Kết quả' %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,9 +238,9 @@
                         <td class="text-center fw-semibold text-dark">{{ course.point }}</td>
                         <td class="text-end">
                             {% if course.comment == 'PASS' %}
-                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{% trans 'PASS' %}</span>
+                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{% trans 'ĐẠT' %} (PASS)</span>
                             {% elif course.comment == 'FAIL' %}
-                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{% trans 'FAIL' %}</span>
+                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{% trans 'HỌC LẠI' %} (FAIL)</span>
                             {% else %}
                             <span class="text-muted">—</span>
                             {% endif %}
@@ -253,9 +253,9 @@
                     {% for result in results %}
                     {% if result.semester == "Second" %}
                     <tr style="background-color: #F8FAFC;">
-                        <th colspan="3" class="text-end text-muted">{% trans 'Total second semester credit:' %} {{ total_sec_semester_credit }} | {% trans 'Total Credit:' %} {{ total_first_and_second_semester_credit }}</th>
-                        <th colspan="2" class="text-center text-primary fw-bold">{% trans 'Second Semester GPA:' %} {{ result.gpa }}</th>
-                        <th colspan="2" class="text-end text-dark fw-bold">{% trans 'Previous CGPA:' %} {{ previousCGPA }}</th>
+                        <th colspan="3" class="text-end text-muted">{% trans 'Tổng tín chỉ HK II:' %} {{ total_sec_semester_credit }} | {% trans 'Tổng năm học:' %} {{ total_first_and_second_semester_credit }}</th>
+                        <th colspan="2" class="text-center text-primary fw-bold">{% trans 'GPA Học kỳ II:' %} {{ result.gpa }}</th>
+                        <th colspan="2" class="text-end text-dark fw-bold">{% trans 'CGPA tích lũy:' %} {{ previousCGPA }}</th>
                     </tr>
                     {% endif %}
                     {% endfor %}

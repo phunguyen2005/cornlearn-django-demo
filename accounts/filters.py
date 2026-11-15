@@ -17,13 +17,13 @@ class LecturerFilter(django_filters.FilterSet):
 
         # Change html classes and placeholders
         self.filters["username"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "ID No."}
+            {"class": "form-control", "placeholder": "Mã giảng viên"}
         )
         self.filters["name"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Name"}
+            {"class": "form-control", "placeholder": "Họ và tên"}
         )
         self.filters["email"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Email"}
+            {"class": "form-control", "placeholder": "Địa chỉ Email"}
         )
 
     def filter_by_name(self, queryset, name, value):
@@ -60,16 +60,16 @@ class StudentFilter(django_filters.FilterSet):
 
         # Change html classes and placeholders
         self.filters["id_no"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "ID No."}
+            {"class": "form-control", "placeholder": "Mã số sinh viên (MSSV)"}
         )
         self.filters["name"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Name"}
+            {"class": "form-control", "placeholder": "Họ và tên sinh viên"}
         )
         self.filters["email"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Email"}
+            {"class": "form-control", "placeholder": "Địa chỉ Email"}
         )
         self.filters["program"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Program"}
+            {"class": "form-control", "placeholder": "Chương trình đào tạo"}
         )
 
     def filter_by_name(self, queryset, name, value):

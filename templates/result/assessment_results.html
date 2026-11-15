@@ -19,7 +19,7 @@
             <div>
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
-                        <i class="fas fa-user-graduate me-1"></i> {{ student.level }} {% trans 'Result' %}
+                        <i class="fas fa-user-graduate me-1"></i> {{ student.level }}
                     </span>
                     {% if student.program %}
                     <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
@@ -28,7 +28,7 @@
                     {% endif %}
                 </div>
                 <h1 class="h4 fw-bold mb-1 text-white">
-                    <i class="fas fa-tasks me-2"></i>{% trans 'Assesment Results' %} — {% trans 'Chi tiết điểm quá trình' %}
+                    <i class="fas fa-tasks me-2"></i>{% trans 'Chi tiết điểm đánh giá quá trình' %}
                 </h1>
                 <p class="mb-0 small" style="color: #D2E4FF;">
                     {% trans 'Bảng phân rã chi tiết các đầu điểm thành phần: Bài tập, Giữa kỳ, Kiểm tra nhanh, Chuyên cần và Cuối kỳ.' %}
@@ -46,7 +46,7 @@
     <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-header d-flex align-items-center justify-content-between">
             <span class="fw-bold text-dark">
-                <i class="fas fa-calendar-alt text-primary me-2"></i>{% trans 'First Semester:' %} ({% trans 'Học kỳ I' %})
+                <i class="fas fa-calendar-alt text-primary me-2"></i>{% trans 'Học kỳ I' %}
             </span>
         </div>
         <div class="table-responsive">
@@ -54,15 +54,15 @@
                 <thead>
                     <tr>
                         <th style="width: 52px;">#</th>
-                        <th>{% trans 'Course Title' %}</th>
-                        <th>{% trans 'Course Code' %}</th>
-                        <th class="text-center">{% trans 'Cr.Hr(s)' %}</th>
-                        <th class="text-center">{% trans 'Assignment' %}</th>
-                        <th class="text-center">{% trans 'Mid exam' %}</th>
-                        <th class="text-center">{% trans 'Quiz' %}</th>
-                        <th class="text-center">{% trans 'Attendance' %}</th>
-                        <th class="text-center">{% trans 'Final exam' %}</th>
-                        <th class="text-end">{% trans 'Total' %}</th>
+                        <th>{% trans 'Tên học phần' %}</th>
+                        <th>{% trans 'Mã học phần' %}</th>
+                        <th class="text-center">{% trans 'Số TC' %}</th>
+                        <th class="text-center">{% trans 'Bài tập' %}</th>
+                        <th class="text-center">{% trans 'Giữa kỳ' %}</th>
+                        <th class="text-center">{% trans 'Trắc nghiệm' %}</th>
+                        <th class="text-center">{% trans 'Chuyên cần' %}</th>
+                        <th class="text-center">{% trans 'Cuối kỳ' %}</th>
+                        <th class="text-end">{% trans 'Tổng kết' %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,7 +101,7 @@
     <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-header d-flex align-items-center justify-content-between">
             <span class="fw-bold text-dark">
-                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans 'Second Semester:' %} ({% trans 'Học kỳ II' %})
+                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans 'Học kỳ II' %}
             </span>
         </div>
         <div class="table-responsive">
@@ -109,15 +109,15 @@
                 <thead>
                     <tr>
                         <th style="width: 52px;">#</th>
-                        <th>{% trans 'Course Title' %}</th>
-                        <th>{% trans 'Course Code' %}</th>
-                        <th class="text-center">{% trans 'Cr.Hr(s)' %}</th>
-                        <th class="text-center">{% trans 'Assignment' %}</th>
-                        <th class="text-center">{% trans 'Mid exam' %}</th>
-                        <th class="text-center">{% trans 'Quiz' %}</th>
-                        <th class="text-center">{% trans 'Attendance' %}</th>
-                        <th class="text-center">{% trans 'Final exam' %}</th>
-                        <th class="text-end">{% trans 'Total' %}</th>
+                        <th>{% trans 'Tên học phần' %}</th>
+                        <th>{% trans 'Mã học phần' %}</th>
+                        <th class="text-center">{% trans 'Số TC' %}</th>
+                        <th class="text-center">{% trans 'Bài tập' %}</th>
+                        <th class="text-center">{% trans 'Giữa kỳ' %}</th>
+                        <th class="text-center">{% trans 'Trắc nghiệm' %}</th>
+                        <th class="text-center">{% trans 'Chuyên cần' %}</th>
+                        <th class="text-center">{% trans 'Cuối kỳ' %}</th>
+                        <th class="text-end">{% trans 'Tổng kết' %}</th>
                     </tr>
                 </thead>
                 <tbody>

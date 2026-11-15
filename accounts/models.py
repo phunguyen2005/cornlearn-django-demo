@@ -15,9 +15,8 @@ BACHELOR_DEGREE = _("Bachelor")
 MASTER_DEGREE = _("Master")
 
 LEVEL = (
-    # (LEVEL_COURSE, "Level course"),
-    (BACHELOR_DEGREE, _("Bachelor Degree")),
-    (MASTER_DEGREE, _("Master Degree")),
+    (BACHELOR_DEGREE, _("Cử nhân / Kỹ sư")),
+    (MASTER_DEGREE, _("Thạc sĩ")),
 )
 
 FATHER = _("Father")
@@ -64,7 +63,7 @@ class CustomUserManager(UserManager):
         return self.model.objects.filter(is_superuser=True).count()
 
 
-GENDERS = ((_("M"), _("Male")), (_("F"), _("Female")))
+GENDERS = (("M", _("Nam")), ("F", _("Nữ")))
 
 
 class User(AbstractUser):

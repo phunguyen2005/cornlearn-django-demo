@@ -53,7 +53,7 @@
             <div class="col-12 col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
                     <i class="fas fa-filter"></i>
-                    <span>{% trans "Filter" %}</span>
+                    <span>{% trans "Lọc" %}</span>
                 </button>
                 {% if request.GET.user_filter or request.GET.quiz_filter %}
                 <a href="{% url 'quiz_marking' %}" class="btn btn-outline-secondary" title="{% trans 'Xóa bộ lọc' %}">
@@ -69,7 +69,7 @@
     <div class="card border shadow-sm" style="border-radius: 12px;">
         <div class="card-header d-flex align-items-center justify-content-between">
             <span class="fw-bold"><i class="fas fa-list-ul text-primary me-2"></i>{% trans "Bảng tổng hợp bài thi" %}</span>
-            <span class="badge badge-info">{% trans 'Total complete exams' %}: {{ sitting_list.count }}</span>
+            <span class="badge badge-info">{% trans 'Tổng số bài thi hoàn thành' %}: {{ sitting_list.count }}</span>
         </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -109,7 +109,7 @@
                         </td>
                         <td class="text-end">
                             <a href="{% url 'quiz_marking_detail' pk=sitting.id %}" class="btn btn-outline-primary btn-sm px-3">
-                                <i class="fas fa-eye me-1"></i> {% trans "View details" %}
+                                <i class="fas fa-eye me-1"></i> {% trans "Xem chi tiết" %}
                             </a>
                         </td>
                     </tr>
@@ -125,7 +125,7 @@
         </div>
         <h5 class="fw-bold text-dark mb-1">{% trans "Chưa có bài thi nào hoàn thành" %}</h5>
         <p class="text-muted small mb-0 mx-auto" style="max-width: 440px;">
-            {% trans "No completed exams for you" %}. {% trans "Khi sinh viên nộp bài kiểm tra ở chế độ lưu điểm (Exam Paper), danh sách sẽ hiển thị tại đây." %}
+            {% trans "Hiện chưa có bài thi nào được ghi nhận" %}. {% trans "Khi sinh viên nộp bài kiểm tra ở chế độ lưu điểm (Exam Paper), danh sách sẽ hiển thị tại đây." %}
         </p>
     </div>
     {% endif %}

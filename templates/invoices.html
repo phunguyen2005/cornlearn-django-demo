@@ -27,7 +27,7 @@
                     </span>
                 </div>
                 <h1 class="h4 fw-bold mb-1 text-white">
-                    <i class="fas fa-receipt me-2"></i>{% trans 'Invoices' %} — {% trans 'Hóa đơn & Thanh toán Học phí' %}
+                    <i class="fas fa-receipt me-2"></i>{% trans 'Hóa đơn & Thanh toán Học phí' %}
                 </h1>
                 <p class="mb-0 small" style="color: #D2E4FF;">
                     {% trans 'Khởi tạo phiếu đóng học phí trực tuyến và theo dõi lịch sử giao dịch thanh toán của bạn.' %}
@@ -72,7 +72,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                            <i class="fas fa-credit-card me-1"></i> {% trans 'Pay now' %}
+                            <i class="fas fa-credit-card me-1"></i> {% trans 'Thanh toán ngay' %}
                         </button>
                     </form>
                 </div>
@@ -93,8 +93,8 @@
                                 <th style="width: 52px;">#</th>
                                 <th>{% trans 'Mã hóa đơn' %}</th>
                                 <th>{% trans 'Tài khoản' %}</th>
-                                <th class="text-center">{% trans 'Số tiền (Amount)' %}</th>
-                                <th class="text-center">{% trans 'Tổng cộng (Total)' %}</th>
+                                <th class="text-center">{% trans 'Số tiền' %}</th>
+                                <th class="text-center">{% trans 'Tổng cộng' %}</th>
                                 <th class="text-center">{% trans 'Trạng thái' %}</th>
                                 <th class="text-end">{% trans 'Chi tiết' %}</th>
                             </tr>
@@ -112,11 +112,11 @@
                                 <td class="text-center">
                                     {% if invoice.payment_complete %}
                                     <span class="badge badge-success">
-                                        <i class="fas fa-check-circle me-1"></i>{% trans 'Paid' %}
+                                        <i class="fas fa-check-circle me-1"></i>{% trans 'Đã thanh toán' %}
                                     </span>
                                     {% else %}
                                     <span class="badge badge-warning">
-                                        <i class="fas fa-clock me-1"></i>{% trans 'Unpaid' %}
+                                        <i class="fas fa-clock me-1"></i>{% trans 'Chờ thanh toán' %}
                                     </span>
                                     {% endif %}
                                 </td>

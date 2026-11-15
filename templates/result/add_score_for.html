@@ -25,14 +25,14 @@
                         <i class="fas fa-book me-1"></i> {{ course.code }}
                     </span>
                     <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
-                        <i class="fas fa-calendar-check me-1"></i> {{ current_semester }} {% trans 'Semester' %} — {{ current_session }}
+                        <i class="fas fa-calendar-check me-1"></i> {% if current_semester == 'First' %}Học kỳ 1{% elif current_semester == 'Second' %}Học kỳ 2{% elif current_semester == 'Third' %}Học kỳ 3{% else %}{{ current_semester }}{% endif %} — {{ current_session }}
                     </span>
                     <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
-                        <i class="fas fa-users me-1"></i> {{ students|length }} {% trans 'Sinh viên' %}
+                        <i class="fas fa-users me-1"></i> {{ students|length }} Sinh viên
                     </span>
                 </div>
                 <h1 class="h4 fw-bold mb-1 text-white">
-                    {% trans 'Students result form' %} | {{ course.title }}
+                    Bảng điểm học phần | {{ course.title }}
                 </h1>
                 {% if course.summary %}
                 <p class="mb-0 small" style="color: #D2E4FF;">{{ course.summary|truncatechars:140 }}</p>
@@ -52,56 +52,80 @@
                                 <span class="badge bg-light text-dark ms-2">{{ c.code }}</span>
                             </a>
                         {% empty %}
-                            <span class="dropdown-item text-muted small">{% trans 'No course.' %}</span>
+                            <span class="dropdown-item text-muted small">Chưa có học phần nào.</span>
                         {% endfor %}
                     </div>
                 </div>
 
                 <!-- Export PDF Result Sheet Button -->
                 <a target="_blank" href="{% url 'result_sheet_pdf_view' id=course.id %}" class="btn btn-warning btn-sm px-3 py-2 fw-semibold text-dark">
-                    <i class="far fa-file-pdf me-1"></i> {% trans 'Grade report' %} (PDF)
+                    <i class="far fa-file-pdf me-1"></i> Báo cáo bảng điểm (PDF)
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Score Entry Matrix Form (CRITICAL POSITIONAL CONTRACT: 5 inputs per student.id) -->
-    <form action="" method="POST">
+    <form action="" method="POST" id="score-matrix-form">
         {% csrf_token %}
 
         <div class="card border shadow-sm" style="border-radius: 12px;">
             <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 py-3">
-                <div>
+                <div class="d-flex align-items-center gap-2">
                     <span class="fw-bold text-dark">
-                        <i class="fas fa-calculator text-primary me-2"></i>{% trans 'Ma trận điểm thành phần & Tổng kết' %}
+                        <i class="fas fa-calculator text-primary me-2"></i>Ma trận điểm thành phần &amp; Tổng kết
                     </span>
-                    <span class="text-muted small ms-2">({{ current_semester }} {% trans 'Semester' %} - {{ current_session }})</span>
+                    <span class="text-muted small">({% if current_semester == 'First' %}Học kỳ 1{% elif current_semester == 'Second' %}Học kỳ 2{% elif current_semester == 'Third' %}Học kỳ 3{% else %}{{ current_semester }}{% endif %} - {{ current_session }})</span>
+                    <span id="unsaved-badge" class="badge bg-warning text-dark d-none px-2 py-1 small">
+                        <i class="fas fa-exclamation-circle me-1"></i>Có thay đổi chưa lưu
+                    </span>
                 </div>
-                <button title="Save Score" type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
-                    <i class="fas fa-save me-1"></i> {% trans 'Save' %}
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <button title="Lưu bảng điểm" type="submit" id="save-scores-top-btn" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-2">
+                        <i class="fas fa-save"></i>
+                        <span>Lưu bảng điểm</span>
+                    </button>
+                </div>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0 score-matrix-table" id="matrix-table">
                     <thead>
-                        <tr>
+                        <tr class="table-light">
                             <th style="width: 48px;">#</th>
-                            <th style="min-width: 180px;">{% trans 'Student' %}</th>
-                            <th class="text-center" style="width: 115px;">{% trans 'Assignment' %}</th>
-                            <th class="text-center" style="width: 115px;">{% trans 'Mid exam' %}</th>
-                            <th class="text-center" style="width: 115px;">{% trans 'Quiz' %}</th>
-                            <th class="text-center" style="width: 115px;">{% trans 'Attendance' %}</th>
-                            <th class="text-center" style="width: 115px;">{% trans 'Final exam' %}</th>
-                            <th class="text-center" style="width: 90px;">{% trans 'Total' %}</th>
-                            <th class="text-center" style="width: 80px;">{% trans 'Point' %}</th>
-                            <th class="text-center" style="width: 80px;">{% trans 'Grade' %}</th>
-                            <th class="text-end" style="width: 110px;">{% trans 'Comment' %}</th>
+                            <th style="min-width: 180px;">Sinh viên</th>
+                            <th class="text-center" style="width: 115px;">
+                                <div>Bài tập</div>
+                                <div class="text-muted small fw-normal">Assignment</div>
+                            </th>
+                            <th class="text-center" style="width: 115px;">
+                                <div>Giữa kỳ</div>
+                                <div class="text-muted small fw-normal">Mid exam</div>
+                            </th>
+                            <th class="text-center" style="width: 115px;">
+                                <div>Trắc nghiệm</div>
+                                <div class="text-muted small fw-normal">Quiz</div>
+                            </th>
+                            <th class="text-center" style="width: 115px;">
+                                <div>Chuyên cần</div>
+                                <div class="text-muted small fw-normal">Attendance</div>
+                            </th>
+                            <th class="text-center" style="width: 115px;">
+                                <div>Cuối kỳ</div>
+                                <div class="text-muted small fw-normal">Final exam</div>
+                            </th>
+                            <th class="text-center" style="width: 95px;">
+                                <div>Tổng kết</div>
+                                <div class="text-muted small fw-normal">Total</div>
+                            </th>
+                            <th class="text-center" style="width: 80px;">Hệ 4</th>
+                            <th class="text-center" style="width: 80px;">Điểm chữ</th>
+                            <th class="text-end" style="width: 110px;">Đánh giá</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for student in students %}
-                        <tr>
+                        <tr data-student-id="{{ student.id }}" class="score-row">
                             <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
                             <td>
                                 <a href="{{ student.student.student.get_absolute_url }}" class="fw-semibold text-decoration-none text-dark d-block">
@@ -110,22 +134,22 @@
                                 <span class="small text-muted">{{ student.student.student.username }}</span>
                             </td>
                             <td class="text-center">
-                                <input id="assignment" type="number" step="any" name="{{ student.id }}" value="{{ student.assignment }}" class="form-control form-control-sm text-center mx-auto score-input">
+                                <input id="assignment" type="number" step="any" min="0" max="100" name="{{ student.id }}" value="{{ student.assignment }}" data-initial="{{ student.assignment }}" class="form-control form-control-sm text-center mx-auto score-input" data-col="0">
                             </td>
                             <td class="text-center">
-                                <input id="mid_exam" type="number" step="any" name="{{ student.id }}" value="{{ student.mid_exam }}" class="form-control form-control-sm text-center mx-auto score-input">
+                                <input id="mid_exam" type="number" step="any" min="0" max="100" name="{{ student.id }}" value="{{ student.mid_exam }}" data-initial="{{ student.mid_exam }}" class="form-control form-control-sm text-center mx-auto score-input" data-col="1">
                             </td>
                             <td class="text-center">
-                                <input id="quiz" type="number" step="any" name="{{ student.id }}" value="{{ student.quiz }}" class="form-control form-control-sm text-center mx-auto score-input">
+                                <input id="quiz" type="number" step="any" min="0" max="100" name="{{ student.id }}" value="{{ student.quiz }}" data-initial="{{ student.quiz }}" class="form-control form-control-sm text-center mx-auto score-input" data-col="2">
                             </td>
                             <td class="text-center">
-                                <input id="attendance" type="number" step="any" name="{{ student.id }}" value="{{ student.attendance }}" class="form-control form-control-sm text-center mx-auto score-input">
+                                <input id="attendance" type="number" step="any" min="0" max="100" name="{{ student.id }}" value="{{ student.attendance }}" data-initial="{{ student.attendance }}" class="form-control form-control-sm text-center mx-auto score-input" data-col="3">
                             </td>
                             <td class="text-center">
-                                <input id="final_exam" type="number" step="any" name="{{ student.id }}" value="{{ student.final_exam }}" class="form-control form-control-sm text-center mx-auto score-input">
+                                <input id="final_exam" type="number" step="any" min="0" max="100" name="{{ student.id }}" value="{{ student.final_exam }}" data-initial="{{ student.final_exam }}" class="form-control form-control-sm text-center mx-auto score-input" data-col="4">
                             </td>
-                            <td class="text-center fw-bold text-dark">{{ student.total }}</td>
-                            <td class="text-center text-secondary fw-medium">{{ student.point }}</td>
+                            <td class="text-center fw-bold score-total-cell fs-6" style="color: #164E80;">{{ student.total }}</td>
+                            <td class="text-center text-secondary fw-medium score-point-cell">{{ student.point }}</td>
                             <td class="text-center">
                                 <span class="badge {% if student.grade == 'F' or student.grade == 'NG' %}badge-danger{% else %}badge-success{% endif %}">
                                     {{ student.grade|default:"—" }}
@@ -150,8 +174,8 @@
                             <td colspan="11" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-user-slash fa-2x mb-2 d-block text-secondary"></i>
-                                    <span class="fw-semibold text-danger">{% trans 'No Student.' %}</span>
-                                    <p class="small mb-0 mt-1">{% trans 'Chưa có sinh viên nào đăng ký học phần này trong học kỳ hiện tại.' %}</p>
+                                    <span class="fw-semibold text-danger">Chưa có sinh viên nào.</span>
+                                    <p class="small mb-0 mt-1">Chưa có sinh viên nào đăng ký học phần này trong học kỳ hiện tại.</p>
                                 </div>
                             </td>
                         </tr>
@@ -161,12 +185,19 @@
             </div>
 
             {% if students %}
-            <div class="card-footer bg-white border-top p-3 d-flex align-items-center justify-content-between">
-                <span class="small text-muted">
-                    <i class="fas fa-info-circle me-1"></i>{% trans 'Hệ thống tự động tính Tổng điểm, Điểm chữ (Grade), Điểm quy đổi (Point) và GPA/CGPA khi nhấn Lưu.' %}
-                </span>
-                <button title="Save Score" type="submit" class="btn btn-primary px-4 py-2 fw-semibold">
-                    <i class="fas fa-save me-1"></i> {% trans 'Save' %}
+            <div class="card-footer bg-white border-top p-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3 text-muted small">
+                    <span>
+                        <i class="fas fa-info-circle me-1 text-primary"></i>Hệ thống tự động tính Tổng điểm, Điểm chữ (Grade), Điểm quy đổi (Point) và GPA/CGPA khi nhấn Lưu.
+                    </span>
+                    <span class="d-none d-md-inline text-muted">&bull;</span>
+                    <span class="d-none d-md-inline">
+                        <i class="fas fa-keyboard me-1"></i>Dùng phím &uarr; &darr; &larr; &rarr; để chuyển nhanh giữa các ô điểm.
+                    </span>
+                </div>
+                <button title="Lưu bảng điểm" type="submit" id="save-scores-bottom-btn" class="btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2">
+                    <i class="fas fa-save"></i>
+                    <span>Lưu bảng điểm</span>
                 </button>
             </div>
             {% endif %}
@@ -175,16 +206,112 @@
 
 </div>
 
-<style>
-    .score-input {
-        max-width: 92px;
-        border-radius: 8px;
-        border: 1px solid #CBD5E1;
-        font-weight: 600;
-    }
-    .score-input:focus {
-        border-color: #2563EB;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const rows = document.querySelectorAll('.score-row');
+        const unsavedBadge = document.getElementById('unsaved-badge');
+        let hasUnsavedChanges = false;
+
+        function updateRowTotal(row) {
+            const inputs = row.querySelectorAll('.score-input');
+            let sum = 0;
+            let countFilled = 0;
+            inputs.forEach(function(inp) {
+                const val = parseFloat(inp.value);
+                if (!isNaN(val)) {
+                    sum += val;
+                    countFilled++;
+                }
+                const initial = parseFloat(inp.dataset.initial || "0");
+                const current = isNaN(val) ? 0 : val;
+                if (Math.abs(current - initial) > 0.001) {
+                    inp.classList.add('is-dirty');
+                    hasUnsavedChanges = true;
+                } else {
+                    inp.classList.remove('is-dirty');
+                }
+            });
+
+            if (unsavedBadge && hasUnsavedChanges) {
+                unsavedBadge.classList.remove('d-none');
+            }
+
+            const totalCell = row.querySelector('.score-total-cell');
+            if (totalCell && countFilled > 0) {
+                totalCell.textContent = (Math.round(sum * 100) / 100).toFixed(1);
+                if (sum >= 50) {
+                    totalCell.style.color = '#166534';
+                } else {
+                    totalCell.style.color = '#DC2626';
+                }
+            }
+        }
+
+        rows.forEach(function(row) {
+            const inputs = row.querySelectorAll('.score-input');
+            inputs.forEach(function(inp) {
+                inp.addEventListener('input', function() {
+                    updateRowTotal(row);
+                });
+            });
+        });
+
+        const table = document.getElementById('matrix-table');
+        if (table) {
+            table.addEventListener('keydown', function(e) {
+                const target = e.target;
+                if (!target.classList.contains('score-input')) return;
+
+                const col = parseInt(target.dataset.col);
+                const currentRow = target.closest('tr');
+                let nextTarget = null;
+
+                if (e.key === 'ArrowDown') {
+                    const nextRow = currentRow.nextElementSibling;
+                    if (nextRow && nextRow.classList.contains('score-row')) {
+                        nextTarget = nextRow.querySelector(`.score-input[data-col="${col}"]`);
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    const prevRow = currentRow.previousElementSibling;
+                    if (prevRow && prevRow.classList.contains('score-row')) {
+                        nextTarget = prevRow.querySelector(`.score-input[data-col="${col}"]`);
+                    }
+                } else if (e.key === 'ArrowRight' && target.selectionStart === target.value.length) {
+                    if (col < 4) {
+                        nextTarget = currentRow.querySelector(`.score-input[data-col="${col + 1}"]`);
+                    }
+                } else if (e.key === 'ArrowLeft' && target.selectionStart === 0) {
+                    if (col > 0) {
+                        nextTarget = currentRow.querySelector(`.score-input[data-col="${col - 1}"]`);
+                    }
+                }
+
+                if (nextTarget) {
+                    e.preventDefault();
+                    nextTarget.focus();
+                    nextTarget.select();
+                }
+            });
+        }
+
+        const form = document.getElementById('score-matrix-form');
+        const topBtn = document.getElementById('save-scores-top-btn');
+        const btmBtn = document.getElementById('save-scores-bottom-btn');
+
+        if (form) {
+            form.addEventListener('submit', function() {
+                hasUnsavedChanges = false;
+                const spinnerText = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Lưu bảng điểm...';
+                if (topBtn) {
+                    topBtn.disabled = true;
+                    topBtn.innerHTML = spinnerText;
+                }
+                if (btmBtn) {
+                    btmBtn.disabled = true;
+                    btmBtn.innerHTML = spinnerText;
+                }
+            });
+        }
+    });
+</script>
 {% endblock content %}

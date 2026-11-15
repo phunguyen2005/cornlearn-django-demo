@@ -193,9 +193,10 @@
                         <i class="fas fa-file-upload text-primary"></i>
                         <span>{% trans 'Tải lên Tài liệu' %}</span>
                     </a>
-                    {% endif %}
-
-                    {% if request.user.is_superuser %}
+                    <a class="btn btn-light fw-semibold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm" href="{% url 'add_score_for' course.id %}">
+                        <i class="fas fa-pen-nib text-primary"></i>
+                        <span>{% trans 'Nhập điểm' %}</span>
+                    </a>
                     <a class="btn btn-outline-light px-3 py-2 d-inline-flex align-items-center gap-1" href="{% url 'edit_course' slug=course.slug %}">
                         <i class="fas fa-pencil-alt"></i>
                         <span>{% trans 'Sửa học phần' %}</span>

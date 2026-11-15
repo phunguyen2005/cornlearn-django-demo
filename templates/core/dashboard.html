@@ -147,14 +147,14 @@
                             <span class="d-inline-block rounded-circle" style="width: 10px; height: 10px; background-color: #164E80;"></span>
                             <span class="text-muted small">Nam</span>
                         </div>
-                        <span class="fw-bold" style="color: var(--text-main);">{{ males_count }}%</span>
+                        <span class="fw-bold" style="color: var(--text-main);">{{ males_count }} SV {% if student_count > 0 %}({% widthratio males_count student_count 100 %}%) {% endif %}</span>
                     </div>
                     <div class="col-6">
                         <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
                             <span class="d-inline-block rounded-circle" style="width: 10px; height: 10px; background-color: #2563EB;"></span>
                             <span class="text-muted small">Nữ</span>
                         </div>
-                        <span class="fw-bold" style="color: var(--text-main);">{{ females_count }}%</span>
+                        <span class="fw-bold" style="color: var(--text-main);">{{ females_count }} SV {% if student_count > 0 %}({% widthratio females_count student_count 100 %}%) {% endif %}</span>
                     </div>
                 </div>
             </div>

@@ -15,7 +15,7 @@ class ProgramFilter(django_filters.FilterSet):
 
         # Change html classes and placeholders
         self.filters["title"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Program name"}
+            {"class": "form-control", "placeholder": "Tên chương trình đào tạo"}
         )
 
 
@@ -32,10 +32,10 @@ class CourseAllocationFilter(django_filters.FilterSet):
 
         # Change html classes and placeholders
         self.filters["lecturer"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Lecturer"}
+            {"class": "form-control", "placeholder": "Tên giảng viên"}
         )
         self.filters["course"].field.widget.attrs.update(
-            {"class": "au-input", "placeholder": "Course"}
+            {"class": "form-control", "placeholder": "Tên học phần / Môn học"}
         )
 
     def filter_by_lecturer(self, queryset, name, value):
