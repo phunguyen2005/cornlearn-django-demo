@@ -2,13 +2,10 @@ import stripe
 import uuid
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
-from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
-
-from django.http import JsonResponse
 
 import gopay
 from gopay.enums import Recurrence, PaymentInstrument, BankSwiftCode, Currency, Language
@@ -158,34 +155,39 @@ def paymentComplete(request):
 
 
 def create_invoice(request):
-    print(request.headers.get("x-requested-with") == "XMLHttpRequest")
     if request.method == "POST":
+        amount_val = request.POST.get("amount") or 500
         invoice = Invoice.objects.create(
             user=request.user,
-            amount=request.POST.get("amount"),
-            total=26,
+            amount=amount_val,
+            total=amount_val,
             invoice_code=str(uuid.uuid4()),
         )
         request.session["invoice_session"] = invoice.invoice_code
         return redirect("payment_gateways")
-    # if request.is_ajax():
-    #     invoice = Invoice.objects.create(
-    #         user = request.user,
-    #         amount = 15,
-    #         total=26,
-    #     )
-    #     return JsonResponse({'invoice': invoice}, status=201) # created
+
+    if request.user.is_superuser:
+        invoices = Invoice.objects.all().order_by("-id")
+    else:
+        invoices = Invoice.objects.filter(user=request.user).order_by("-id")
 
     return render(
         request,
         "invoices.html",
-        context={"invoices": Invoice.objects.filter(user=request.user)},
+        context={"invoices": invoices},
     )
 
 
-def invoice_detail(request, slug):
+def invoice_detail(request, id=None, slug=None):
+    if id is not None:
+        invoice = get_object_or_404(Invoice, id=id)
+    elif slug is not None:
+        invoice = get_object_or_404(Invoice, invoice_code=slug)
+    else:
+        invoice = get_object_or_404(Invoice, id=id)
+
     return render(
         request,
         "invoice_detail.html",
-        context={"invoice": Invoice.objects.get(invoice_code=slug)},
+        context={"invoice": invoice},
     )
