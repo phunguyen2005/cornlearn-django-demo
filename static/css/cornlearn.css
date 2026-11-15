@@ -415,6 +415,14 @@ body {
 }
 
 /* 8. Status Badges */
+.badge, .badge-success, .badge-warning, .badge-danger, .badge-info {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.25 !important;
+  vertical-align: middle !important;
+}
+
 .badge-success, .badge.bg-success {
   background-color: var(--status-success-bg) !important;
   color: var(--status-success-text) !important;
@@ -502,14 +510,23 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.filter-bar-card .form-control, .filter-bar-card select {
+.filter-bar-card input,
+.filter-bar-card .form-control,
+.filter-bar-card select {
   border-radius: 8px;
   border: 1px solid var(--border-light);
   font-size: 0.875rem;
   padding: 0.45rem 0.75rem;
+  height: 38px;
+  background-color: var(--surface-card);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.filter-bar-card .form-control:focus, .filter-bar-card select:focus {
+.filter-bar-card input:focus,
+.filter-bar-card .form-control:focus,
+.filter-bar-card select:focus {
   border-color: var(--primary-cta);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
