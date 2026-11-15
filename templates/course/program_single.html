@@ -211,7 +211,7 @@
                             {% if course.is_current_semester == False %}
                                 <span class="badge bg-secondary"><i class="fas fa-minus-circle me-1"></i>Đóng</span>
                             {% elif course.is_current_semester == True %}
-                                <span class="badge-success"><i class="fas fa-check-circle me-1"></i>Đang mở</span>
+                                <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>Đang mở</span>
                             {% endif %}
                         </td>
                         {% if request.user.is_superuser %}
