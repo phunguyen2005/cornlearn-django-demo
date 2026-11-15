@@ -11,11 +11,11 @@ from .validators import ASCIIUsernameValidator
 
 
 # LEVEL_COURSE = "Level course"
-BACHELOR_DEGREE = _("Bachelor")
-MASTER_DEGREE = _("Master")
+BACHELOR_DEGREE = "Cử nhân"
+MASTER_DEGREE = "Thạc sĩ"
 
 LEVEL = (
-    (BACHELOR_DEGREE, _("Cử nhân / Kỹ sư")),
+    (BACHELOR_DEGREE, _("Cử nhân")),
     (MASTER_DEGREE, _("Thạc sĩ")),
 )
 

@@ -152,7 +152,7 @@ class TestTier3MultiStepWorkflows(BaseE2ETestCase):
             "credit": 3,
             "summary": "Kiến thức cơ bản về AI",
             "program": new_prog.id,
-            "level": "Bachelor",
+            "level": "Cử nhân",
             "year": 1,
             "semester": "First",
         }

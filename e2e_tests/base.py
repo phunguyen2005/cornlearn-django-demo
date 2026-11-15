@@ -60,7 +60,7 @@ class BaseE2ETestCase(TestCase):
             code="IT101",
             credit=3,
             program=cls.program,
-            level="Bachelor",
+            level="Cử nhân",
             semester="First",
             year=1,
             summary="Khóa học lập trình web toàn diện với Django framework.",
@@ -70,7 +70,7 @@ class BaseE2ETestCase(TestCase):
             code="IT201",
             credit=4,
             program=cls.program,
-            level="Bachelor",
+            level="Cử nhân",
             semester="First",
             year=2,
             is_elective=True,
@@ -115,7 +115,7 @@ class BaseE2ETestCase(TestCase):
         cls.student_user.save()
         cls.student_profile = Student.objects.create(
             student=cls.student_user,
-            level="Bachelor",
+            level="Cử nhân",
             program=cls.program,
         )
 

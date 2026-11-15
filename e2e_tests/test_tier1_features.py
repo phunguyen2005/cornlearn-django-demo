@@ -125,7 +125,7 @@ class TestTier1AccountsAndAuth(BaseE2ETestCase):
             "phone": "0987654321",
             "address": "Hanoi, Vietnam",
             "gender": "M",
-            "level": "Bachelor",
+            "level": "Cử nhân",
             "program": self.program.id,
             "password1": "SecurePass123!",
             "password2": "SecurePass123!",
@@ -281,7 +281,7 @@ class TestTier1AccountsAndAuth(BaseE2ETestCase):
             "phone": "0933445566",
             "address": "Can Tho, Vietnam",
             "gender": "M",
-            "level": "Bachelor",
+            "level": "Cử nhân",
             "program": self.program.id,
             "password1": "StudentSecure123!",
             "password2": "StudentSecure123!",
@@ -298,7 +298,7 @@ class TestTier1AccountsAndAuth(BaseE2ETestCase):
             password="Password123!",
             is_student=True,
         )
-        stu_prof = Student.objects.create(student=stu_user, level="Bachelor", program=self.program)
+        stu_prof = Student.objects.create(student=stu_user, level="Cử nhân", program=self.program)
         self.login_as_admin()
 
         edit_url = reverse("student_edit", kwargs={"pk": stu_user.pk})
@@ -337,7 +337,7 @@ class TestTier1AccountsAndAuth(BaseE2ETestCase):
             is_student=True,
         )
         stu2_prof = Student.objects.create(
-            student=stu2_user, level="Bachelor", program=self.program
+            student=stu2_user, level="Cử nhân", program=self.program
         )
         parent_payload = {
             "username": "new_parent_guardian",
@@ -550,7 +550,7 @@ class TestTier1CoursesAndCurriculum(BaseE2ETestCase):
             "credit": 3,
             "summary": "Môn học cấu trúc dữ liệu và giải thuật",
             "program": self.program.id,
-            "level": "Bachelor",
+            "level": "Cử nhân",
             "year": 1,
             "semester": "First",
         }

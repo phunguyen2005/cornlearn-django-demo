@@ -252,12 +252,12 @@ YEARS = (
     (6, "6"),
 )
 
-BACHELOR_DEGREE = "Bachelor"
-MASTER_DEGREE = "Master"
+BACHELOR_DEGREE = "Cử nhân"
+MASTER_DEGREE = "Thạc sĩ"
 
 LEVEL_CHOICES = (
-    (BACHELOR_DEGREE, _("Bachelor Degree")),
-    (MASTER_DEGREE, _("Master Degree")),
+    (BACHELOR_DEGREE, _("Cử nhân")),
+    (MASTER_DEGREE, _("Thạc sĩ")),
 )
 
 FIRST = "First"
