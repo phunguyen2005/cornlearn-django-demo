@@ -72,6 +72,12 @@
 				</li>
 				{% endif %}
 
+				{% if request.user.is_student and request.user.student.program %}
+				<li class="{% if '/programs/' in request.path %}active{% endif %}">
+					<a href="{% url 'program_detail' request.user.student.program.id %}"><i class="fas fa-graduation-cap"></i><span>{% trans 'Chương trình đào tạo' %}</span></a>
+				</li>
+				{% endif %}
+
 				{% if request.user.is_student %}
 				<li class="{% if request.path == cr or '/course/registration' in request.path %}active{% endif %}">
 					<a href="{% url 'course_registration' %}"><i class="fas fa-clipboard-check"></i><span>{% trans 'Đăng ký học phần' %}</span></a>
