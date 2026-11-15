@@ -1,0 +1,20 @@
+{% load i18n %}
+{% if filter.form %}
+<div class="filter-bar-card mb-4">
+    <form action="" method="get" class="d-flex flex-wrap align-items-center gap-2">
+        {% for field in filter.form %}
+        <div class="d-flex align-items-center">
+            {{ field }}
+        </div>
+        {% endfor %}
+        <button class="btn btn-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" type="submit">
+            <i class="fas fa-filter"></i> <span>{% trans 'Lọc dữ liệu' %}</span>
+        </button>
+        {% if request.GET %}
+        <a href="{{ request.path }}" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" title="{% trans 'Xóa bộ lọc và xem toàn bộ' %}">
+            <i class="fas fa-undo"></i> <span>{% trans 'Xóa lọc' %}</span>
+        </a>
+        {% endif %}
+    </form>
+</div>
+{% endif %}

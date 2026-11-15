@@ -1,0 +1,57 @@
+<!-- Term of Service Modal Snippet (#term-of-service) -->
+<div class="modal fade" id="term-of-service" tabindex="-1" aria-labelledby="termOfServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom py-3 px-4" style="background-color: #FAF8FF;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background-color: #DBE1FF; color: #0051D5; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold mb-0" id="termOfServiceModalLabel" style="color: var(--primary-navy); font-size: 1.1rem;">
+                        Điều khoản Sử dụng Hệ thống CornLearn
+                    </h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-4" style="line-height: 1.7; color: var(--text-main);">
+                <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center gap-2" role="alert">
+                    <i class="fas fa-info-circle flex-shrink-0"></i>
+                    <span>Áp dụng cho toàn thể giảng viên, sinh viên và người dùng hệ thống đào tạo CornLearn LMS.</span>
+                </div>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">1. Quy định chung &amp; Phạm vi áp dụng</h6>
+                <p class="small text-muted mb-3">
+                    CornLearn LMS là cổng thông tin và hệ thống quản lý học tập chính thức của Nhà trường. Khi đăng ký tài khoản hoặc sử dụng hệ thống, người dùng cam kết tuân thủ quy chế đào tạo, quy định bảo mật và chuẩn mực văn hóa ứng xử trực tuyến.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">2. Quản lý Tài khoản &amp; Định danh Học vụ</h6>
+                <p class="small text-muted mb-3">
+                    Mỗi tài khoản được gắn với mã sinh viên hoặc mã cán bộ giảng dạy duy nhất. Người học có nghĩa vụ bảo mật mật khẩu, không cung cấp tài khoản cho người khác sử dụng, và chịu trách nhiệm về toàn bộ thao tác được thực hiện từ tài khoản của mình.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">3. Liêm chính Học thuật</h6>
+                <p class="small text-muted mb-3">
+                    Toàn bộ bài tập, bài thi trắc nghiệm (quiz) và bài kiểm tra trên hệ thống phải do chính sinh viên tự làm. Nghiêm cấm mọi hành vi gian lận, thi hộ, sử dụng công cụ can thiệp bất hợp pháp hoặc sao chép bài làm của người khác.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">4. Bản quyền Học liệu Số</h6>
+                <p class="small text-muted mb-3">
+                    Bài giảng điện tử, video, tài liệu tham khảo và câu hỏi kiểm tra trên CornLearn thuộc bản quyền của Nhà trường và giảng viên. Học viên chỉ được sử dụng cho mục đích học tập cá nhân, nghiêm cấm sao chép, phát tán ra bên ngoài khi chưa được phép.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">5. Xử lý Vi phạm</h6>
+                <p class="small text-muted mb-0">
+                    Hành vi vi phạm các điều khoản trên sẽ bị tạm khóa hoặc đình chỉ tài khoản CornLearn, đồng thời chuyển hồ sơ xử lý theo Quy chế Khen thưởng &amp; Kỷ luật sinh viên của Nhà trường.
+                </p>
+            </div>
+            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                <a href="{% url 'terms' %}" target="_blank" class="small text-decoration-none fw-medium d-inline-flex align-items-center gap-1" style="color: var(--primary-cta);">
+                    <i class="fas fa-external-link-alt small"></i> Xem bản đầy đủ
+                </a>
+                <button type="button" class="btn btn-primary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">
+                    Tôi đã hiểu và Đồng ý
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

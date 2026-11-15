@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ program.title|default:title }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-curriculum-shell {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+    .cl-program-hero {
+        background: linear-gradient(135deg, #164E80 0%, #003761 100%);
+        color: #FFFFFF;
+        border-radius: 16px;
+        padding: 1.85rem 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(22, 78, 128, 0.14);
+        position: relative;
+        overflow: hidden;
+    }
+    .cl-program-hero::after {
+        content: '';
+        position: absolute;
+        right: -50px;
+        bottom: -50px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, rgba(22, 78, 128, 0) 70%);
+        pointer-events: none;
+    }
+    .cl-stat-pill {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 0.7rem 1.15rem;
+        min-width: 145px;
+    }
+    .cl-code-badge {
+        background: #D2E4FF;
+        color: #003761;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-type-core {
+        background: #164E80;
+        color: #FFFFFF;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-type-elective {
+        background: #FEF3C7;
+        color: #92400E;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-action-icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+        color: #42474F;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .cl-action-icon-btn:hover {
+        background: #F2F3FF;
+        color: #164E80;
+    }
+    .cl-action-icon-btn.danger:hover {
+        background: #FEE2E2;
+        color: #DC2626;
+        border-color: #FECACA;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-curriculum-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none text-muted">{% trans 'Học phần của tôi' %}</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{{ program.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Program Hero Banner -->
+    {% if program %}
+    <div class="cl-program-hero">
+        <div class="row align-items-center g-4 position-relative" style="z-index: 1;">
+            <div class="col-lg-8">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255, 255, 255, 0.14); font-size: 0.75rem; font-weight: 600;">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Khung chương trình đào tạo chi tiết</span>
+                </div>
+                <h1 class="h3 fw-bold mb-2 text-white">{{ program.title }}</h1>
+                <p class="mb-0 text-white-50 small" style="max-width: 680px;">
+                    {% if program.summary %}
+                        {{ program.summary }}
+                    {% else %}
+                        Danh sách toàn bộ các học phần bắt buộc và tự chọn thuộc chương trình đào tạo {{ program.title }}, phân bổ theo từng năm học và học kỳ.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex flex-wrap justify-content-lg-end align-items-center gap-2">
+                    <div class="cl-stat-pill">
+                        <div class="text-white-50" style="font-size: 0.7rem; text-transform: uppercase;">Tổng khối lượng</div>
+                        <div class="h5 fw-bold text-white mb-0 mt-1">
+                            <i class="fas fa-layer-group me-1 text-info"></i> {{ credits.total_credits|default:0 }} TC
+                        </div>
+                    </div>
+                    {% if request.user.is_superuser %}
+                    <a class="btn btn-primary fw-semibold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm" href="{% url 'course_add' pk=program.id %}">
+                        <i class="fas fa-plus"></i>
+                        <span>{% trans 'Thêm học phần mới' %}</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filter Form Snippet -->
+    {% include 'snippets/filter_form.html' %}
+
+    <!-- Client-side Quick Filter Toolbar -->
+    <div class="filter-bar-card d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 440px;">
+            <i class="fas fa-search text-muted"></i>
+            <input type="text" id="curriculumSearchInput" class="form-control" placeholder="Tìm học phần theo mã HP hoặc tên môn học...">
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted">Tổng tín chỉ toàn khóa:</span>
+            <span class="badge bg-primary">{{ credits.total_credits|default:0 }} Tín chỉ</span>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'course_add' pk=program.id %}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                <i class="fas fa-plus"></i> Thêm học phần
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Curriculum Courses Table Card -->
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span><i class="fas fa-book me-2 text-primary"></i>Danh mục học phần thuộc chương trình</span>
+            <span class="text-muted small">Trang {{ courses.number|default:1 }} / {{ courses.paginator.num_pages|default:1 }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 56px;">STT</th>
+                        <th style="width: 130px;">{% trans 'Mã HP' %}</th>
+                        <th>{% trans 'Tên học phần' %}</th>
+                        <th class="text-center" style="width: 100px;">{% trans 'Tín chỉ' %}</th>
+                        <th style="width: 130px;">{% trans 'Trình độ' %}</th>
+                        <th class="text-center" style="width: 95px;">{% trans 'Năm' %}</th>
+                        <th style="width: 120px;">{% trans 'Học kỳ' %}</th>
+                        <th style="width: 115px;">{% trans 'Loại' %}</th>
+                        <th class="text-center" style="width: 120px;">{% trans 'Kỳ hiện tại' %}</th>
+                        {% if request.user.is_superuser %}
+                        <th class="text-end" style="width: 120px;">{% trans 'Thao tác' %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr class="curriculum-course-row" data-search="{{ course.code|lower }} {{ course.title|lower }} {{ course.semester|lower }}">
+                        <td class="text-muted fw-medium">{{ forloop.counter }}.</td>
+                        <td><span class="cl-code-badge">{{ course.code }}</span></td>
+                        <td>
+                            <a href="{% url 'course_detail' slug=course.slug %}" class="fw-bold text-decoration-none" style="color: #164E80;">
+                                {{ course.title }}
+                            </a>
+                        </td>
+                        <td class="text-center fw-bold">{{ course.credit }} TC</td>
+                        <td class="text-muted">{{ course.level }}</td>
+                        <td class="text-center">Năm {{ course.year }}</td>
+                        <td>{{ course.semester }}</td>
+                        <td>
+                            {% if course.is_elective %}
+                                <span class="cl-type-elective">Tự chọn</span>
+                            {% else %}
+                                <span class="cl-type-core">Bắt buộc</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if course.is_current_semester == False %}
+                                <span class="badge bg-secondary"><i class="fas fa-minus-circle me-1"></i>Đóng</span>
+                            {% elif course.is_current_semester == True %}
+                                <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>Đang mở</span>
+                            {% endif %}
+                        </td>
+                        {% if request.user.is_superuser %}
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                <a href="{% url 'edit_course' slug=course.slug %}" class="cl-action-icon-btn" title="{% trans 'Chỉnh sửa học phần' %}">
+                                    <i class="fas fa-pencil-alt small"></i>
+                                </a>
+                                <a href="{% url 'delete_course' slug=course.slug %}" class="cl-action-icon-btn danger" title="{% trans 'Xóa học phần' %}">
+                                    <i class="fas fa-trash-alt small"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center py-5">
+                            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 56px; height: 56px; background: #F2F3FF; color: #164E80; font-size: 1.35rem;">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có học phần nào trong chương trình này' %}</h5>
+                            <p class="text-muted small mb-3">Hãy khởi tạo các học phần đầu tiên để hoàn thiện khung chương trình đào tạo.</p>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'course_add' pk=program.id %}" class="btn btn-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                <span>{% trans 'Thêm học phần ngay' %}</span>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if courses.paginator.page_range|length > 1 %}
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Curriculum pagination">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                {% for i in courses.paginator.page_range %}
+                    {% if i == courses.number %}
+                        <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item"><a class="page-link" href="?page={{ courses.paginator.num_pages }}">&raquo;</a></li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('curriculumSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const q = searchInput.value.trim().toLowerCase();
+                document.querySelectorAll('.curriculum-course-row').forEach(function(row) {
+                    const text = row.getAttribute('data-search') || '';
+                    if (!q || text.indexOf(q) !== -1) {
+                        row.classList.remove('d-none');
+                    } else {
+                        row.classList.add('d-none');
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock js %}

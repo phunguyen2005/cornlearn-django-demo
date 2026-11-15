@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title|default:"Tải lên Bài giảng Video" }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-video-upload-shell {
+        max-width: 780px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+    .cl-video-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(19, 27, 46, 0.05);
+    }
+    .cl-video-header {
+        background: linear-gradient(135deg, #164E80 0%, #003761 100%);
+        color: #FFFFFF;
+        padding: 1.5rem 1.75rem;
+    }
+    .cl-video-body {
+        padding: 1.75rem;
+    }
+    .cl-video-dropzone {
+        background: #F8FAFC;
+        border: 2px dashed #CBD5E1;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s;
+    }
+    .cl-video-dropzone:hover {
+        background: #F2F3FF;
+        border-color: #2563EB;
+    }
+    .cl-video-body .form-control, .cl-video-body textarea {
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        padding: 0.55rem 0.85rem;
+        font-size: 0.9rem;
+    }
+    .cl-video-body .form-control:focus, .cl-video-body textarea:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .cl-video-body label {
+        font-weight: 600;
+        color: #131B2E;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-video-upload-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' pk=course.program.id %}" class="text-decoration-none text-muted">{{ course.program }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none text-muted">{{ course }}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Tải lên video' %}</li>
+        </ol>
+    </nav>
+
+    <div class="cl-video-card">
+        <div class="cl-video-header d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 46px; height: 46px; background: rgba(255, 255, 255, 0.15);">
+                <i class="fas fa-video fa-lg text-white"></i>
+            </div>
+            <div>
+                <div class="text-uppercase fw-semibold text-white-50" style="font-size: 0.72rem; letter-spacing: 0.05em;">Bài giảng trực tuyến &bull; {{ course.code }}</div>
+                <h1 class="h5 fw-bold mb-0 text-white">{% trans 'Tải lên Bài giảng Video' %}: {{ course.title|truncatechars:45 }}</h1>
+            </div>
+        </div>
+
+        <div class="cl-video-body">
+            <!-- Video Upload Guide Banner -->
+            <div class="cl-video-dropzone">
+                <div class="mx-auto mb-2 d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 48px; height: 48px; background: #DBE1FF; color: #2563EB;">
+                    <i class="fas fa-film fa-lg"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">Đăng tải bài giảng ghi hình chất lượng cao</h6>
+                <p class="text-muted small mb-2">Hỗ trợ các định dạng video và âm thanh bài giảng: MP4, MKV, WMV, AVI, 3GP, F4V, MP3</p>
+                <div class="d-flex flex-wrap justify-content-center gap-1">
+                    <span class="badge bg-light text-secondary border">.MP4</span>
+                    <span class="badge bg-light text-secondary border">.MKV</span>
+                    <span class="badge bg-light text-secondary border">.WMV</span>
+                    <span class="badge bg-light text-secondary border">.AVI</span>
+                    <span class="badge bg-light text-secondary border">.MP3</span>
+                </div>
+            </div>
+
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex align-items-center justify-content-end gap-2 pt-3 mt-3 border-top">
+                    <a class="btn btn-light border px-4 py-2 text-secondary" href="{% url 'course_detail' slug=course.slug %}">
+                        <i class="fas fa-times me-1"></i> {% trans 'Hủy bỏ' %}
+                    </a>
+                    <button class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm" type="submit">
+                        <i class="fas fa-upload"></i>
+                        <span>{% trans 'Tải lên bài giảng' %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
