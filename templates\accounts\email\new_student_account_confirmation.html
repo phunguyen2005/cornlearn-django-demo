@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Xác nhận tài khoản Sinh viên CornLearn</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: 'Be Vietnam Pro', 'Helvetica Neue', Arial, sans-serif;
+        background-color: #FAF8FF;
+        color: #131B2E;
+        line-height: 1.55;
+      }
+      .container {
+        width: 600px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .card {
+        background-color: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .header {
+        background-color: #164E80;
+        color: #FFFFFF;
+        padding: 24px 32px;
+      }
+      .header h2 {
+        margin: 0 0 4px 0;
+        font-size: 24px;
+        color: #FFFFFF;
+      }
+      .header p {
+        margin: 0;
+        font-size: 13px;
+        color: #D2E4FF;
+      }
+      .card-body {
+        padding: 32px;
+      }
+      .credentials-box {
+        background-color: #F2F3FF;
+        border: 1px solid #DBE1FF;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .btn-primary {
+        display: inline-block;
+        background-color: #2563EB;
+        color: #FFFFFF !important;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .footer {
+        padding: 24px 32px;
+        text-align: center;
+        background-color: #003761;
+        color: #D2E4FF;
+        font-size: 12px;
+      }
+      .footer a {
+        color: #FFFFFF !important;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h2>CornLearn</h2>
+          <p>Hệ thống Quản lý Học tập &amp; Đào tạo Đại học</p>
+        </div>
+        <div class="card-body">
+          <h3 style="color: #164E80; margin-top: 0;">Xác nhận khởi tạo tài khoản Sinh viên</h3>
+          <p>Chào bạn <b>{{ user.get_full_name }}</b>,</p>
+          <p>
+            Tài khoản sinh viên của bạn với mã số <b>{{ user.username }}</b> đã được kích hoạt trên hệ thống quản lý học tập <b>CornLearn</b>.
+          </p>
+          <div class="credentials-box">
+            <p style="margin: 0 0 8px 0; font-weight: bold; color: #164E80;">Thông tin đăng nhập tài khoản CornLearn:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Mã số sinh viên (ID): <b>{{ user.username }}</b></li>
+              <li>Mật khẩu tạm thời: <b>{{ password }}</b></li>
+            </ul>
+          </div>
+          <p>Vui lòng đăng nhập vào hệ thống và thay đổi mật khẩu cá nhân để bảo mật hồ sơ học tập của bạn.</p>
+          <p style="margin: 24px 0;">
+            <a href="/accounts/login/" class="btn-primary">Đăng nhập hệ thống CornLearn</a>
+          </p>
+          <p style="font-size: 12px; color: #727780;">
+            Nếu bạn nhận được email này do nhầm lẫn, vui lòng bỏ qua hoặc thông báo cho bộ phận hỗ trợ sinh viên.
+          </p>
+        </div>
+        <div class="footer">
+          <p style="margin: 0 0 6px 0;">Trân trọng, Ban Quản trị Hệ thống <b>CornLearn</b></p>
+          <p style="margin: 0 0 6px 0;">Email hỗ trợ: <a href="mailto:support@cornlearn.edu.vn">support@cornlearn.edu.vn</a></p>
+          <p style="margin: 0;">&copy; 2026 CornLearn LMS Portal. Bảo lưu mọi quyền.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Xác nhận giao dịch thanh toán' %} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4" style="max-width: 680px;">
+
+    <div class="card border shadow-sm text-center" style="border-radius: 16px;">
+        <div class="card-body p-4 p-md-5">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 72px; height: 72px; background-color: #DCFCE7; color: #16A34A;">
+                <i class="fas fa-check-circle fa-3x"></i>
+            </div>
+
+            <span class="badge badge-success mb-2">{% trans 'Giao dịch hoàn tất' %}</span>
+            <h3 class="h4 fw-bold text-dark mb-2">
+                {% trans 'Payment Succeed, You has been make payment successfuly.' %}
+            </h3>
+            <p class="text-muted small mb-4 mx-auto" style="max-width: 460px;">
+                {% trans 'Khoản thanh toán học phí của bạn đã được hệ thống CornLearn ghi nhận thành công.' %}
+            </p>
+
+            <div class="p-3 rounded-3 mb-4 d-inline-flex align-items-center gap-2" style="background-color: #F2F3FF; border: 1px solid #D2E4FF;">
+                <i class="fas fa-clock text-primary"></i>
+                <span class="small text-dark">{% trans 'Redirect to your dashboard in' %}</span>
+                <span class="badge rounded-pill bg-primary text-white px-2 py-1" id="counter">8</span>
+                <span class="small text-muted">s</span>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-center gap-2 pt-3 border-top">
+                <a href="/" class="btn btn-outline-secondary px-4 py-2">
+                    <i class="fas fa-home me-1"></i> {% trans 'Về trang chủ' %}
+                </a>
+                <a href="{% url 'user_course_list' %}" class="btn btn-primary px-4 py-2 fw-semibold" data-complete-url="{% url 'complete' %}">
+                    <i class="fas fa-book-reader me-1"></i> {% trans 'Khóa học của tôi' %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+    var counterEl = document.getElementById('counter');
+    if (counterEl) {
+        var num = parseInt(counterEl.innerText);
+        setInterval(function () {
+            num = num - 1;
+            if (num < 0) { return; }
+            counterEl.innerText = num;
+        }, 1000);
+        setTimeout(function () {
+            window.location = "/";
+        }, 9000);
+    }
+</script>
+{% endblock %}

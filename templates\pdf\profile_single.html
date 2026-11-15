@@ -1,0 +1,164 @@
+{% block content %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hồ sơ Học vụ - CornLearn</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      color: #131B2E;
+      line-height: 1.4;
+      font-size: 10.5pt;
+    }
+    .header-table {
+      width: 100%;
+      border-bottom: 2px solid #164E80;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .brand-title {
+      font-size: 16pt;
+      font-weight: bold;
+      color: #164E80;
+      margin: 0;
+    }
+    .brand-sub {
+      font-size: 9pt;
+      color: #727780;
+      margin: 3px 0 0 0;
+    }
+    .section-title {
+      font-size: 11.5pt;
+      font-weight: bold;
+      color: #164E80;
+      border-bottom: 1px solid #E2E8F0;
+      padding-bottom: 4px;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    .info-table td {
+      padding: 6px 8px;
+      font-size: 10pt;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #42474F;
+      width: 34%;
+    }
+    .user-picture {
+      width: 84px;
+      height: 84px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+{% if user.is_authenticated %}
+  <table class="header-table">
+    <tr>
+      <td style="width: 78%;">
+        <p class="brand-title">HỆ THỐNG QUẢN LÝ HỌC TẬP CORNLEARN</p>
+        <p class="brand-sub">HỒ SƠ ĐỊNH DANH &amp; HỌC VỤ CÁ NHÂN</p>
+      </td>
+      <td style="width: 22%; text-align: right;">
+        {% if user.picture %}
+        <img src="{{ user.picture.path }}" class="user-picture" alt="{{ user.get_full_name }}">
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <div class="section-title">1. Thông tin cá nhân</div>
+  <table class="info-table">
+    <tr>
+      <td class="info-label">Họ và tên:</td>
+      <td>{{ user.get_full_name|title }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Mã định danh (ID):</td>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Vai trò hệ thống:</td>
+      <td>{{ user.get_user_role }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Đơn vị đào tạo:</td>
+      <td>HỆ THỐNG QUẢN LÝ HỌC TẬP CORNLEARN</td>
+    </tr>
+    {% if user.is_student %}
+    <tr>
+      <td class="info-label">Bậc đào tạo:</td>
+      <td>{% if student %}{{ student.level|default:"Cử nhân" }}{% elif level %}{{ level.level|default:"Cử nhân" }}{% else %}Cử nhân{% endif %}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Chương trình đào tạo:</td>
+      <td>{{ student.program|default:"Chính quy" }}</td>
+    </tr>
+    {% endif %}
+  </table>
+
+  <div class="section-title">2. Thông tin liên hệ</div>
+  <table class="info-table">
+    <tr>
+      <td class="info-label">Địa chỉ Email:</td>
+      <td>{{ user.email|default:"Chưa cập nhật" }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Số điện thoại:</td>
+      <td>{{ user.phone|default:"Chưa cập nhật" }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Địa chỉ cư trú:</td>
+      <td>{{ user.address|default:"Chưa cập nhật" }}</td>
+    </tr>
+  </table>
+
+  {% if user.is_lecturer %}
+  <div class="section-title">3. Học phần phụ trách giảng dạy</div>
+  {% if courses %}
+  <table class="info-table">
+    {% for course in courses %}
+    <tr>
+      <td>• {{ course }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Chưa có học phần được phân công.</p>
+  {% endif %}
+  {% endif %}
+
+  <div class="section-title">4. Nhật ký tài khoản</div>
+  <table class="info-table">
+    <tr>
+      <td class="info-label">Ngày đăng ký hồ sơ:</td>
+      <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+    </tr>
+    <tr>
+      <td class="info-label">Lần đăng nhập cuối:</td>
+      <td>{{ user.last_login|date:"d/m/Y H:i"|default:"Chưa ghi nhận" }}</td>
+    </tr>
+    {% if current_semester and current_session %}
+    <tr>
+      <td class="info-label">Niên khóa hiện hành:</td>
+      <td>{{ current_semester }} - {{ current_session }}</td>
+    </tr>
+    {% endif %}
+  </table>
+{% endif %}
+</body>
+</html>
+{% endblock content %}

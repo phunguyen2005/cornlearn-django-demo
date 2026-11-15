@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Danh sách bài thi hoàn thành" %} | CornLearn{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1280px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Danh sách bài thi hoàn thành' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h4 fw-bold text-dark mb-1">
+                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans "List of complete exams" %}
+            </h1>
+            <p class="text-muted small mb-0">
+                {% trans "Tổng hợp toàn bộ lượt làm bài kiểm tra đã hoàn tất của sinh viên." %}
+            </p>
+        </div>
+    </div>
+
+    {% for student in students %}
+    <div class="badge badge-info mb-2">{{ student.student.user.get_full_name }}</div>
+    {% endfor %}
+    {% for marking in marking_list %}
+    <div class="badge badge-info mb-2">{{ marking }} ({{ forloop.counter }})</div>
+    {% endfor %}
+
+    <!-- Filter Bar -->
+    <div class="filter-bar-card mb-4">
+        <form action="" method="GET" class="row g-3 align-items-end">
+            <div class="col-12 col-md-5">
+                <label class="form-label small fw-semibold text-secondary mb-1">{% trans "Sinh viên" %}</label>
+                <input type="text" name="user_filter" class="form-control" placeholder="{% trans 'User' %}" value="{{ request.GET.user_filter|default:'' }}">
+            </div>
+            <div class="col-12 col-md-5">
+                <label class="form-label small fw-semibold text-secondary mb-1">{% trans "Bài kiểm tra" %}</label>
+                <input type="text" name="quiz_filter" class="form-control" placeholder="{% trans 'Quiz' %}" value="{{ request.GET.quiz_filter|default:'' }}">
+            </div>
+            <div class="col-12 col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-1"></i>{% trans "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if sitting_list %}
+    <div class="card border shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-bold"><i class="fas fa-table text-primary me-2"></i>{% trans "Kết quả bài thi" %}</span>
+            <span class="badge badge-info">{% trans 'Total complete exams' %}: {{ sitting_list.count }}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans "User" %}</th>
+                        <th>{% trans "Course" %}</th>
+                        <th>{% trans "Quiz" %}</th>
+                        <th>{% trans "Completed" %}</th>
+                        <th class="text-center">{% trans "Score" %}(%)</th>
+                        <th class="text-end">{% trans "Thao tác" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sitting in sitting_list %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td class="fw-semibold text-dark">{{ sitting.user }}</td>
+                        <td>{{ sitting.quiz.course }}</td>
+                        <td>{{ sitting.quiz }}</td>
+                        <td class="text-secondary small">{{ sitting.end|date }}</td>
+                        <td class="text-center">
+                            <span class="badge {% if sitting.check_if_passed %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ sitting.get_percent_correct }}%
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'quiz_marking_detail' pk=sitting.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>{% trans "View details" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card border shadow-sm text-center py-5 px-4" style="border-radius: 14px;">
+        <p class="text-muted mb-0">{% trans "No completed exams for you" %}.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

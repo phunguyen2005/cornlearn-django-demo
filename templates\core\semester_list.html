@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}Quản lý Học kỳ | CornLearn LMS{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Quản lý Học kỳ</li>
+    </ol>
+</nav>
+
+{% if request.user.is_superuser %}
+<div class="manage-wrap d-flex justify-content-between align-items-center">
+    <span class="small text-muted d-none d-md-inline">
+        <i class="fas fa-hourglass-half me-1 text-primary"></i>Thiết lập học kỳ đào tạo và thời gian đăng ký học phần
+    </span>
+    <a class="btn btn-primary btn-sm px-3" href="{% url 'add_semester' %}">
+        <i class="fas fa-plus me-1"></i>Thêm Học kỳ mới
+    </a>
+</div>
+{% endif %}
+
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1" style="color: var(--primary-navy);">
+            <i class="fas fa-calendar-alt me-2" style="color: var(--primary-cta);"></i>Danh sách Học kỳ Đào tạo
+        </h1>
+        <p class="text-muted small mb-0">
+            Quản lý các học kỳ theo từng niên khóa, trạng thái học kỳ hiện hành và lịch bắt đầu kỳ tiếp theo.
+        </p>
+    </div>
+    {% if request.user.is_superuser %}
+    <div>
+        <a class="btn btn-primary px-3" href="{% url 'add_semester' %}">
+            <i class="fas fa-plus me-1"></i>Thêm Học kỳ
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Semesters Table Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold" style="color: var(--primary-navy);">Bảng Học kỳ Học vụ</span>
+        <span class="badge badge-info">{{ semesters|length }} học kỳ</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 64px;">#</th>
+                    <th>Học kỳ</th>
+                    <th>Trạng thái</th>
+                    <th>Niên khóa</th>
+                    <th>Học kỳ kế tiếp bắt đầu</th>
+                    {% if request.user.is_superuser %}
+                    <th class="text-end" style="width: 140px;">Thao tác</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for semester in semesters %}
+                <tr>
+                    <td class="text-muted fw-medium">{{ forloop.counter }}</td>
+                    <td>
+                        <span class="fw-bold" style="color: var(--text-main);">{{ semester.semester }}</span>
+                    </td>
+                    <td>
+                        {% if semester.is_current_semester %}
+                        <span class="badge badge-success">
+                            <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                        </span>
+                        {% else %}
+                        <span class="badge bg-light text-secondary border rounded-pill px-3 py-1">
+                            <i class="fas fa-clock me-1"></i>Đã kết thúc
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-info">{{ semester.session }}</span>
+                    </td>
+                    <td>
+                        <span class="text-muted">
+                            <i class="far fa-calendar-alt me-1"></i>{{ semester.next_semester_begins|default:"Chưa thiết lập" }}
+                        </span>
+                    </td>
+                    {% if request.user.is_superuser %}
+                    <td class="text-end">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border text-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border">
+                                <li>
+                                    <a class="dropdown-item small" href="{% url 'edit_semester' pk=semester.pk %}">
+                                        <i class="fas fa-pencil-alt me-2 text-primary"></i>Chỉnh sửa học kỳ
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <button type="button" class="dropdown-item small text-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteSemesterModal{{ semester.pk }}">
+                                        <i class="fas fa-trash-alt me-2"></i>Xóa học kỳ
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Delete Confirmation Modal for Semester {{ semester.pk }} -->
+                        <div class="modal fade text-start" id="deleteSemesterModal{{ semester.pk }}" tabindex="-1" aria-labelledby="deleteSemesterModalLabel{{ semester.pk }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header border-bottom">
+                                        <h5 class="modal-title fw-bold text-danger" id="deleteSemesterModalLabel{{ semester.pk }}">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa học kỳ
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                    </div>
+                                    <div class="modal-body py-4">
+                                        {% if semester.is_current_semester %}
+                                        <div class="alert alert-warning mb-0">
+                                            <i class="fas fa-lock me-2"></i>Học kỳ <strong>{{ semester.semester }} ({{ semester.session }})</strong> đang là học kỳ hoạt động hiện hành. Không thể xóa học kỳ đang hoạt động.
+                                        </div>
+                                        {% else %}
+                                        <p class="mb-2">Bạn có chắc chắn muốn xóa học kỳ này khỏi hệ thống?</p>
+                                        <div class="p-3 rounded-3 bg-light border">
+                                            <div class="fw-bold text-dark">Học kỳ: {{ semester.semester }}</div>
+                                            <div class="small text-muted mt-1">Niên khóa: {{ semester.session }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer border-top">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Đóng</button>
+                                        {% if not semester.is_current_semester %}
+                                        <a href="{% url 'delete_semester' pk=semester.pk %}" class="btn btn-danger btn-sm px-3">
+                                            <i class="fas fa-trash-alt me-1"></i>Xác nhận xóa
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if request.user.is_superuser %}6{% else %}5{% endif %}" class="text-center py-5">
+                        <div class="py-3">
+                            <i class="fas fa-hourglass-start fa-2x text-muted opacity-50 mb-3 d-block"></i>
+                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Chưa có học kỳ nào được thiết lập</h6>
+                            <p class="text-muted small mb-3">Hãy thêm học kỳ mới gắn với niên khóa đào tạo để bắt đầu mở đăng ký môn học.</p>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'add_semester' %}" class="btn btn-primary btn-sm px-3">
+                                <i class="fas fa-plus me-1"></i>Thêm Học kỳ ngay
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

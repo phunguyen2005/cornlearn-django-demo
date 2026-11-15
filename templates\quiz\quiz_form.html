@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %}{% trans 'Cấu hình bài kiểm tra' %} - {{ course.title }} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1180px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-secondary">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% if course.program %}
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' course.program.id %}" class="text-decoration-none text-secondary">{{ course.program }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'quiz_index' course.slug %}" class="text-decoration-none text-secondary">{% trans 'Bài kiểm tra' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Thiết lập bài kiểm tra' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <span class="badge badge-info mb-2">
+                <i class="fas fa-Sliders-h me-1"></i> {{ course.code }} — {{ course.title }}
+            </span>
+            <h1 class="h4 fw-bold text-dark mb-1">
+                <i class="fas fa-file-signature text-primary me-2"></i>{% trans 'Thiết lập bài kiểm tra cho học phần' %} {{ course|truncatechars:40 }}
+            </h1>
+            <p class="text-muted small mb-0">
+                {% trans 'Cấu hình thông tin bài kiểm tra, tỷ lệ điểm đạt và quy tắc làm bài trước khi thêm câu hỏi.' %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary btn-sm px-3 py-2">
+                <i class="fas fa-arrow-left me-1"></i> {% trans 'Quay lại danh sách' %}
+            </a>
+        </div>
+    </div>
+
+    <!-- 2-Column Stitch Quiz Configuration Form -->
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger mb-4">
+            <div class="fw-semibold mb-1"><i class="fas fa-exclamation-circle me-1"></i> {% trans 'Vui lòng kiểm tra lại thông tin biểu mẫu:' %}</div>
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Left Column: General Information -->
+            <div class="col-12 col-lg-7">
+                <div class="card border shadow-sm h-100">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <span>{% trans 'Thông tin cơ bản & Nội dung' %}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div hidden>
+                            <label for="course">{{ form.course.label }}</label><br>
+                            {{ form.course }}
+                            <span class="text-danger">{{ form.course.errors }}</span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                {{ form.category|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {{ form.pass_mark|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.title|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.description|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Assessment Options & Policies -->
+            <div class="col-12 col-lg-5">
+                <div class="card border shadow-sm h-100">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-shield-alt text-primary"></i>
+                        <span>{% trans 'Chế độ kiểm tra & Quy tắc chấm điểm' %}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div hidden>
+                            <label for="questions">{{ form.questions.label }}</label><br>
+                            {{ form.questions }}
+                            <span class="text-danger">{{ form.questions.errors }}</span>
+                        </div>
+
+                        <div class="p-3 rounded-3 mb-3" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                            {{ form.random_order|as_crispy_field }}
+                            <hr class="my-2">
+                            {{ form.answers_at_end|as_crispy_field }}
+                            <hr class="my-2">
+                            {{ form.exam_paper|as_crispy_field }}
+                            <hr class="my-2">
+                            {{ form.single_attempt|as_crispy_field }}
+                            <hr class="my-2">
+                            {{ form.draft|as_crispy_field }}
+                        </div>
+
+                        <div class="alert alert-info mb-0 small">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            {% trans 'Sau khi lưu cấu hình, hệ thống sẽ chuyển tiếp sang giao diện soạn thảo câu hỏi trắc nghiệm (MCQ).' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Footer -->
+        <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary px-4 py-2">
+                {% trans 'Hủy bỏ' %}
+            </a>
+            <button class="btn btn-primary px-4 py-2 fw-semibold" id="btn-transition" type="submit">
+                <i class="fas fa-save me-1"></i> {% trans 'Save' %} &amp; {% trans 'Continue' %}
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

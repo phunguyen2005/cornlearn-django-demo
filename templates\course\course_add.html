@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title|default:"Thiết lập Học phần" }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-course-form-shell {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+    .cl-form-panel {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 2px 10px rgba(19, 27, 46, 0.04);
+    }
+    .cl-panel-header {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+        padding: 1rem 1.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
+    .cl-panel-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: #DBE1FF;
+        color: #164E80;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+    }
+    .cl-panel-body {
+        padding: 1.5rem;
+    }
+    .cl-panel-body .form-control, .cl-panel-body select, .cl-panel-body textarea {
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        font-size: 0.875rem;
+        padding: 0.55rem 0.85rem;
+    }
+    .cl-panel-body .form-control:focus, .cl-panel-body select:focus, .cl-panel-body textarea:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .cl-panel-body label {
+        font-weight: 600;
+        font-size: 0.84rem;
+        color: #131B2E;
+        margin-bottom: 0.35rem;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-course-form-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% if program %}
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' pk=program.pk %}" class="text-decoration-none text-muted">{{ program.title }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Biểu mẫu học phần' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Heading -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-4">
+        <div>
+            <div class="text-uppercase fw-bold" style="font-size: 0.72rem; color: #2563EB; letter-spacing: 0.05em;">Quản lý Học phần &amp; Khung chương trình</div>
+            <h1 class="h4 fw-bold mb-1" style="color: #164E80;">{% trans 'Thiết lập Thông tin Học phần' %}</h1>
+            <p class="text-muted small mb-0">Khai báo mã học phần, khối lượng tín chỉ, phân loại bắt buộc/tự chọn và học kỳ giảng dạy.</p>
+        </div>
+    </div>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="row g-4">
+            <!-- Column 1: Thông tin học phần -->
+            <div class="col-12 col-lg-6">
+                <div class="cl-form-panel">
+                    <div class="cl-panel-header">
+                        <span class="cl-panel-icon"><i class="fas fa-book"></i></span>
+                        <div>
+                            <h2 class="h6 fw-bold mb-0" style="color: #164E80;">{% trans 'Thông tin học phần' %}</h2>
+                            <div class="text-muted" style="font-size: 0.75rem;">Tên học phần, mã định danh, số tín chỉ và đề cương tóm tắt</div>
+                        </div>
+                    </div>
+                    <div class="cl-panel-body">
+                        {{ form.title|as_crispy_field }}
+                        <div class="row g-3">
+                            <div class="col-sm-7">
+                                {{ form.code|as_crispy_field }}
+                            </div>
+                            <div class="col-sm-5">
+                                {{ form.credit|as_crispy_field }}
+                            </div>
+                        </div>
+                        {{ form.summary|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Phân loại chương trình -->
+            <div class="col-12 col-lg-6">
+                <div class="cl-form-panel">
+                    <div class="cl-panel-header">
+                        <span class="cl-panel-icon"><i class="fas fa-sitemap"></i></span>
+                        <div>
+                            <h2 class="h6 fw-bold mb-0" style="color: #164E80;">{% trans 'Phân loại chương trình' %}</h2>
+                            <div class="text-muted" style="font-size: 0.75rem;">Chương trình đào tạo, cấp bậc, năm học và học kỳ phân bổ</div>
+                        </div>
+                    </div>
+                    <div class="cl-panel-body">
+                        {{ form.program|as_crispy_field }}
+                        {{ form.level|as_crispy_field }}
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                {{ form.year|as_crispy_field }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form.semester|as_crispy_field }}
+                            </div>
+                        </div>
+                        <div class="mt-2 p-3 rounded-3" style="background: #F8FAFC; border: 1px solid #E2E8F0;">
+                            {{ form.is_elective|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+            {% if program %}
+            <a href="{% url 'program_detail' pk=program.pk %}" class="btn btn-light border px-4 py-2 text-secondary">
+                <i class="fas fa-times me-1"></i> {% trans 'Hủy bỏ' %}
+            </a>
+            {% else %}
+            <a href="{% url 'programs' %}" class="btn btn-light border px-4 py-2 text-secondary">
+                <i class="fas fa-times me-1"></i> {% trans 'Hủy bỏ' %}
+            </a>
+            {% endif %}
+            <button class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm" type="submit">
+                <i class="fas fa-save"></i>
+                <span>{% trans 'Lưu học phần' %}</span>
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock content %}

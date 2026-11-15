@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load class_name %}
+{% block title %}{% trans 'Kết quả tìm kiếm cho' %} "{{ query|default:request.GET.q }}" | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1180px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Tìm kiếm toàn cục' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Omnisearch Header Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-search me-1"></i> CornLearn Omnisearch
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {{ count }} {% trans 'kết quả' %}
+                    </span>
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    {{ count }} {% trans 'kết quả cho' %} "{{ request.GET.q|default:query }}"
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Tìm kiếm đồng thời trên Chương trình đào tạo, Học phần, Tin tức & Sự kiện và Đề thi / Kiểm tra.' %}
+                </p>
+            </div>
+
+            <!-- Inline Refinement Search Form -->
+            <form method="GET" action="." class="d-flex gap-2" style="min-width: 280px;">
+                <input type="text" name="q" class="form-control form-control-sm px-3 py-2" placeholder="{% trans 'Nhập từ khóa tìm kiếm...' %}" value="{{ request.GET.q|default:query }}" required style="border-radius: 8px;">
+                <button type="submit" class="btn btn-primary btn-sm px-3 py-2 fw-semibold">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Results List -->
+    <div class="d-flex flex-column gap-3">
+        {% for object in object_list %}
+            {% with object|class_name as klass %}
+            {% if klass == "Program" %}
+                <div class="card border shadow-sm class-item" style="border-radius: 12px; border-left: 4px solid #164E80 !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <span class="badge badge-info">
+                                <i class="fas fa-graduation-cap me-1"></i>Chương trình đào tạo ({% trans 'Program' %})
+                            </span>
+                            <a href="{{ object.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                {% trans 'Xem chương trình' %} <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ object.get_absolute_url }}" class="text-decoration-none text-dark">{{ object.title }}</a>
+                        </h5>
+                        <p class="text-muted small mb-0">{{ object.summary|default:"Chương trình đào tạo chính quy tại CornLearn LMS." }}</p>
+                    </div>
+                </div>
+
+            {% elif klass == "Course" %}
+                <div class="card border shadow-sm class-item" style="border-radius: 12px; border-left: 4px solid #2563EB !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-book-open me-1"></i>Học phần ({% trans 'Course' %})
+                                </span>
+                                <span class="badge rounded-pill bg-light text-secondary border small">
+                                    <b>{% trans 'Program of' %}:</b> {{ object.program }}
+                                </span>
+                            </div>
+                            <a href="{{ object.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                {% trans 'Vào học phần' %} <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ object.get_absolute_url }}" class="text-decoration-none text-dark">{{ object }}</a>
+                        </h5>
+                        <p class="text-muted small mb-0">{{ object.summary|default:"Học phần thuộc chương trình đào tạo." }}</p>
+                    </div>
+                </div>
+
+            {% elif klass == "NewsAndEvents" %}
+                <div class="card border shadow-sm class-item" style="border-radius: 12px; border-left: 4px solid #D97706 !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <span class="badge badge-warning">
+                                <i class="fas fa-bullhorn me-1"></i>Tin tức &amp; Sự kiện ({% trans 'News And Events' %})
+                            </span>
+                            <span class="small text-muted">
+                                <i class="far fa-clock me-1"></i><b>{% trans 'Date:' %}</b> {{ object.updated_date|timesince }} ago
+                            </span>
+                        </div>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ object.get_absolute_url }}" class="text-decoration-none text-dark">{{ object.title }}</a>
+                        </h5>
+                        <p class="text-muted small mb-0">{{ object.summary }}</p>
+                    </div>
+                </div>
+
+            {% elif klass == "Quiz" %}
+                <div class="card border shadow-sm class-item" style="border-radius: 12px; border-left: 4px solid #16A34A !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="badge badge-danger">
+                                    <i class="fas fa-file-signature me-1"></i>Đề thi / Kiểm tra ({% trans 'Quiz' %})
+                                </span>
+                                <span class="badge rounded-pill bg-light text-secondary border small">
+                                    {{ object.category|default:"Practice"|title }} {% trans 'quiz' %} &bull; <b>{% trans 'Course:' %}</b> {{ object.course }}
+                                </span>
+                            </div>
+                            <a href="{{ object.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                {% trans 'Xem bài kiểm tra' %} <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ object.get_absolute_url }}" class="text-decoration-none text-dark">{{ object.title }}</a>
+                        </h5>
+                        <p class="text-muted small mb-0">{{ object.description|default:"Bài kiểm tra trực tuyến thuộc học phần." }}</p>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="card border shadow-sm class-item" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <span class="badge badge-info mb-2">{{ object|class_name }}</span>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ object.get_absolute_url }}" class="text-decoration-none text-dark">{{ object }}</a>
+                        </h5>
+                        <p class="text-muted small mb-0">{{ object.description }}</p>
+                    </div>
+                </div>
+            {% endif %}
+            {% endwith %}
+
+        {% empty %}
+        <!-- Empty Search State Card -->
+        <div class="card border shadow-sm p-4 p-md-5 text-center" style="border-radius: 14px;">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #F2F3FF; color: #164E80;">
+                <i class="fas fa-search fa-2x"></i>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">
+                {% trans 'Không tìm thấy kết quả phù hợp' %}
+            </h5>
+            <p class="text-muted small mb-4 mx-auto" style="max-width: 480px;">
+                {{ count }} {% trans 'kết quả cho' %} "<strong>{{ request.GET.q }}</strong>". {% trans 'Vui lòng thử lại với từ khóa khác hoặc tra cứu theo gợi ý bên dưới.' %}
+            </p>
+
+            <div class="col-12 col-md-7 mx-auto mb-4">
+                <form method="GET" action=".">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control cfe-nav py-2 px-3" placeholder="{% trans 'Tìm kiếm khóa học, chương trình, đề thi, tin tức...' %}" value="{{ request.GET.q }}" autofocus="autofocus" required>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa fa-search me-1" aria-hidden="true"></i> {% trans 'Tìm kiếm' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="text-start mx-auto p-3 rounded-3 border" style="max-width: 560px; background-color: #F8FAFC;">
+                <h6 class="fw-bold text-dark small text-uppercase mb-2">
+                    <i class="fas fa-lightbulb text-warning me-1"></i>{% trans 'Search by:' %}
+                </h6>
+                <ul class="small text-secondary mb-0 ps-3 d-flex flex-column gap-1">
+                    <li><strong>Chương trình đào tạo ({% trans 'Program' %})</strong> &rarr; {% trans 'Title or Description' %}</li>
+                    <li><strong>Học phần ({% trans 'Course' %})</strong> &rarr; {% trans 'Title, Code or Description' %}</li>
+                    <li><strong>Tin tức &amp; Sự kiện ({% trans 'News And Events' %})</strong> &rarr; {% trans 'Title, Description or just by typing news or event' %}</li>
+                    <li><strong>Đề thi / Kiểm tra ({% trans 'Quiz' %})</strong> &rarr; {% trans 'Title, Description or Category(practice, assignment and exam)' %}</li>
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}

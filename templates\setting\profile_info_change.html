@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title|default:_('Cập nhật hồ sơ') }} | {% trans 'CornLearn' %}{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Trang chủ' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'profile' %}" class="text-decoration-none">{% trans 'Hồ sơ cá nhân' %}</a></li>
+    <li class="breadcrumb-item active fw-medium" aria-current="page">{% trans 'Cập nhật thông tin' %}</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #131B2E;"><i class="fas fa-user-edit me-2 text-primary"></i>Thiết lập thông tin hồ sơ</h4>
+    <p class="text-muted small mb-0">Cập nhật thông tin liên hệ và ảnh đại diện trên hệ thống CornLearn.</p>
+  </div>
+  <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm px-3 py-2" style="border-radius: 8px;">
+    <i class="fas fa-arrow-left me-1"></i> Quay lại hồ sơ
+  </a>
+</div>
+
+<form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row g-4 mb-4">
+    <!-- Left Column: Personal & Contact Fields -->
+    <div class="col-lg-8">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-id-card me-2 text-primary"></i>Thông tin cá nhân & Liên hệ
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.first_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.last_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.phone|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.gender|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.address|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Live Avatar Preview & Picture Upload -->
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-camera me-2 text-primary"></i>Ảnh đại diện hồ sơ
+        </div>
+        <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+          <div>
+            <div class="mb-3">
+              <img id="avatarPreview" src="{{ request.user.picture.url }}" alt="{{ request.user.get_full_name }}" class="rounded-circle shadow-sm" style="width: 112px; height: 112px; object-fit: cover; border: 4px solid #DBE1FF;">
+            </div>
+            <h6 class="fw-bold mb-0" style="color: #131B2E;">{{ request.user.get_full_name }}</h6>
+            <p class="text-muted small mb-3">{{ request.user.username }} • {{ request.user.get_user_role }}</p>
+            <div class="text-start">
+              {{ form.picture|as_crispy_field }}
+            </div>
+          </div>
+          <div class="p-3 rounded-3 text-start small mt-3" style="background-color: #F2F3FF; color: #42474F;">
+            <i class="fas fa-info-circle text-primary me-1"></i> Khuyến nghị sử dụng ảnh chân dung tỷ lệ 1:1 (JPG, PNG) dung lượng tối đa 2MB.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2">
+    <a href="{% url 'profile' %}" class="btn btn-outline-secondary px-4 py-2" style="border-radius: 8px;">Hủy</a>
+    <button class="btn btn-primary px-4 py-2 fw-semibold" type="submit">
+      <i class="fas fa-save me-1"></i> Lưu thay đổi
+    </button>
+  </div>
+</form>
+{% endblock content %}
+
+{% block js %}
+<script>
+  const picInput = document.querySelector('input[type="file"][name="picture"]');
+  const previewImg = document.getElementById('avatarPreview');
+  if (picInput && previewImg) {
+    picInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  }
+</script>
+{% endblock js %}

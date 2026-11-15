@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Quản lý Hóa đơn & Học phí' %} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1240px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Hóa đơn & Học phí' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-file-invoice-dollar me-1"></i> {% trans 'Tài chính sinh viên' %}
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {{ invoices|length }} {% trans 'Hóa đơn' %}
+                    </span>
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-receipt me-2"></i>{% trans 'Invoices' %} — {% trans 'Hóa đơn & Thanh toán Học phí' %}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Khởi tạo phiếu đóng học phí trực tuyến và theo dõi lịch sử giao dịch thanh toán của bạn.' %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Create New Invoice Card -->
+        <div class="col-12 col-lg-4">
+            <div class="card border shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="fas fa-plus-circle text-primary"></i>
+                    <span class="fw-bold">{% trans 'Tạo phiếu thanh toán mới' %}</span>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-3">
+                        {% trans 'Nhập số tiền học phí hoặc lệ phí cần thanh toán để chuyển tới cổng thanh toán trực tuyến.' %}
+                    </p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="invoice-amount" class="form-label small fw-semibold text-dark">
+                                {% trans 'Số tiền thanh toán (USD / EUR)' %} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold text-secondary">$</span>
+                                <input id="invoice-amount" type="number" step="any" min="1" name="amount" class="form-control" placeholder="500" required="true">
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-3 mb-3 small" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">{% trans 'Người nộp:' %}</span>
+                                <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">{% trans 'Phương thức hỗ trợ:' %}</span>
+                                <span class="text-primary fw-medium">Stripe, PayPal, Coinbase, GoPay</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                            <i class="fas fa-credit-card me-1"></i> {% trans 'Pay now' %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Invoices History Table -->
+        <div class="col-12 col-lg-8">
+            <div class="card border shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span class="fw-bold"><i class="fas fa-history text-primary me-2"></i>{% trans 'Lịch sử hóa đơn của bạn' %}</span>
+                    <span class="badge badge-info">{{ invoices|length }} {% trans 'bản ghi' %}</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 52px;">#</th>
+                                <th>{% trans 'Mã hóa đơn' %}</th>
+                                <th>{% trans 'Tài khoản' %}</th>
+                                <th class="text-center">{% trans 'Số tiền (Amount)' %}</th>
+                                <th class="text-center">{% trans 'Tổng cộng (Total)' %}</th>
+                                <th class="text-center">{% trans 'Trạng thái' %}</th>
+                                <th class="text-end">{% trans 'Chi tiết' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in invoices %}
+                            <tr>
+                                <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                                <td>
+                                    <code class="small text-dark fw-semibold">{{ invoice.invoice_code|default:invoice.id|truncatechars:18 }}</code>
+                                </td>
+                                <td class="fw-medium text-dark">{{ invoice.user }}</td>
+                                <td class="text-center fw-semibold text-dark">${{ invoice.amount }}</td>
+                                <td class="text-center text-secondary">${{ invoice.total }}</td>
+                                <td class="text-center">
+                                    {% if invoice.payment_complete %}
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle me-1"></i>{% trans 'Paid' %}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge badge-warning">
+                                        <i class="fas fa-clock me-1"></i>{% trans 'Unpaid' %}
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    {% url 'invoice_detail' id=invoice.id as inv_url %}
+                                    {% if inv_url %}
+                                    <a href="{{ inv_url }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>{% trans 'Xem' %}
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'payment_gateways' %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-credit-card me-1"></i>{% trans 'Thanh toán' %}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle" style="width: 56px; height: 56px; background-color: #F2F3FF; color: #164E80;">
+                                        <i class="fas fa-file-invoice fa-lg"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{% trans 'Chưa có hóa đơn nào' %}</h6>
+                                    <p class="text-muted small mb-0">{% trans 'Sử dụng biểu mẫu bên trái để khởi tạo giao dịch thanh toán đầu tiên.' %}</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

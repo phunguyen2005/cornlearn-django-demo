@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{ quiz.title }} | CornLearn{% endblock %}
+{% block description %}{{ quiz.title }} - {{ quiz.description }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 960px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-secondary">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% if course.program %}
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' course.program.id %}" class="text-decoration-none text-secondary">{{ course.program }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'quiz_index' course.slug %}" class="text-decoration-none text-secondary">{% trans 'Bài kiểm tra' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{{ quiz.title|title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Previous Question Instant Feedback (if answers_at_end is False) -->
+    {% if previous.answers %}
+    <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-semibold"><i class="fas fa-history me-1 text-primary"></i> {% trans "Kết quả câu hỏi trước" %}</span>
+            {% if previous.previous_outcome %}
+            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i> {% trans "Chính xác" %}</span>
+            {% else %}
+            <span class="badge badge-danger"><i class="fas fa-times-circle me-1"></i> {% trans "Chưa chính xác" %}</span>
+            {% endif %}
+        </div>
+        <div class="card-body p-4">
+            <p class="fw-semibold text-dark mb-2">{{ previous.previous_question }}</p>
+
+            {% if previous.previous_outcome %}
+            <div class="alert alert-success mb-3">
+            {% else %}
+            <div class="alert alert-warning mb-3">
+            {% endif %}
+                <p class="mb-0 small">
+                    {% trans "Your answer was" %}
+                    <strong>{{ previous.previous_outcome|yesno:"correct,incorrect" }}</strong>
+                </p>
+            </div>
+
+            {% include 'quiz/correct_answer.html' %}
+
+            <div class="mt-3 p-3 rounded-3" style="background-color: #FEFCE8; border: 1px solid #FEF08A;">
+                <div class="small fw-bold text-dark mb-1"><i class="fas fa-lightbulb text-warning me-1"></i> {% trans "Explanation" %}:</div>
+                <p class="mb-0 small text-secondary">
+                    {% if previous.previous_question.explanation %}
+                        {{ previous.previous_question.explanation }}
+                    {% else %}
+                        {% trans "No explanation set to this question." %}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if question %}
+
+    <!-- First-Question Instruction Modal -->
+    {% if progress.0|add:1 == 1 %}
+    <div class="modal fade" id="instractionModal" tabindex="-1" aria-labelledby="instractionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 14px;">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold text-dark" id="instractionModalLabel">
+                        <i class="fas fa-info-circle text-primary me-2"></i>{% trans 'Hướng dẫn làm bài kiểm tra' %}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-secondary">
+                    {% blocktrans %}
+                    You can't go back to the previous question after you submit it,
+                    so double check your answer before proceeding to the next one!
+                    {% endblocktrans %}
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">{% trans 'Đã hiểu, bắt đầu làm bài' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Examination Workspace Card -->
+    <div class="card border shadow-sm" style="border-radius: 14px;">
+        <!-- Exam Top Progress Bar & Metadata -->
+        <div class="card-header bg-white p-4 border-bottom">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <div>
+                    <span class="badge badge-info me-2">
+                        <i class="fas fa-tag me-1"></i>{{ quiz.category|default:"Exam"|title }}
+                    </span>
+                    <span class="fw-bold text-dark">{{ quiz.title|title }}</span>
+                </div>
+                {% if progress %}
+                <span class="badge rounded-pill px-3 py-2" style="background-color: #164E80; color: #FFFFFF; font-size: 0.8rem;">
+                    <i class="fas fa-list-ol me-1"></i>
+                    {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
+                </span>
+                {% endif %}
+            </div>
+
+            {% if progress %}
+            {% widthratio progress.0|add:1 progress.1 100 as progress_pct %}
+            <div class="progress" style="height: 8px; border-radius: 999px; background-color: #E2E8F0;">
+                <div class="progress-bar" role="progressbar" style="width: {{ progress_pct }}%; background-color: #2563EB; border-radius: 999px;" aria-valuenow="{{ progress.0|add:1 }}" aria-valuemin="0" aria-valuemax="{{ progress.1 }}"></div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Question Body & Interactive Choice Cards -->
+        <div class="card-body p-4">
+            <div class="p-3 mb-4 rounded-3" style="background-color: #F8FAFC; border-left: 4px solid #164E80;">
+                <div class="small text-uppercase fw-bold text-muted mb-1">
+                    {% trans "Nội dung câu hỏi" %} #{{ progress.0|add:1 }}
+                </div>
+                <h5 class="fw-bold text-dark mb-0" style="line-height: 1.5;">
+                    {{ question.content }}
+                </h5>
+            </div>
+
+            {% if question.figure %}
+            <div class="text-center mb-4 p-3 border rounded-3 bg-light">
+                <img class="img-fluid rounded" src="{{ question.figure.url }}" alt="{{ question.content }}" style="max-height: 360px; object-fit: contain;" />
+            </div>
+            {% endif %}
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+
+                <div class="d-flex flex-column gap-2 mb-4">
+                    {% for answer in form.answers %}
+                    <label class="quiz-option-card d-flex align-items-center gap-3 p-3 border rounded-3 bg-white" for="answer_{{ forloop.counter }}" style="cursor: pointer; transition: all 0.18s ease;">
+                        <input
+                            type="radio"
+                            name="answers"
+                            value="{{ answer.data.value }}"
+                            id="answer_{{ forloop.counter }}"
+                            class="form-check-input m-0"
+                            style="width: 1.15rem; height: 1.15rem;"
+                            required
+                        >
+                        <span class="fw-medium text-dark flex-grow-1">{{ answer.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+                    <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary px-3 py-2 small">
+                        <i class="fas fa-arrow-left me-1"></i> {% trans "Thoát bài thi" %}
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold">
+                        <span>{% trans "Xác nhận & Tiếp tục" %}</span>
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+    .quiz-option-card:hover {
+        border-color: #2563EB !important;
+        background-color: #F2F3FF !important;
+    }
+    .quiz-option-card:has(input[type="radio"]:checked) {
+        border-color: #2563EB !important;
+        background-color: #DBE1FF !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const modalEl = document.getElementById('instractionModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            const instractionModal = new bootstrap.Modal(modalEl, {
+                keyboard: false
+            });
+            instractionModal.show();
+        }
+    });
+</script>
+{% endblock js %}

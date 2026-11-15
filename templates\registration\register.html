@@ -1,0 +1,311 @@
+{% extends 'registration/registration_base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Đăng ký tài khoản - CornLearn' %}{% endblock title %}
+
+{% block auth_card_class %}auth-register-card{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="mb-4">
+  <div class="auth-section-badge">
+    <i class="fas fa-user-plus"></i>
+    <span>ĐĂNG KÝ HỒ SƠ SINH VIÊN</span>
+  </div>
+  <h2 class="fw-bold mb-1" style="font-size: 1.5rem; color: #131B2E; letter-spacing: -0.015em;">Đăng ký tài khoản CornLearn</h2>
+  <p class="text-muted small mb-0">Khởi tạo tài khoản học tập trực tuyến dành cho sinh viên chính quy.</p>
+</div>
+
+<!-- Form Errors -->
+{% if form.errors %}
+<div class="alert alert-danger py-2.5 px-3 mb-3 small" style="border-radius: 10px;" role="alert">
+  <div class="fw-semibold mb-1"><i class="fas fa-exclamation-circle me-1"></i>Vui lòng kiểm tra lại thông tin đăng ký:</div>
+  {% for field in form %}
+    {% for error in field.errors %}
+      <div>• <strong>{{ field.label }}:</strong> {{ error }}</div>
+    {% endfor %}
+  {% endfor %}
+  {% for error in form.non_field_errors %}
+    <div>• {{ error }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Registration Form -->
+<form action="{% url 'register' %}" method="POST" id="register-form" novalidate>
+  {% csrf_token %}
+
+  <!-- Section 1: Thông tin tài khoản -->
+  <div class="mb-3">
+    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: var(--primary-navy); border-bottom: 1px solid var(--border-light); letter-spacing: 0.03em;">
+      <i class="fas fa-shield-alt"></i> THÔNG TIN ĐĂNG NHẬP
+    </div>
+
+    <div class="row g-3">
+      <!-- Username -->
+      <div class="col-md-6">
+        <label for="username_id" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Mã định danh / Tên đăng nhập <span class="text-danger">*</span></span>
+        </label>
+        {{ form.username }}
+        <div id="message-wrapper" class="small mt-1" style="font-size: 0.775rem;"></div>
+        {% if form.username.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.username.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="col-md-6">
+        <label for="id_email" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Địa chỉ Email học vụ <span class="text-danger">*</span></span>
+        </label>
+        {{ form.email }}
+        {% if form.email.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.email.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Password 1 -->
+      <div class="col-md-6">
+        <label for="id_password1" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Mật khẩu <span class="text-danger">*</span></span>
+          <span id="password-strength-label" class="small text-muted fw-normal" style="font-size: 0.75rem;"></span>
+        </label>
+        <div class="input-group-custom">
+          {{ form.password1 }}
+          <button type="button" class="password-toggle-btn" onclick="toggleRegPassword('id_password1', this)" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <!-- 4-Bar Real-Time Password Strength Indicator -->
+        <div class="d-flex gap-1 mt-2" style="height: 4px;">
+          <div class="flex-fill pwd-meter-segment" id="meter-bar-1"></div>
+          <div class="flex-fill pwd-meter-segment" id="meter-bar-2"></div>
+          <div class="flex-fill pwd-meter-segment" id="meter-bar-3"></div>
+          <div class="flex-fill pwd-meter-segment" id="meter-bar-4"></div>
+        </div>
+        <div class="text-muted mt-1" style="font-size: 0.725rem;">
+          <i class="fas fa-info-circle me-1 text-primary"></i>Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường và số.
+        </div>
+        {% if form.password1.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.password1.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Password 2 -->
+      <div class="col-md-6">
+        <label for="id_password2" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Xác nhận mật khẩu <span class="text-danger">*</span></span>
+        </label>
+        <div class="input-group-custom">
+          {{ form.password2 }}
+          <button type="button" class="password-toggle-btn" onclick="toggleRegPassword('id_password2', this)" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div id="password-match-feedback" class="small mt-1" style="font-size: 0.775rem;"></div>
+        {% if form.password2.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.password2.errors.0 }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Thông tin cá nhân & học vụ -->
+  <div class="pt-2 mb-3">
+    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: var(--primary-navy); border-bottom: 1px solid var(--border-light); letter-spacing: 0.03em;">
+      <i class="fas fa-user-graduate"></i> THÔNG TIN CÁ NHÂN & HỌC VỤ
+    </div>
+
+    <div class="row g-3">
+      <!-- First Name -->
+      <div class="col-md-6">
+        <label for="id_first_name" class="form-label mb-1">Họ và tên đệm <span class="text-danger">*</span></label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-md-6">
+        <label for="id_last_name" class="form-label mb-1">Tên <span class="text-danger">*</span></label>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Gender -->
+      <div class="col-md-6">
+        <label for="id_gender" class="form-label mb-1">Giới tính <span class="text-danger">*</span></label>
+        {{ form.gender }}
+        {% if form.gender.errors %}<div class="text-danger small mt-1">{{ form.gender.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Phone -->
+      <div class="col-md-6">
+        <label for="id_phone" class="form-label mb-1">Số điện thoại <span class="text-danger">*</span></label>
+        {{ form.phone }}
+        {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Address -->
+      <div class="col-12">
+        <label for="id_address" class="form-label mb-1">Địa chỉ liên hệ <span class="text-danger">*</span></label>
+        {{ form.address }}
+        {% if form.address.errors %}<div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Level -->
+      <div class="col-md-6">
+        <label for="id_level" class="form-label mb-1">Bậc đào tạo <span class="text-danger">*</span></label>
+        {{ form.level }}
+        {% if form.level.errors %}<div class="text-danger small mt-1">{{ form.level.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Program -->
+      <div class="col-md-6">
+        <label for="id_program" class="form-label mb-1">Chương trình đào tạo <span class="text-danger">*</span></label>
+        {{ form.program }}
+        {% if form.program.errors %}<div class="text-danger small mt-1">{{ form.program.errors.0 }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms & Privacy Policy Agreement -->
+  <div class="form-check mt-3 mb-3">
+    <input class="form-check-input" type="checkbox" id="terms_agree" required checked>
+    <label class="form-check-label small text-muted" for="terms_agree" style="font-size: 0.8125rem;">
+      Tôi xác nhận thông tin khai báo là chính xác và đồng ý với
+      <a href="{% url 'terms' %}" data-bs-toggle="modal" data-bs-target="#term-of-service" class="text-decoration-none fw-medium" style="color: var(--primary-cta);">Điều khoản dịch vụ</a>
+      cùng
+      <a href="{% url 'privacy' %}" data-bs-toggle="modal" data-bs-target="#privacy-policy" class="text-decoration-none fw-medium" style="color: var(--primary-cta);">Chính sách bảo mật CornLearn</a>.
+    </label>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="btn btn-primary btn-auth-submit" id="register-btn">
+    <span>Hoàn tất đăng ký tài khoản</span>
+    <i class="fas fa-arrow-right small"></i>
+  </button>
+</form>
+
+<!-- Navigation Link -->
+<div class="text-center mt-3 pt-2 small text-muted">
+  Đã có tài khoản trên hệ thống?
+  <a href="{% url 'login' %}" class="fw-semibold text-decoration-none ms-1" style="color: var(--primary-cta);">Quay lại đăng nhập</a>
+</div>
+
+<!-- Institutional Footer Help Links -->
+<div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.75rem; border-color: var(--border-light) !important;">
+  <a href="{% url 'terms' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-file-contract"></i> Điều khoản dịch vụ
+  </a>
+  <a href="{% url 'privacy' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-shield-alt"></i> Chính sách bảo mật
+  </a>
+</div>
+
+<!-- Legal Modals -->
+{% include 'snippets/term_modal.html' %}
+{% include 'snippets/privacy_modal.html' %}
+{% endblock content %}
+
+{% block js %}
+<script>
+  function toggleRegPassword(id, btn) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  }
+
+  // Real-time AJAX username check (#message-wrapper)
+  let regDebounce;
+  $('#username_id').on('input', function() {
+    clearTimeout(regDebounce);
+    const username = $(this).val().trim();
+    const wrapper = $('#message-wrapper');
+    if (!username) {
+      wrapper.empty();
+      return;
+    }
+    regDebounce = setTimeout(function() {
+      $.ajax({
+        url: "{% url 'validate_username' %}",
+        data: { username: username },
+        dataType: 'json',
+        success: function(data) {
+          if (data.is_taken) {
+            wrapper.html('<p class="my-1 text-danger small"><i class="fas fa-times-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> đã được sử dụng. Vui lòng chọn tên khác.</p>');
+          } else {
+            wrapper.html('<p class="my-1 text-success small"><i class="fas fa-check-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> hợp lệ và có thể sử dụng.</p>');
+          }
+        }
+      });
+    }, 300);
+  });
+
+  // 4-Bar Real-Time Password Strength Indicator
+  const pwdInput = document.getElementById('id_password1');
+  const strengthLabel = document.getElementById('password-strength-label');
+  const bars = [
+    document.getElementById('meter-bar-1'),
+    document.getElementById('meter-bar-2'),
+    document.getElementById('meter-bar-3'),
+    document.getElementById('meter-bar-4')
+  ];
+
+  if (pwdInput) {
+    pwdInput.addEventListener('input', function() {
+      const val = this.value;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[a-z]/.test(val) && /[A-Z]/.test(val)) score++;
+      if (/\d/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      const colors = ['#E2E8F0', '#DC2626', '#D97706', '#2563EB', '#16A34A'];
+      const labels = ['', 'Yếu', 'Trung bình', 'Khá', 'Mạnh'];
+
+      bars.forEach((bar, idx) => {
+        if (bar) {
+          bar.style.backgroundColor = (idx < score) ? colors[score] : '#E2E8F0';
+        }
+      });
+      if (strengthLabel) {
+        strengthLabel.textContent = val.length ? 'Độ mạnh: ' + labels[score] : '';
+        strengthLabel.style.color = colors[score];
+      }
+    });
+  }
+
+  // Password confirmation match feedback
+  const pwd2Input = document.getElementById('id_password2');
+  const matchFeedback = document.getElementById('password-match-feedback');
+  if (pwd2Input && pwdInput && matchFeedback) {
+    pwd2Input.addEventListener('input', function() {
+      if (!this.value) {
+        matchFeedback.innerHTML = '';
+        return;
+      }
+      if (this.value === pwdInput.value) {
+        matchFeedback.innerHTML = '<span class="text-success"><i class="fas fa-check-circle me-1"></i>Mật khẩu xác nhận trùng khớp.</span>';
+      } else {
+        matchFeedback.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle me-1"></i>Mật khẩu xác nhận chưa trùng khớp.</span>';
+      }
+    });
+  }
+
+  // Submit loading spinner (safe with HTML5 validation)
+  const regForm = document.getElementById('register-form');
+  if (regForm) {
+    regForm.addEventListener('submit', function() {
+      if (this.checkValidity && !this.checkValidity()) return;
+      const btn = document.getElementById('register-btn');
+      if (btn) {
+        btn.classList.add('disabled');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang khởi tạo hồ sơ...';
+      }
+    });
+  }
+</script>
+{% endblock js %}

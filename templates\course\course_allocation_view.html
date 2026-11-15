@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Phân công Giảng dạy | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-alloc-shell {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+    .cl-header-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+    }
+    .cl-course-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: #F2F3FF;
+        border: 1px solid #D2E4FF;
+        color: #164E80;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.32rem 0.75rem;
+        border-radius: 9999px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .cl-course-pill:hover {
+        background: #2563EB;
+        border-color: #2563EB;
+        color: #FFFFFF;
+    }
+    .cl-action-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+        color: #42474F;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .cl-action-btn:hover {
+        background: #F2F3FF;
+        color: #164E80;
+    }
+    .cl-action-btn.danger:hover {
+        background: #FEE2E2;
+        color: #DC2626;
+        border-color: #FECACA;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-alloc-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Phân công giảng dạy' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header Card -->
+    <div class="cl-header-card d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-3" style="width: 46px; height: 46px; background: #DBE1FF; color: #164E80; font-size: 1.2rem;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+                <div class="text-uppercase fw-bold" style="font-size: 0.72rem; color: #2563EB; letter-spacing: 0.05em;">Quản trị Đào tạo &amp; Nhân sự</div>
+                <h1 class="h4 fw-bold mb-1" style="color: #164E80;">{% trans 'Danh sách Phân công Giảng dạy' %}</h1>
+                <p class="text-muted small mb-0">Theo dõi và điều phối danh mục học phần được giao cho từng giảng viên trong học kỳ.</p>
+            </div>
+        </div>
+
+        {% if request.user.is_superuser %}
+        <div>
+            <a class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm" href="{% url 'course_allocation' %}">
+                <i class="fas fa-plus"></i>
+                <span>{% trans 'Phân công học phần mới' %}</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Filter Form Snippet -->
+    {% include 'snippets/filter_form.html' %}
+
+    <!-- Course Allocation Table Card -->
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span><i class="fas fa-chalkboard-teacher me-2 text-primary"></i>Bảng phân công giảng viên phụ trách</span>
+            <span class="badge bg-primary">{{ filter.qs.count }} giảng viên</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 64px;">STT</th>
+                        <th style="width: 280px;">{% trans 'Giảng viên' %}</th>
+                        <th>{% trans 'Danh sách học phần phụ trách' %}</th>
+                        {% if request.user.is_superuser %}
+                        <th class="text-end" style="width: 140px;">{% trans 'Thao tác' %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for allocated_course in filter.qs %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ forloop.counter }}.</td>
+                        <td>
+                            <a href="{{ allocated_course.lecturer.get_absolute_url }}" class="d-inline-flex align-items-center gap-2 fw-bold text-decoration-none" style="color: #164E80;">
+                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: #DBE1FF; color: #164E80; font-size: 0.8rem;">
+                                    <i class="fas fa-user-tie"></i>
+                                </span>
+                                <span>{{ allocated_course.lecturer.get_full_name }}</span>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for course in allocated_course.courses.all %}
+                                <a class="cl-course-pill" href="{% url 'course_detail' slug=course.slug %}">
+                                    <i class="fas fa-book-open small"></i>
+                                    <span>{{ course }}</span>
+                                </a>
+                                {% empty %}
+                                <span class="text-muted small">Chưa gán học phần</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        {% if request.user.is_superuser %}
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                <a href="{% url 'edit_allocated_course' pk=allocated_course.id %}" class="cl-action-btn" title="{% trans 'Cập nhật phân công' %}">
+                                    <i class="fas fa-edit small"></i>
+                                </a>
+                                <a href="{% url 'course_deallocate' pk=allocated_course.id %}" class="cl-action-btn danger" title="{% trans 'Hủy phân công' %}">
+                                    <i class="fas fa-trash-alt small"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5">
+                            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 56px; height: 56px; background: #F2F3FF; color: #164E80; font-size: 1.35rem;">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có dữ liệu phân công giảng dạy' %}</h5>
+                            <p class="text-muted small mb-3">Hệ thống chưa có giảng viên nào được phân công học phần.</p>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'course_allocation' %}" class="btn btn-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                <span>{% trans 'Phân công ngay' %}</span>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

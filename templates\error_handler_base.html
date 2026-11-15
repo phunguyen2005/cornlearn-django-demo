@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block sidebar %}{% endblock %}
+
+{% block maincontent %}
+<div class="error-fullscreen-wrapper">
+  <div class="error-card">
+    <div class="mb-4">
+      <a href="{% url 'home' %}" class="d-inline-block text-decoration-none">
+        <img src="{% static 'img/brand.svg' %}" alt="CornLearn" style="max-height: 48px; width: auto;">
+      </a>
+    </div>
+    {% block content %}
+    {% endblock content %}
+  </div>
+</div>
+{% endblock maincontent %}

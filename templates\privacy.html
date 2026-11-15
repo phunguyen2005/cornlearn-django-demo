@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}Chính sách Bảo mật - CornLearn LMS{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Chính sách Bảo mật</li>
+    </ol>
+</nav>
+
+<!-- Standalone Institutional Privacy Policy Card -->
+<div class="row justify-content-center mb-5">
+    <div class="col-12 col-lg-10 col-xl-9">
+        <div class="card overflow-hidden">
+            <!-- Institutional Navy Header Banner -->
+            <div class="p-4 p-md-5 text-white" style="background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.18); color: #FFFFFF; font-weight: 600; padding: 0.4rem 0.85rem;">
+                        <i class="fas fa-user-shield me-1"></i>An toàn &amp; Bảo vệ Dữ liệu Học vụ
+                    </span>
+                    <span class="small" style="color: #D2E4FF;">
+                        <i class="fas fa-lock me-1"></i>Phiên bản 2.1 &bull; Năm học 2026 &ndash; 2027
+                    </span>
+                </div>
+                <h1 class="h3 fw-bold text-white mb-2">
+                    Chính sách Bảo mật Thông tin Học vụ CornLearn
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    Cam kết bảo vệ thông tin định danh cá nhân, hồ sơ học tập, bảng điểm và dữ liệu hoạt động của giảng viên, sinh viên trên hệ thống CornLearn LMS.
+                </p>
+            </div>
+
+            <!-- Privacy Policy Body -->
+            <div class="card-body p-4 p-md-5" style="line-height: 1.75; color: var(--text-main);">
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        1. Phạm vi Dữ liệu Thu thập và Quản lý
+                    </h2>
+                    <p class="text-muted mb-2">
+                        Để vận hành quy trình đào tạo tín chỉ và quản lý học vụ chính xác, hệ thống <strong>CornLearn LMS</strong> chỉ thu thập và lưu trữ các nhóm thông tin thiết yếu sau:
+                    </p>
+                    <ul class="text-muted mb-0 ps-3">
+                        <li class="mb-1"><strong>Thông tin định danh cá nhân:</strong> Họ và tên, mã số sinh viên / giảng viên, giới tính, ảnh thẻ hồ sơ, địa chỉ liên hệ, số điện thoại và thư điện tử học vụ.</li>
+                        <li class="mb-1"><strong>Hồ sơ đào tạo &amp; Học thuật:</strong> Chương trình đào tạo, bậc học, danh sách học phần đăng ký theo từng học kỳ, điểm đánh giá quá trình, điểm thi kết thúc học phần, GPA và CGPA tích lũy.</li>
+                        <li><strong>Nhật ký kỹ thuật:</strong> Thời gian đăng nhập, lịch sử làm bài kiểm tra trực tuyến và nhật ký thao tác quản trị phục vụ công tác kiểm toán an toàn thông tin.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        2. Mục đích Sử dụng Thông tin Học vụ
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Toàn bộ dữ liệu thu thập trên CornLearn LMS được sử dụng duy nhất cho mục đích quản lý giáo dục của Nhà trường: xác thực quyền truy cập theo vai trò (Sinh viên, Giảng viên, Quản trị viên), tổ chức lớp học phần, tính điểm học tập tự động, cấp phát phiếu điểm điện tử (PDF) và gửi thông báo học vụ chính thức.
+                    </p>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        3. Cơ chế Lưu trữ và Bảo mật Kỹ thuật
+                    </h2>
+                    <ul class="text-muted mb-0 ps-3">
+                        <li class="mb-1">Mật khẩu người dùng được băm mật mã một chiều (Cryptographic Hashing) trước khi lưu vào cơ sở dữ liệu; không một quản trị viên nào có thể xem mật khẩu gốc của người dùng.</li>
+                        <li class="mb-1">Hệ thống áp dụng kiểm soát phân quyền nghiêm ngặt theo vai trò (Role-Based Access Control): sinh viên chỉ được phép tra cứu bảng điểm và tiến độ kiểm tra của chính mình.</li>
+                        <li>Mọi biểu mẫu cập nhật dữ liệu và đăng nhập đều được bảo vệ chống tấn công giả mạo yêu cầu liên trang (CSRF Protection).</li>
+                    </ul>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        4. Nguyên tắc Chia sẻ và Cung cấp Thông tin
+                    </h2>
+                    <p class="text-muted mb-0">
+                        CornLearn LMS cam kết <strong>tuyệt đối không</strong> bán, trao đổi hoặc chia sẻ dữ liệu cá nhân của người học và giảng viên cho bất kỳ tổ chức thương mại bên thứ ba nào. Thông tin học tập chỉ được truy xuất nội bộ bởi Phòng Đào tạo, Ban Chủ nhiệm Khoa, giảng viên phụ trách học phần hoặc cung cấp theo yêu cầu hợp pháp của cơ quan quản lý giáo dục có thẩm quyền.
+                    </p>
+                </section>
+
+                <section class="mb-0">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        5. Quyền Tra cứu và Hiệu đính Dữ liệu của Người dùng
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Giảng viên và sinh viên có toàn quyền kiểm tra thông tin hồ sơ cá nhân, cập nhật ảnh đại diện, số điện thoại, địa chỉ liên hệ và đổi mật khẩu bảo mật tại mục <em>Cài đặt tài khoản</em>. Đối với các thông tin học vụ cố định (họ tên, chương trình đào tạo, kết quả điểm chính thức), người học có thể gửi yêu cầu xác minh và hiệu đính trực tiếp tại Văn phòng Phòng Đào tạo.
+                    </p>
+                </section>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="card-footer bg-light border-top px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="small text-muted">
+                    <i class="fas fa-shield-alt me-1 text-primary"></i>Trung tâm An toàn Thông tin &amp; Quản trị Học vụ CornLearn
+                </span>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#privacy-policy">
+                        <i class="fas fa-expand-alt me-1"></i>Xem dạng Hộp thoại
+                    </button>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm px-3">
+                        <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-sm px-3">
+                        <i class="fas fa-home me-1"></i>Về Trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'snippets/privacy_modal.html' %}
+{% endblock content %}

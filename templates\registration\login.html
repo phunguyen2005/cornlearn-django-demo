@@ -1,0 +1,142 @@
+{% extends 'registration/registration_base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Đăng nhập hệ thống CornLearn' %}{% endblock title %}
+
+{% block content %}
+<!-- Header -->
+<div class="mb-4">
+  <div class="auth-section-badge">
+    <i class="fas fa-user-check"></i>
+    <span>CỔNG XÁC THỰC HỌC VỤ</span>
+  </div>
+  <h2 class="fw-bold mb-1" style="font-size: 1.5rem; color: #131B2E; letter-spacing: -0.015em;">Đăng nhập hệ thống CornLearn</h2>
+  <p class="text-muted small mb-0">Chào mừng trở lại! Vui lòng nhập thông tin định danh để tiếp tục học tập.</p>
+</div>
+
+<!-- Form Error Banner -->
+{% if form.errors %}
+<div class="alert alert-danger d-flex align-items-start gap-2 py-2.5 px-3 mb-3 small" style="border-radius: 10px;" role="alert">
+  <i class="fas fa-exclamation-circle text-danger flex-shrink-0 mt-0.5"></i>
+  <div>
+    {% if form.non_field_errors %}
+      {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    {% else %}
+      <div>Mã định danh (ID) hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại.</div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Login Form -->
+<form action="" method="POST" id="login-form" autocomplete="on">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+
+  <!-- Username / Student ID -->
+  <div class="mb-3">
+    <label for="username_id" class="form-label d-flex justify-content-between align-items-center mb-1">
+      <span>Mã định danh (ID) <span class="text-danger">*</span></span>
+      <span class="text-muted small fw-normal">MSSV / Mã GV</span>
+    </label>
+    <div class="input-group-custom">
+      <span class="input-icon-start">
+        <i class="fas fa-id-card"></i>
+      </span>
+      <input type="text" name="username" id="username_id" class="form-control has-icon-start" placeholder="Nhập mã sinh viên, giảng viên hoặc tên đăng nhập" required autofocus value="{{ form.username.value|default:'' }}">
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <label for="password_id" class="form-label d-flex justify-content-between align-items-center mb-1">
+      <span>Mật khẩu <span class="text-danger">*</span></span>
+      <span class="text-muted small fw-normal">Bảo mật</span>
+    </label>
+    <div class="input-group-custom">
+      <span class="input-icon-start">
+        <i class="fas fa-lock"></i>
+      </span>
+      <input type="password" name="password" id="password_id" class="form-control has-icon-start has-password-toggle" placeholder="Nhập mật khẩu tài khoản" required autocomplete="current-password">
+      <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
+        <i class="fas fa-eye" id="toggle-password-icon"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Remember & Forgot Password -->
+  <div class="d-flex justify-content-between align-items-center mb-3 pt-1">
+    <div class="form-check mb-0">
+      <input class="form-check-input" type="checkbox" name="remember" id="remember" checked>
+      <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+    </div>
+    <a href="{% url 'password_reset' %}" class="small text-decoration-none fw-medium" style="color: var(--primary-cta);">Quên mật khẩu?</a>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="btn btn-primary btn-auth-submit" id="login-btn">
+    <span>Đăng nhập</span>
+    <i class="fas fa-sign-in-alt small"></i>
+  </button>
+</form>
+
+<!-- Single Sign-On / University Network Notice -->
+<div class="mt-4 p-2.5 rounded d-flex align-items-center gap-2.5" style="background-color: var(--surface-low); border-radius: 8px;">
+  <i class="fas fa-university flex-shrink-0" style="color: var(--primary-navy); font-size: 1rem;"></i>
+  <span class="text-muted" style="font-size: 0.775rem; line-height: 1.45;">Hệ thống xác thực tập trung dành cho Sinh viên, Giảng viên và Cán bộ Quản lý CornLearn.</span>
+</div>
+
+<!-- Registration Prompt -->
+<div class="text-center mt-3 pt-2 small text-muted">
+  Chưa có tài khoản sinh viên?
+  <a href="{% url 'register' %}" class="fw-semibold text-decoration-none ms-1" style="color: var(--primary-cta);">Đăng ký tài khoản</a>
+</div>
+
+<!-- Institutional Footer Help Links -->
+<div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.75rem; border-color: var(--border-light) !important;">
+  <a href="{% url 'terms' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-file-contract"></i> Điều khoản dịch vụ
+  </a>
+  <a href="{% url 'privacy' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-shield-alt"></i> Chính sách bảo mật
+  </a>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  // Toggle password visibility
+  const toggleBtn = document.getElementById('toggle-password');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function() {
+      const pwdInput = document.getElementById('password_id');
+      const icon = document.getElementById('toggle-password-icon');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        pwdInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  }
+
+  // Submit loading state (safe with HTML5 validation)
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function() {
+      if (this.checkValidity && !this.checkValidity()) return;
+      const btn = document.getElementById('login-btn');
+      if (btn) {
+        btn.classList.add('disabled');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang đăng nhập...';
+      }
+    });
+  }
+</script>
+{% endblock js %}

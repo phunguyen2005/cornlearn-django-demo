@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %}{% trans "Chi tiết bài làm" %} {{ sitting.quiz.title }} - {{ sitting.user }} | CornLearn{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1240px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'quiz_marking' %}" class="text-decoration-none text-secondary">{% trans 'Chấm bài kiểm tra' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Chi tiết bài làm' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Student & Sitting Metadata Summary Card -->
+    <div class="card border shadow-sm mb-4" style="border-radius: 14px;">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                <div class="col-12 col-lg-8">
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                        <span class="badge badge-info">
+                            <i class="fas fa-tag me-1"></i>{% trans "Category" %}: {{ sitting.quiz.category|default:"Exam"|title }}
+                        </span>
+                        {% if sitting.check_if_passed %}
+                        <span class="badge badge-success">
+                            <i class="fas fa-check-circle me-1"></i>{% trans "Đạt yêu cầu" %}
+                        </span>
+                        {% else %}
+                        <span class="badge badge-danger">
+                            <i class="fas fa-times-circle me-1"></i>{% trans "Chưa đạt" %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <h1 class="h4 fw-bold text-dark mb-1">
+                        {% trans "Quiz title" %}: {{ sitting.quiz.title }}
+                    </h1>
+                    {% if sitting.quiz.description %}
+                    <p class="text-muted small mb-0">{{ sitting.quiz.description }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-lg-4 text-lg-end">
+                    <a href="{% url 'quiz_marking' %}" class="btn btn-outline-secondary btn-sm px-3 py-2">
+                        <i class="fas fa-arrow-left me-1"></i> {% trans "Quay lại danh sách chấm bài" %}
+                    </a>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="row g-3">
+                <div class="col-12 col-sm-4">
+                    <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
+                        <div class="small text-muted">{% trans "Sinh viên thực hiện" %} ({% trans "User" %})</div>
+                        <div class="fw-bold text-dark mt-1">
+                            <i class="fas fa-user-graduate text-primary me-1"></i>{{ sitting.user.get_full_name|default:sitting.user }} ({{ sitting.user }})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
+                        <div class="small text-muted">{% trans "Thời gian nộp bài" %} ({% trans "Completed" %})</div>
+                        <div class="fw-bold text-dark mt-1">
+                            <i class="far fa-clock text-primary me-1"></i>{{ sitting.end|date:"d/m/Y H:i"|default:sitting.end|date }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
+                        <div class="small text-muted">{% trans "Điểm tổng kết" %} ({% trans "Score" %})</div>
+                        <div class="fw-bold fs-5 mt-1 {% if sitting.check_if_passed %}text-success{% else %}text-danger{% endif %}">
+                            <i class="fas fa-poll me-1"></i>{{ sitting.get_percent_correct }}%
+                            <span class="small fw-normal text-muted">({{ sitting.get_current_score }}/{{ sitting.get_max_score }})</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question-by-Question Grading & Override Table -->
+    <div class="card border shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-bold"><i class="fas fa-tasks text-primary me-2"></i>{% trans "Chi tiết từng câu hỏi & Điều chỉnh chấm điểm" %}</span>
+            <span class="badge badge-info">{{ questions|length }} {% trans "câu hỏi" %}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 56px;">#</th>
+                        <th>{% trans "Question" %}</th>
+                        <th>{% trans "User answer" %}</th>
+                        <th class="text-center" style="width: 150px;">{% trans "Trạng thái" %}</th>
+                        <th class="text-end" style="width: 220px;">{% trans "Chấm lại / Đảo trạng thái" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ question.content }}</div>
+                            {% if question.figure %}
+                            <div class="mt-2" style="max-width: 140px;">
+                                <img src="{{ question.figure.url }}" alt="{{ question.figure }}" class="img-fluid rounded border" />
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if question.user_answer %}
+                            <span class="fw-medium text-dark">
+                                {{ question|answer_choice_to_string:question.user_answer }}
+                            </span>
+                            {% else %}
+                            <span class="text-muted fst-italic">{{ question }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if question.id in sitting.get_incorrect_questions %}
+                            <span class="badge badge-danger">
+                                <i class="fas fa-times-circle me-1"></i>{% trans "incorrect" %}
+                            </span>
+                            {% else %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle me-1"></i>{% trans "Correct" %}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <form action="" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="qid" value="{{ question.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-exchange-alt me-1"></i>{% trans "Toggle whether correct" %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            {% trans "Không có câu hỏi nào trong bài làm này." %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

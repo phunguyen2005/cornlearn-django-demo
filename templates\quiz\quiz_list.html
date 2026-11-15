@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Danh sách bài kiểm tra' %} - {{ course.title }} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1280px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item">
+                <a href="/" class="text-decoration-none text-secondary">
+                    <i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}
+                </a>
+            </li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'user_course_list' %}" class="text-decoration-none text-secondary">{% trans 'Khóa học của tôi' %}</a>
+            </li>
+            {% else %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'programs' %}" class="text-decoration-none text-secondary">{% trans 'Chương trình đào tạo' %}</a>
+            </li>
+            {% endif %}
+            {% if course.program %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'program_detail' pk=course.program.id %}" class="text-decoration-none text-secondary">{{ course.program }}</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a>
+            </li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Bài kiểm tra & Đề thi' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.18); color: #FFFFFF; font-weight: 600;">
+                        <i class="fas fa-book-open me-1"></i> {{ course.code }}
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {{ quizzes|length }} {% trans 'Bài kiểm tra' %}
+                    </span>
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-clipboard-list me-2"></i>{% trans 'Bài kiểm tra & Đánh giá' %} — {{ course.title }}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Danh mục các bài kiểm tra trắc nghiệm, bài tập đánh giá và đề thi trực tuyến của học phần.' %}
+                </p>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{{ course.get_absolute_url }}" class="btn btn-light btn-sm px-3 py-2 fw-semibold" style="color: #164E80;">
+                    <i class="fas fa-arrow-left me-1"></i> {% trans 'Quay lại học phần' %}
+                </a>
+                {% if request.user.is_superuser or request.user.is_lecturer %}
+                <a class="btn btn-primary btn-sm px-3 py-2 fw-semibold shadow-sm" href="{% url 'quiz_create' course.slug %}">
+                    <i class="fas fa-plus-circle me-1"></i> {% trans 'Tạo bài kiểm tra mới' %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quizzes Grid -->
+    <div class="row g-4">
+        {% for quiz in quizzes %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 d-flex flex-column justify-content-between border shadow-sm" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                    <!-- Top Metadata Badges -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <div class="d-flex flex-wrap align-items-center gap-1">
+                            {% if quiz.category == 'exam' %}
+                            <span class="badge badge-danger">
+                                <i class="fas fa-file-signature me-1"></i>{% trans 'Đề thi (Exam)' %}
+                            </span>
+                            {% elif quiz.category == 'assignment' %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-tasks me-1"></i>{% trans 'Bài tập (Assignment)' %}
+                            </span>
+                            {% else %}
+                            <span class="badge badge-info">
+                                <i class="fas fa-laptop-code me-1"></i>{{ quiz.category|default:"Practice"|title }} {% trans 'Quiz' %}
+                            </span>
+                            {% endif %}
+
+                            {% if quiz.exam_paper %}
+                            <span class="badge badge-success" title="{% trans 'Lưu kết quả vào hồ sơ điểm' %}">
+                                <i class="fas fa-save me-1"></i>{% trans 'Lưu điểm' %}
+                            </span>
+                            {% endif %}
+
+                            {% if quiz.draft %}
+                            <span class="badge bg-secondary text-white rounded-pill px-2 py-1" style="font-size: 0.72rem;">
+                                <i class="fas fa-eye-slash me-1"></i>{% trans 'Bản nháp' %}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <span class="badge rounded-pill" style="background-color: #F2F3FF; color: #164E80; border: 1px solid #D2E4FF; font-weight: 600;">
+                            <i class="fas fa-list-ol me-1"></i>{{ quiz.get_questions.count }} {% trans 'câu hỏi' %}
+                        </span>
+                    </div>
+
+                    <!-- Quiz Title & Description -->
+                    <h5 class="fw-bold text-dark mb-2" style="line-height: 1.35;">
+                        {{ quiz.title|title }}
+                    </h5>
+
+                    {% if quiz.description %}
+                    <p class="text-muted small mb-3" style="line-height: 1.5;">
+                        {{ quiz.description|truncatechars:140 }}
+                    </p>
+                    {% else %}
+                    <p class="text-muted small fst-italic mb-3">
+                        {% trans 'Chưa có mô tả chi tiết cho bài kiểm tra này.' %}
+                    </p>
+                    {% endif %}
+
+                    <!-- Quiz Rules & Pass Mark -->
+                    <div class="d-flex flex-wrap align-items-center gap-3 py-2 px-3 rounded-3 mb-3" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                        <div class="small">
+                            <span class="text-muted">{% trans 'Điểm đạt:' %}</span>
+                            <strong class="text-dark ms-1">{{ quiz.pass_mark }}%</strong>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="small">
+                            <span class="text-muted">{% trans 'Thứ tự:' %}</span>
+                            <strong class="text-dark ms-1">
+                                {% if quiz.random_order %}{% trans 'Ngẫu nhiên' %}{% else %}{% trans 'Cố định' %}{% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    {% if quiz.single_attempt %}
+                    <div class="alert alert-warning py-2 px-3 mb-0 d-flex align-items-center gap-2 small">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <span>{% trans "Lưu ý: Bạn chỉ được phép làm bài kiểm tra này 1 lần duy nhất." %}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Card Footer Actions -->
+                <div class="card-footer bg-white border-top p-3 d-flex align-items-center justify-content-between gap-2">
+                    <a class="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}">
+                        <i class="fas fa-play-circle"></i>
+                        <span>{% trans "Làm bài ngay" %}</span>
+                    </a>
+
+                    {% if request.user.is_superuser or request.user.is_lecturer %}
+                    <div class="d-flex align-items-center gap-1">
+                        <a href="{% url 'mc_create' slug=course.slug quiz_id=quiz.id %}" class="btn btn-outline-primary btn-sm px-2 py-2" title="{% trans 'Thêm câu hỏi trắc nghiệm' %}">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <a href="{% url 'quiz_update' slug=course.slug pk=quiz.id %}" class="btn btn-outline-secondary btn-sm px-2 py-2" title="{% trans 'Chỉnh sửa bài kiểm tra' %}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'quiz_delete' slug=course.slug pk=quiz.id %}" class="btn btn-outline-danger btn-sm px-2 py-2" title="{% trans 'Xóa bài kiểm tra' %}" onclick="return confirm('{% trans 'Bạn có chắc chắn muốn xóa bài kiểm tra này không?' %}');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border shadow-sm text-center py-5 px-4" style="border-radius: 14px;">
+                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #F2F3FF; color: #164E80;">
+                    <i class="fas fa-clipboard-check fa-2x"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có bài kiểm tra nào' %}</h5>
+                <p class="text-muted small mb-3 mx-auto" style="max-width: 440px;">
+                    {% trans 'Học phần này hiện chưa có bài kiểm tra hoặc đề thi trực tuyến nào được công bố.' %}
+                </p>
+                {% if request.user.is_superuser or request.user.is_lecturer %}
+                <div>
+                    <a class="btn btn-primary px-4 py-2 fw-semibold" href="{% url 'quiz_create' course.slug %}">
+                        <i class="fas fa-plus me-1"></i> {% trans 'Tạo bài kiểm tra đầu tiên' %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
