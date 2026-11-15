@@ -1,17 +1,20 @@
 {% extends 'error_handler_base.html' %}
 {% load i18n %}
 
-{% block title %}404 - Không tìm thấy trang | CornLearn{% endblock title %}
+{% block title %}404 - Không tìm thấy trang | CornLearn LMS{% endblock title %}
 
 {% block content %}
-<div class="error-status-code" style="color: #2563EB;">404</div>
+<div class="error-status-code" style="color: var(--primary-cta);">404</div>
 <h2 class="fw-bold text-dark mb-2">{% trans 'Không tìm thấy trang' %}</h2>
-<p class="text-muted mb-4">
-    {% trans 'Trang bạn đang tìm kiếm không tồn tại, đã bị xóa hoặc đường dẫn đã thay đổi.' %}
+<p class="text-muted mb-4 small" style="line-height: 1.6;">
+    {% trans 'Trang bạn đang tìm kiếm không tồn tại, đã bị gỡ bỏ hoặc liên kết đã thay đổi. Vui lòng kiểm tra lại đường dẫn.' %}
 </p>
-<div class="d-flex justify-content-center gap-3">
-    <a href="{% url 'home' %}" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2">
-        <i class="fas fa-home"></i> <span>{% trans 'Quay về trang chủ CornLearn' %}</span>
+<div class="d-flex flex-wrap justify-content-center gap-2">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary px-3 py-2 d-inline-flex align-items-center gap-2">
+        <i class="fas fa-arrow-left"></i> <span>{% trans 'Quay lại trang trước' %}</span>
+    </a>
+    <a href="{% url 'home' %}" class="btn btn-primary px-3 py-2 d-inline-flex align-items-center gap-2">
+        <i class="fas fa-home"></i> <span>{% trans 'Về trang chủ CornLearn' %}</span>
     </a>
 </div>
 {% endblock content %}

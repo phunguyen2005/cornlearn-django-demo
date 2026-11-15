@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.http import HttpResponse
-from django.template.loader import render_to_string
+from django.shortcuts import render
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,49 +13,11 @@ admin.site.index_title = "Quản trị hệ thống CornLearn"
 
 
 def terms_view(request):
-    modal_html = render_to_string("term.html", request=request)
-    shell_html = render_to_string(
-        "registration/registration_base.html",
-        {"title": "Điều khoản dịch vụ - CornLearn"},
-        request=request,
-    )
-    card_html = (
-        '<div class="mb-3">'
-        '<h2 class="fw-bold mb-2" style="font-size: 1.5rem; color: #131B2E;">Điều khoản dịch vụ CornLearn</h2>'
-        '<p class="text-muted small mb-3">Quy định sử dụng Hệ thống Quản lý Học tập và Đào tạo CornLearn.</p>'
-        "</div>"
-        + modal_html
-    )
-    return HttpResponse(
-        shell_html.replace(
-            '<div class="auth-form-card">',
-            '<div class="auth-form-card">' + card_html,
-            1,
-        )
-    )
+    return render(request, "term.html", {"title": "Điều khoản dịch vụ - CornLearn"})
 
 
 def privacy_view(request):
-    modal_html = render_to_string("privacy.html", request=request)
-    shell_html = render_to_string(
-        "registration/registration_base.html",
-        {"title": "Chính sách bảo mật - CornLearn"},
-        request=request,
-    )
-    card_html = (
-        '<div class="mb-3">'
-        '<h2 class="fw-bold mb-2" style="font-size: 1.5rem; color: #131B2E;">Chính sách bảo mật CornLearn</h2>'
-        '<p class="text-muted small mb-3">Cam kết bảo vệ dữ liệu cá nhân và hồ sơ học vụ trên hệ thống CornLearn.</p>'
-        "</div>"
-        + modal_html
-    )
-    return HttpResponse(
-        shell_html.replace(
-            '<div class="auth-form-card">',
-            '<div class="auth-form-card">' + card_html,
-            1,
-        )
-    )
+    return render(request, "privacy.html", {"title": "Chính sách bảo mật - CornLearn"})
 
 
 urlpatterns = [

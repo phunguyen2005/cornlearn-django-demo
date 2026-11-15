@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block title %}Điều khoản Sử dụng Hệ thống Quản lý Học tập CornLearn | CornLearn LMS{% endblock title %}
+{% block title %}Điều khoản Sử dụng - CornLearn LMS{% endblock title %}
 
 {% block content %}
 <!-- Breadcrumb -->
@@ -98,16 +98,20 @@
                 </section>
             </div>
 
+            <!-- Footer Actions -->
             <div class="card-footer bg-light border-top px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <span class="small text-muted">
                     <i class="fas fa-university me-1 text-primary"></i>Ban Quản trị Hệ thống Quản lý Học tập CornLearn LMS
                 </span>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#term-of-service">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#term-of-service">
                         <i class="fas fa-expand-alt me-1"></i>Xem dạng Hộp thoại
                     </button>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm px-3">
+                        <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                    </a>
                     <a href="{% url 'home' %}" class="btn btn-primary btn-sm px-3">
-                        <i class="fas fa-check me-1"></i>Tôi đã hiểu &amp; Quay lại
+                        <i class="fas fa-home me-1"></i>Về Trang chủ
                     </a>
                 </div>
             </div>
@@ -115,41 +119,5 @@
     </div>
 </div>
 
-<!-- Term Modal Compatibility Container (#term-of-service) -->
-<div class="modal fade" id="term-of-service" tabindex="-1" aria-labelledby="termOfService" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold" id="termOfService" style="color: var(--primary-navy);">
-                    <i class="fas fa-gavel me-2" style="color: var(--primary-cta);"></i>Điều khoản Sử dụng Hệ thống Quản lý Học tập CornLearn
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body p-4" style="line-height: 1.7;">
-                <h6 class="fw-bold" style="color: var(--primary-navy);">1. Quy định chung</h6>
-                <p class="small text-muted">
-                    Hệ thống Quản lý Học tập CornLearn LMS phục vụ công tác giảng dạy, đăng ký học phần, lưu trữ học liệu số và đánh giá kết quả học tập chính thức của Nhà trường.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">2. Bảo mật Tài khoản Định danh</h6>
-                <p class="small text-muted">
-                    Người dùng chịu trách nhiệm bảo mật thông tin đăng nhập cá nhân, không chia sẻ tài khoản hoặc sử dụng tài khoản của cá nhân khác để truy cập trái phép vào dữ liệu học vụ.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">3. Liêm chính Học thuật &amp; Bản quyền Học liệu</h6>
-                <p class="small text-muted">
-                    Sinh viên cam kết thực hiện trung thực các bài kiểm tra trực tuyến và tuân thủ bản quyền đối với toàn bộ giáo trình, bài giảng video và tài liệu chuyên môn được giảng viên cung cấp trên CornLearn.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">4. Xử lý Vi phạm</h6>
-                <p class="small text-muted mb-0">
-                    Mọi hành vi gian lận thi cử, phát tán học liệu trái phép hoặc tấn công kỹ thuật vào hệ thống sẽ bị khóa tài khoản và xử lý theo Quy chế Đào tạo hiện hành.
-                </p>
-            </div>
-            <div class="modal-footer border-top">
-                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Tôi đã hiểu và Đồng ý</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'snippets/term_modal.html' %}
 {% endblock content %}

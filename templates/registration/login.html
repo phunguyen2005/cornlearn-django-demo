@@ -7,7 +7,7 @@
 {% block content %}
 <!-- Header -->
 <div class="mb-4">
-  <div class="d-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill mb-2" style="background-color: #DBE1FF; color: #0051D5; font-size: 0.75rem; font-weight: 600;">
+  <div class="auth-section-badge">
     <i class="fas fa-user-check"></i>
     <span>CỔNG XÁC THỰC HỌC VỤ</span>
   </div>
@@ -17,9 +17,17 @@
 
 <!-- Form Error Banner -->
 {% if form.errors %}
-<div class="alert alert-danger d-flex align-items-center gap-2 py-2.5 px-3 mb-3 small" style="border-radius: 10px;" role="alert">
-  <i class="fas fa-exclamation-circle text-danger flex-shrink-0"></i>
-  <div>Mã định danh (ID) hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại.</div>
+<div class="alert alert-danger d-flex align-items-start gap-2 py-2.5 px-3 mb-3 small" style="border-radius: 10px;" role="alert">
+  <i class="fas fa-exclamation-circle text-danger flex-shrink-0 mt-0.5"></i>
+  <div>
+    {% if form.non_field_errors %}
+      {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    {% else %}
+      <div>Mã định danh (ID) hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại.</div>
+    {% endif %}
+  </div>
 </div>
 {% endif %}
 
@@ -30,31 +38,30 @@
 
   <!-- Username / Student ID -->
   <div class="mb-3">
-    <label for="username_id" class="form-label fw-medium small d-flex justify-content-between align-items-center mb-1" style="color: #131B2E;">
+    <label for="username_id" class="form-label d-flex justify-content-between align-items-center mb-1">
       <span>Mã định danh (ID) <span class="text-danger">*</span></span>
-      <span class="text-muted" style="font-size: 0.75rem;">MSSV / Mã GV</span>
+      <span class="text-muted small fw-normal">MSSV / Mã GV</span>
     </label>
-    <div class="position-relative">
-      <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted" style="pointer-events: none;">
+    <div class="input-group-custom">
+      <span class="input-icon-start">
         <i class="fas fa-id-card"></i>
       </span>
-      <input type="text" name="username" id="username_id" class="form-control ps-5" placeholder="Nhập mã sinh viên, giảng viên hoặc tên đăng nhập" required autofocus style="border-radius: 8px; height: 42px; font-size: 0.875rem;">
+      <input type="text" name="username" id="username_id" class="form-control has-icon-start" placeholder="Nhập mã sinh viên, giảng viên hoặc tên đăng nhập" required autofocus value="{{ form.username.value|default:'' }}">
     </div>
-    <div id="message-wrapper" class="small mt-1" style="font-size: 0.775rem;"></div>
   </div>
 
   <!-- Password -->
   <div class="mb-3">
-    <label for="password_id" class="form-label fw-medium small d-flex justify-content-between align-items-center mb-1" style="color: #131B2E;">
+    <label for="password_id" class="form-label d-flex justify-content-between align-items-center mb-1">
       <span>Mật khẩu <span class="text-danger">*</span></span>
-      <span class="text-muted" style="font-size: 0.75rem;">Bảo mật</span>
+      <span class="text-muted small fw-normal">Bảo mật</span>
     </label>
-    <div class="position-relative">
-      <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted" style="pointer-events: none;">
+    <div class="input-group-custom">
+      <span class="input-icon-start">
         <i class="fas fa-lock"></i>
       </span>
-      <input type="password" name="password" id="password_id" class="form-control ps-5 pe-5" placeholder="Nhập mật khẩu tài khoản" required style="border-radius: 8px; height: 42px; font-size: 0.875rem;">
-      <button type="button" class="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y pe-3" id="toggle-password" style="text-decoration: none; border: none; background: transparent;" aria-label="Ẩn hoặc hiện mật khẩu">
+      <input type="password" name="password" id="password_id" class="form-control has-icon-start has-password-toggle" placeholder="Nhập mật khẩu tài khoản" required autocomplete="current-password">
+      <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
         <i class="fas fa-eye" id="toggle-password-icon"></i>
       </button>
     </div>
@@ -62,34 +69,34 @@
 
   <!-- Remember & Forgot Password -->
   <div class="d-flex justify-content-between align-items-center mb-3 pt-1">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="remember" id="remember" checked style="cursor: pointer;">
-      <label class="form-check-label small text-muted select-none" for="remember" style="cursor: pointer;">Ghi nhớ đăng nhập</label>
+    <div class="form-check mb-0">
+      <input class="form-check-input" type="checkbox" name="remember" id="remember" checked>
+      <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
     </div>
-    <a href="{% url 'password_reset' %}" class="small text-decoration-none fw-medium" style="color: #2563EB;">Quên mật khẩu?</a>
+    <a href="{% url 'password_reset' %}" class="small text-decoration-none fw-medium" style="color: var(--primary-cta);">Quên mật khẩu?</a>
   </div>
 
   <!-- Submit Button -->
-  <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="login-btn" style="background-color: #2563EB; border-color: #2563EB; border-radius: 8px; height: 44px;">
+  <button type="submit" class="btn btn-primary btn-auth-submit" id="login-btn">
     <span>Đăng nhập</span>
     <i class="fas fa-sign-in-alt small"></i>
   </button>
 </form>
 
 <!-- Single Sign-On / University Network Notice -->
-<div class="mt-4 p-3 rounded d-flex align-items-center gap-2" style="background-color: #F2F3FF; border-radius: 8px;">
-  <i class="fas fa-university text-primary flex-shrink-0" style="color: #164E80 !important; font-size: 1.1rem;"></i>
-  <span class="text-muted" style="font-size: 0.775rem; line-height: 1.4;">Hệ thống xác thực tập trung dành cho Sinh viên, Giảng viên và Quản trị viên CornLearn.</span>
+<div class="mt-4 p-2.5 rounded d-flex align-items-center gap-2.5" style="background-color: var(--surface-low); border-radius: 8px;">
+  <i class="fas fa-university flex-shrink-0" style="color: var(--primary-navy); font-size: 1rem;"></i>
+  <span class="text-muted" style="font-size: 0.775rem; line-height: 1.45;">Hệ thống xác thực tập trung dành cho Sinh viên, Giảng viên và Cán bộ Quản lý CornLearn.</span>
 </div>
 
 <!-- Registration Prompt -->
 <div class="text-center mt-3 pt-2 small text-muted">
   Chưa có tài khoản sinh viên?
-  <a href="{% url 'register' %}" class="fw-semibold text-decoration-none ms-1" style="color: #2563EB;">Đăng ký tài khoản</a>
+  <a href="{% url 'register' %}" class="fw-semibold text-decoration-none ms-1" style="color: var(--primary-cta);">Đăng ký tài khoản</a>
 </div>
 
 <!-- Institutional Footer Help Links -->
-<div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.75rem; border-color: #E2E8F0 !important;">
+<div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.75rem; border-color: var(--border-light) !important;">
   <a href="{% url 'terms' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
     <i class="fas fa-file-contract"></i> Điều khoản dịch vụ
   </a>
@@ -119,35 +126,17 @@
     });
   }
 
-  // Submit loading state
-  $('#login-form').on('submit', function() {
-    $('#login-btn').addClass('disabled');
-    $('#login-btn').html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang đăng nhập...');
-  });
-
-  // Real-time ID check feedback (#message-wrapper)
-  let loginDebounce;
-  $('#username_id').on('input', function() {
-    clearTimeout(loginDebounce);
-    const username = $(this).val().trim();
-    if (!username) {
-      $('#message-wrapper').empty();
-      return;
-    }
-    loginDebounce = setTimeout(function() {
-      $.ajax({
-        url: "{% url 'validate_username' %}",
-        data: { username: username },
-        dataType: 'json',
-        success: function(data) {
-          if (data.is_taken) {
-            $('#message-wrapper').html('<span class="text-success"><i class="fas fa-check-circle me-1"></i>Mã định danh hợp lệ trên hệ thống CornLearn.</span>');
-          } else {
-            $('#message-wrapper').html('<span class="text-muted"><i class="fas fa-info-circle me-1"></i>Đang kiểm tra mã định danh <b>' + $('<div>').text(username).html() + '</b>...</span>');
-          }
-        }
-      });
-    }, 300);
-  });
+  // Submit loading state (safe with HTML5 validation)
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function() {
+      if (this.checkValidity && !this.checkValidity()) return;
+      const btn = document.getElementById('login-btn');
+      if (btn) {
+        btn.classList.add('disabled');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang đăng nhập...';
+      }
+    });
+  }
 </script>
 {% endblock js %}

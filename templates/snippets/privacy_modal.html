@@ -1,0 +1,57 @@
+<!-- Privacy Policy Modal Snippet (#privacy-policy) -->
+<div class="modal fade" id="privacy-policy" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom py-3 px-4" style="background-color: #FAF8FF;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background-color: #DCFCE7; color: #16A34A; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold mb-0" id="privacyPolicyModalLabel" style="color: var(--primary-navy); font-size: 1.1rem;">
+                        Chính sách Bảo mật Thông tin Học vụ CornLearn
+                    </h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-4" style="line-height: 1.7; color: var(--text-main);">
+                <div class="alert alert-success py-2 px-3 mb-3 small d-flex align-items-center gap-2" role="alert">
+                    <i class="fas fa-lock flex-shrink-0"></i>
+                    <span>CornLearn cam kết bảo vệ dữ liệu cá nhân theo các tiêu chuẩn an toàn thông tin giáo dục.</span>
+                </div>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">1. Dữ liệu Thu thập</h6>
+                <p class="small text-muted mb-3">
+                    CornLearn chỉ thu thập thông tin định danh cá nhân (họ tên, mã sinh viên, email, số điện thoại) và dữ liệu học tập (học phần đăng ký, điểm số, lịch sử làm bài kiểm tra) nhằm phục vụ công tác quản lý đào tạo.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">2. Mục đích Sử dụng Thông tin</h6>
+                <p class="small text-muted mb-3">
+                    Dữ liệu được dùng duy nhất để xác thực người dùng, tổ chức lớp học phần, tính điểm trung bình học kỳ, xuất bảng điểm và gửi thông báo học vụ từ Nhà trường.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">3. Bảo mật Mật khẩu &amp; Phiên Đăng nhập</h6>
+                <p class="small text-muted mb-3">
+                    Mật khẩu được mã hóa băm mật mã an toàn một chiều (PBKDF2/SHA256). Quản trị viên không thể xem mật khẩu gốc của người dùng. Hệ thống hỗ trợ kiểm soát phiên làm việc và bảo vệ biểu mẫu chống CSRF.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">4. Cam kết Không Chia sẻ cho Bên Thứ Ba</h6>
+                <p class="small text-muted mb-3">
+                    Dữ liệu cá nhân và điểm số của sinh viên tuyệt đối không được chuyển giao hay thương mại hóa cho bất kỳ bên thứ ba nào. Chỉ các phòng ban chức năng được phân quyền mới có quyền tra cứu học bạ.
+                </p>
+
+                <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">5. Quyền Quản lý Thông tin của Người dùng</h6>
+                <p class="small text-muted mb-0">
+                    Người dùng có quyền cập nhật thông tin liên hệ và đổi mật khẩu trong mục Cài đặt tài khoản. Mọi khiếu nại về dữ liệu điểm học phần vui lòng liên hệ trực tiếp Phòng Đào tạo.
+                </p>
+            </div>
+            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                <a href="{% url 'privacy' %}" target="_blank" class="small text-decoration-none fw-medium d-inline-flex align-items-center gap-1" style="color: var(--primary-cta);">
+                    <i class="fas fa-external-link-alt small"></i> Xem bản đầy đủ
+                </a>
+                <button type="button" class="btn btn-primary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">
+                    Tôi đã hiểu và Đồng ý
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

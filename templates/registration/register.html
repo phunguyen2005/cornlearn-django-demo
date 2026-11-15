@@ -1,19 +1,15 @@
 {% extends 'registration/registration_base.html' %}
 {% load i18n %}
 {% load static %}
-{% load crispy_forms_tags %}
 
 {% block title %}{% trans 'Đăng ký tài khoản - CornLearn' %}{% endblock title %}
 
-{% block content %}
-<style>
-  .auth-form-card { max-width: 680px !important; }
-  .pwd-meter-segment { height: 4px; border-radius: 4px; background-color: #E2E8F0; transition: background-color 0.3s ease; }
-</style>
+{% block auth_card_class %}auth-register-card{% endblock %}
 
+{% block content %}
 <!-- Header -->
 <div class="mb-4">
-  <div class="d-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill mb-2" style="background-color: #DBE1FF; color: #0051D5; font-size: 0.75rem; font-weight: 600;">
+  <div class="auth-section-badge">
     <i class="fas fa-user-plus"></i>
     <span>ĐĂNG KÝ HỒ SƠ SINH VIÊN</span>
   </div>
@@ -42,14 +38,16 @@
 
   <!-- Section 1: Thông tin tài khoản -->
   <div class="mb-3">
-    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: #164E80; border-bottom: 1px solid #E2E8F0; letter-spacing: 0.03em;">
+    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: var(--primary-navy); border-bottom: 1px solid var(--border-light); letter-spacing: 0.03em;">
       <i class="fas fa-shield-alt"></i> THÔNG TIN ĐĂNG NHẬP
     </div>
 
     <div class="row g-3">
       <!-- Username -->
       <div class="col-md-6">
-        <label for="username_id" class="form-label fw-medium small mb-1">Mã định danh / Tên đăng nhập</label>
+        <label for="username_id" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Mã định danh / Tên đăng nhập <span class="text-danger">*</span></span>
+        </label>
         {{ form.username }}
         <div id="message-wrapper" class="small mt-1" style="font-size: 0.775rem;"></div>
         {% if form.username.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.username.errors.0 }}</div>{% endif %}
@@ -57,20 +55,22 @@
 
       <!-- Email -->
       <div class="col-md-6">
-        <label for="id_email" class="form-label fw-medium small mb-1">Địa chỉ Email học vụ <span class="text-danger">*</span></label>
+        <label for="id_email" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Địa chỉ Email học vụ <span class="text-danger">*</span></span>
+        </label>
         {{ form.email }}
         {% if form.email.errors %}<div class="text-danger small mt-1" style="font-size: 0.775rem;">{{ form.email.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Password 1 -->
       <div class="col-md-6">
-        <label for="id_password1" class="form-label fw-medium small d-flex justify-content-between align-items-center mb-1">
+        <label for="id_password1" class="form-label d-flex justify-content-between align-items-center mb-1">
           <span>Mật khẩu <span class="text-danger">*</span></span>
           <span id="password-strength-label" class="small text-muted fw-normal" style="font-size: 0.75rem;"></span>
         </label>
-        <div class="position-relative">
+        <div class="input-group-custom">
           {{ form.password1 }}
-          <button type="button" class="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y pe-3" onclick="toggleRegPassword('id_password1', this)" style="text-decoration: none; border: none; background: transparent;" aria-label="Ẩn hoặc hiện mật khẩu">
+          <button type="button" class="password-toggle-btn" onclick="toggleRegPassword('id_password1', this)" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
             <i class="fas fa-eye"></i>
           </button>
         </div>
@@ -89,10 +89,12 @@
 
       <!-- Password 2 -->
       <div class="col-md-6">
-        <label for="id_password2" class="form-label fw-medium small mb-1">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-        <div class="position-relative">
+        <label for="id_password2" class="form-label d-flex justify-content-between align-items-center mb-1">
+          <span>Xác nhận mật khẩu <span class="text-danger">*</span></span>
+        </label>
+        <div class="input-group-custom">
           {{ form.password2 }}
-          <button type="button" class="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y pe-3" onclick="toggleRegPassword('id_password2', this)" style="text-decoration: none; border: none; background: transparent;" aria-label="Ẩn hoặc hiện mật khẩu">
+          <button type="button" class="password-toggle-btn" onclick="toggleRegPassword('id_password2', this)" aria-label="Ẩn hoặc hiện mật khẩu" tabindex="-1">
             <i class="fas fa-eye"></i>
           </button>
         </div>
@@ -104,75 +106,75 @@
 
   <!-- Section 2: Thông tin cá nhân & học vụ -->
   <div class="pt-2 mb-3">
-    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: #164E80; border-bottom: 1px solid #E2E8F0; letter-spacing: 0.03em;">
+    <div class="fw-semibold pb-1 mb-3 small d-flex align-items-center gap-2" style="color: var(--primary-navy); border-bottom: 1px solid var(--border-light); letter-spacing: 0.03em;">
       <i class="fas fa-user-graduate"></i> THÔNG TIN CÁ NHÂN & HỌC VỤ
     </div>
 
     <div class="row g-3">
       <!-- First Name -->
       <div class="col-md-6">
-        <label for="id_first_name" class="form-label fw-medium small mb-1">Họ và tên đệm <span class="text-danger">*</span></label>
+        <label for="id_first_name" class="form-label mb-1">Họ và tên đệm <span class="text-danger">*</span></label>
         {{ form.first_name }}
         {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Last Name -->
       <div class="col-md-6">
-        <label for="id_last_name" class="form-label fw-medium small mb-1">Tên <span class="text-danger">*</span></label>
+        <label for="id_last_name" class="form-label mb-1">Tên <span class="text-danger">*</span></label>
         {{ form.last_name }}
         {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Gender -->
       <div class="col-md-6">
-        <label for="id_gender" class="form-label fw-medium small mb-1">Giới tính <span class="text-danger">*</span></label>
+        <label for="id_gender" class="form-label mb-1">Giới tính <span class="text-danger">*</span></label>
         {{ form.gender }}
         {% if form.gender.errors %}<div class="text-danger small mt-1">{{ form.gender.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Phone -->
       <div class="col-md-6">
-        <label for="id_phone" class="form-label fw-medium small mb-1">Số điện thoại <span class="text-danger">*</span></label>
+        <label for="id_phone" class="form-label mb-1">Số điện thoại <span class="text-danger">*</span></label>
         {{ form.phone }}
         {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Address -->
       <div class="col-12">
-        <label for="id_address" class="form-label fw-medium small mb-1">Địa chỉ liên hệ <span class="text-danger">*</span></label>
+        <label for="id_address" class="form-label mb-1">Địa chỉ liên hệ <span class="text-danger">*</span></label>
         {{ form.address }}
         {% if form.address.errors %}<div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Level -->
       <div class="col-md-6">
-        <label for="id_level" class="form-label fw-medium small mb-1">Bậc đào tạo <span class="text-danger">*</span></label>
+        <label for="id_level" class="form-label mb-1">Bậc đào tạo <span class="text-danger">*</span></label>
         {{ form.level }}
         {% if form.level.errors %}<div class="text-danger small mt-1">{{ form.level.errors.0 }}</div>{% endif %}
       </div>
 
       <!-- Program -->
       <div class="col-md-6">
-        <label for="id_program" class="form-label fw-medium small mb-1">Chương trình đào tạo <span class="text-danger">*</span></label>
+        <label for="id_program" class="form-label mb-1">Chương trình đào tạo <span class="text-danger">*</span></label>
         {{ form.program }}
         {% if form.program.errors %}<div class="text-danger small mt-1">{{ form.program.errors.0 }}</div>{% endif %}
       </div>
     </div>
   </div>
 
-  <!-- Terms & Privacy Policy Trigger Links -->
+  <!-- Terms & Privacy Policy Agreement -->
   <div class="form-check mt-3 mb-3">
-    <input class="form-check-input" type="checkbox" id="terms_agree" required checked style="cursor: pointer;">
-    <label class="form-check-label small text-muted" for="terms_agree" style="cursor: pointer; font-size: 0.8rem;">
+    <input class="form-check-input" type="checkbox" id="terms_agree" required checked>
+    <label class="form-check-label small text-muted" for="terms_agree" style="font-size: 0.8125rem;">
       Tôi xác nhận thông tin khai báo là chính xác và đồng ý với
-      <a href="{% url 'terms' %}" data-bs-toggle="modal" data-bs-target="#term-of-service" class="text-decoration-none fw-medium" style="color: #2563EB;">Điều khoản dịch vụ</a>
+      <a href="{% url 'terms' %}" data-bs-toggle="modal" data-bs-target="#term-of-service" class="text-decoration-none fw-medium" style="color: var(--primary-cta);">Điều khoản dịch vụ</a>
       cùng
-      <a href="{% url 'privacy' %}" data-bs-toggle="modal" data-bs-target="#privacy-policy" class="text-decoration-none fw-medium" style="color: #2563EB;">Chính sách bảo mật CornLearn</a>.
+      <a href="{% url 'privacy' %}" data-bs-toggle="modal" data-bs-target="#privacy-policy" class="text-decoration-none fw-medium" style="color: var(--primary-cta);">Chính sách bảo mật CornLearn</a>.
     </label>
   </div>
 
   <!-- Submit Button -->
-  <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="register-btn" style="background-color: #2563EB; border-color: #2563EB; border-radius: 8px; height: 44px;">
+  <button type="submit" class="btn btn-primary btn-auth-submit" id="register-btn">
     <span>Hoàn tất đăng ký tài khoản</span>
     <i class="fas fa-arrow-right small"></i>
   </button>
@@ -181,11 +183,22 @@
 <!-- Navigation Link -->
 <div class="text-center mt-3 pt-2 small text-muted">
   Đã có tài khoản trên hệ thống?
-  <a href="{% url 'login' %}" class="fw-semibold text-decoration-none ms-1" style="color: #2563EB;">Quay lại đăng nhập</a>
+  <a href="{% url 'login' %}" class="fw-semibold text-decoration-none ms-1" style="color: var(--primary-cta);">Quay lại đăng nhập</a>
 </div>
 
-{% include 'term.html' %}
-{% include 'privacy.html' %}
+<!-- Institutional Footer Help Links -->
+<div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.75rem; border-color: var(--border-light) !important;">
+  <a href="{% url 'terms' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-file-contract"></i> Điều khoản dịch vụ
+  </a>
+  <a href="{% url 'privacy' %}" class="text-muted text-decoration-none d-inline-flex align-items-center gap-1">
+    <i class="fas fa-shield-alt"></i> Chính sách bảo mật
+  </a>
+</div>
+
+<!-- Legal Modals -->
+{% include 'snippets/term_modal.html' %}
+{% include 'snippets/privacy_modal.html' %}
 {% endblock content %}
 
 {% block js %}
@@ -222,9 +235,9 @@
         dataType: 'json',
         success: function(data) {
           if (data.is_taken) {
-            wrapper.html('<p class="my-1 text-danger"><i class="fas fa-times-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> đã được sử dụng. Vui lòng chọn tên khác.</p>');
+            wrapper.html('<p class="my-1 text-danger small"><i class="fas fa-times-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> đã được sử dụng. Vui lòng chọn tên khác.</p>');
           } else {
-            wrapper.html('<p class="my-1 text-success"><i class="fas fa-check-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> hợp lệ và có thể sử dụng.</p>');
+            wrapper.html('<p class="my-1 text-success small"><i class="fas fa-check-circle me-1"></i>Tên đăng nhập <b>' + $('<div>').text(username).html() + '</b> hợp lệ và có thể sử dụng.</p>');
           }
         }
       });
@@ -282,10 +295,11 @@
     });
   }
 
-  // Submit loading spinner
+  // Submit loading spinner (safe with HTML5 validation)
   const regForm = document.getElementById('register-form');
   if (regForm) {
     regForm.addEventListener('submit', function() {
+      if (this.checkValidity && !this.checkValidity()) return;
       const btn = document.getElementById('register-btn');
       if (btn) {
         btn.classList.add('disabled');

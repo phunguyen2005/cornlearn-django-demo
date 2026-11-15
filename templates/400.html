@@ -1,17 +1,20 @@
 {% extends 'error_handler_base.html' %}
 {% load i18n %}
 
-{% block title %}400 - Yêu cầu không hợp lệ | CornLearn{% endblock title %}
+{% block title %}400 - Yêu cầu không hợp lệ | CornLearn LMS{% endblock title %}
 
 {% block content %}
-<div class="error-status-code">400</div>
+<div class="error-status-code" style="color: var(--text-muted);">400</div>
 <h2 class="fw-bold text-dark mb-2">{% trans 'Yêu cầu không hợp lệ' %}</h2>
-<p class="text-muted mb-4">
+<p class="text-muted mb-4 small" style="line-height: 1.6;">
     {% trans 'Hệ thống không thể xử lý yêu cầu này. Vui lòng kiểm tra lại thông tin biểu mẫu hoặc đường dẫn truy cập.' %}
 </p>
-<div class="d-flex justify-content-center gap-3">
-    <a href="{% url 'home' %}" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2">
-        <i class="fas fa-home"></i> <span>{% trans 'Quay về trang chủ CornLearn' %}</span>
+<div class="d-flex flex-wrap justify-content-center gap-2">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary px-3 py-2 d-inline-flex align-items-center gap-2">
+        <i class="fas fa-arrow-left"></i> <span>{% trans 'Quay lại' %}</span>
+    </a>
+    <a href="{% url 'home' %}" class="btn btn-primary px-3 py-2 d-inline-flex align-items-center gap-2">
+        <i class="fas fa-home"></i> <span>{% trans 'Về trang chủ CornLearn' %}</span>
     </a>
 </div>
 {% endblock content %}

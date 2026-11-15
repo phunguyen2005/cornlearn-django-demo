@@ -33,7 +33,7 @@
         Kết nối sinh viên, giảng viên và nhà trường trên cùng một hệ thống quản lý học tập thông minh, hiện đại và chuẩn mực.
       </p>
 
-      <div class="d-flex flex-column gap-3" style="font-size: 0.9rem; color: #F1F5F9;">
+      <div class="d-flex flex-column gap-3 auth-brand-features" style="font-size: 0.9rem; color: #F1F5F9;">
         <div class="d-flex align-items-center gap-3">
           <div style="width: 26px; height: 26px; border-radius: 50%; background: rgba(127, 252, 151, 0.2); color: #7FFC97; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <i class="fas fa-check small"></i>
@@ -66,7 +66,7 @@
 
   <!-- Right Interaction & Form Panel (7 cols) -->
   <div class="auth-form-side">
-    <div class="auth-form-card">
+    <div class="auth-form-card {% block auth_card_class %}{% endblock %}">
       {% include 'snippets/messages.html' %}
       {% block content %}{% endblock content %}
     </div>

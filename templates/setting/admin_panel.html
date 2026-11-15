@@ -41,10 +41,10 @@
   </div>
 </div>
 
-<!-- 8 Management Cards Responsive Grid -->
+<!-- 9 Management Cards Responsive 3x3 Grid -->
 <div class="row g-4">
   <!-- 1. Quản lý Giảng viên -->
-  <div class="col-md-6 col-xl-3">
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
@@ -58,7 +58,7 @@
           <a href="{% url 'lecturer_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Danh sách giảng viên <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'add_lecturer' %}" class="btn btn-sm btn-light text-primary" title="Thêm giảng viên mới">
+          <a href="{% url 'add_lecturer' %}" class="btn btn-sm btn-outline-primary" title="Thêm giảng viên mới">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -67,7 +67,7 @@
   </div>
 
   <!-- 2. Quản lý Sinh viên -->
-  <div class="col-md-6 col-xl-3">
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
@@ -81,7 +81,7 @@
           <a href="{% url 'student_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Danh sách sinh viên <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'add_student' %}" class="btn btn-sm btn-light text-primary" title="Thêm sinh viên mới">
+          <a href="{% url 'add_student' %}" class="btn btn-sm btn-outline-primary" title="Thêm sinh viên mới">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -89,22 +89,22 @@
     </div>
   </div>
 
-  <!-- 3. Quản lý Năm học -->
-  <div class="col-md-6 col-xl-3">
+  <!-- 3. Quản lý Năm học / Niên khóa -->
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
           <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #FEF3C7; color: #92400E;">
             <i class="fas fa-calendar-alt fa-lg"></i>
           </div>
-          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Năm học</h5>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Niên khóa</h5>
           <p class="text-muted small mb-3">Thiết lập niên khóa đào tạo, kích hoạt năm học hiện hành và lịch khai giảng niên khóa mới.</p>
         </div>
         <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
           <a href="{% url 'session_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
-            Cấu hình năm học <i class="fas fa-arrow-right ms-1"></i>
+            Cấu hình niên khóa <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'add_session' %}" class="btn btn-sm btn-light text-primary" title="Thêm năm học">
+          <a href="{% url 'add_session' %}" class="btn btn-sm btn-outline-primary" title="Thêm niên khóa">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -113,12 +113,12 @@
   </div>
 
   <!-- 4. Quản lý Học kỳ -->
-  <div class="col-md-6 col-xl-3">
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
           <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #F2F3FF; color: #164E80;">
-            <i class="fas fa-clock fa-lg"></i>
+            <i class="fas fa-hourglass-half fa-lg"></i>
           </div>
           <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Học kỳ</h5>
           <p class="text-muted small mb-3">Quản lý học kỳ theo từng năm học, đánh dấu học kỳ hiện tại để mở đăng ký học phần.</p>
@@ -127,7 +127,7 @@
           <a href="{% url 'semester_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Cấu hình học kỳ <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'add_semester' %}" class="btn btn-sm btn-light text-primary" title="Thêm học kỳ">
+          <a href="{% url 'add_semester' %}" class="btn btn-sm btn-outline-primary" title="Thêm học kỳ">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -136,21 +136,21 @@
   </div>
 
   <!-- 5. Quản lý Chương trình & Học phần -->
-  <div class="col-md-6 col-xl-3">
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
           <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DBE1FF; color: #0051D5;">
             <i class="fas fa-book-open fa-lg"></i>
           </div>
-          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Chương trình & Học phần</h5>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Chương trình &amp; Học phần</h5>
           <p class="text-muted small mb-3">Xây dựng chương trình đào tạo các ngành, danh mục học phần bắt buộc và tự chọn.</p>
         </div>
         <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
           <a href="{% url 'programs' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Quản lý chương trình <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'add_program' %}" class="btn btn-sm btn-light text-primary" title="Thêm chương trình">
+          <a href="{% url 'add_program' %}" class="btn btn-sm btn-outline-primary" title="Thêm chương trình">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -159,7 +159,7 @@
   </div>
 
   <!-- 6. Phân công Giảng dạy -->
-  <div class="col-md-6 col-xl-3">
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
@@ -173,7 +173,7 @@
           <a href="{% url 'course_allocation_view' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Danh sách phân công <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'course_allocation' %}" class="btn btn-sm btn-light text-primary" title="Phân công mới">
+          <a href="{% url 'course_allocation' %}" class="btn btn-sm btn-outline-primary" title="Phân công mới">
             <i class="fas fa-plus"></i>
           </a>
         </div>
@@ -181,22 +181,45 @@
     </div>
   </div>
 
-  <!-- 7. Quản lý Đề thi & Chấm bài -->
-  <div class="col-md-6 col-xl-3">
+  <!-- 7. Quản lý Hóa đơn & Học phí -->
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
           <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-file-invoice-dollar fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Hóa đơn &amp; Học phí</h5>
+          <p class="text-muted small mb-3">Theo dõi tình hình nộp học phí, quản lý phiếu thu và tra cứu chi tiết giao dịch của sinh viên.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'create_invoice' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Quản lý hóa đơn <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'create_invoice' %}" class="btn btn-sm btn-outline-primary" title="Xem hóa đơn">
+            <i class="fas fa-receipt"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Quản lý Đề thi & Chấm bài -->
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #F2F3FF; color: #164E80;">
             <i class="fas fa-file-signature fa-lg"></i>
           </div>
-          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Đề thi & Bài thi</h5>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Khảo thí &amp; Chấm bài</h5>
           <p class="text-muted small mb-3">Theo dõi kết quả bài kiểm tra trực tuyến, chấm điểm và quản lý ngân hàng câu hỏi theo học phần.</p>
         </div>
         <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
           <a href="{% url 'quiz_marking' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Quản lý chấm thi <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'programs' %}" class="btn btn-sm btn-light text-primary" title="Chọn học phần">
+          <a href="{% url 'programs' %}" class="btn btn-sm btn-outline-primary" title="Chọn học phần">
             <i class="fas fa-list"></i>
           </a>
         </div>
@@ -204,22 +227,22 @@
     </div>
   </div>
 
-  <!-- 8. Thống kê Hệ thống & Bản tin -->
-  <div class="col-md-6 col-xl-3">
+  <!-- 9. Thống kê Hệ thống & Bản tin -->
+  <div class="col-md-6 col-lg-4">
     <div class="card h-100">
       <div class="card-body d-flex flex-column justify-content-between p-4">
         <div>
-          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #F2F3FF; color: #164E80;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DBE1FF; color: #0051D5;">
             <i class="fas fa-chart-pie fa-lg"></i>
           </div>
-          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Thống kê & Bản tin</h5>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Thống kê &amp; Bản tin</h5>
           <p class="text-muted small mb-3">Xem biểu đồ phân tích toàn hệ thống, nhật ký hoạt động và quản lý thông báo, sự kiện.</p>
         </div>
         <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
           <a href="{% url 'dashboard' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
             Thống kê hệ thống <i class="fas fa-arrow-right ms-1"></i>
           </a>
-          <a href="{% url 'home' %}" class="btn btn-sm btn-light text-primary" title="Bản tin & Sự kiện">
+          <a href="{% url 'home' %}" class="btn btn-sm btn-outline-primary" title="Bản tin & Sự kiện">
             <i class="fas fa-bullhorn"></i>
           </a>
         </div>

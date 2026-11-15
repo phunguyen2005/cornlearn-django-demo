@@ -46,40 +46,42 @@
 			{% url 'quiz_marking' as qce %}
 			{% url 'user_course_list' as ucl %}
 			{% url 'admin_panel' as admin_p %}
+			{% url 'terms' as terms_url %}
+			{% url 'privacy' as privacy_url %}
 
 			<!-- Navigation Menus -->
 			<ul class="nav flex-column">
-
+				{% if request.user.is_authenticated %}
 				<!-- SECTION: HỌC TẬP & TỔNG QUAN -->
 				<li class="nav-section-label">Học tập &amp; Tổng quan</li>
 
 				{% if request.user.is_superuser %}
-				<li class="{% if request.path == dash %}active{% endif %}">
+				<li class="{% if request.path == dash or '/dashboard' in request.path %}active{% endif %}">
 					<a href="{% url 'dashboard' %}"><i class="fas fa-chart-line"></i><span>{% trans 'Thống kê tổng quan' %}</span></a>
 				</li>
 				{% endif %}
 
-				<li class="{% if request.path == hom %}active{% endif %}">
+				<li class="{% if request.path == hom or '/add_item' in request.path or '/item/' in request.path %}active{% endif %}">
 					<a href="{% url 'home' %}"><i class="fas fa-home"></i><span>{% trans 'Trang chủ' %}</span></a>
 				</li>
 
 				{% if request.user.is_lecturer or request.user.is_student %}
-				<li class="{% if request.path == ucl %}active{% endif %}">
+				<li class="{% if request.path == ucl or '/my_courses' in request.path %}active{% endif %}">
 					<a href="{% url 'user_course_list' %}"><i class="fas fa-book-reader"></i><span>{% trans 'Khóa học của tôi' %}</span></a>
 				</li>
 				{% endif %}
 
 				{% if request.user.is_student %}
-				<li class="{% if request.path == cr %}active{% endif %}">
+				<li class="{% if request.path == cr or '/course/registration' in request.path %}active{% endif %}">
 					<a href="{% url 'course_registration' %}"><i class="fas fa-clipboard-check"></i><span>{% trans 'Đăng ký học phần' %}</span></a>
 				</li>
-				<li class="{% if request.path == vr %}active{% endif %}">
+				<li class="{% if request.path == vr or '/result/grade' in request.path %}active{% endif %}">
 					<a href="{% url 'grade_results' %}"><i class="fas fa-award"></i><span>{% trans 'Bảng điểm' %}</span></a>
 				</li>
-				<li class="{% if request.path == ar %}active{% endif %}">
+				<li class="{% if request.path == ar or '/result/assessment' in request.path %}active{% endif %}">
 					<a href="{% url 'ass_results' %}"><i class="fas fa-tasks"></i><span>{% trans 'Đánh giá quá trình' %}</span></a>
 				</li>
-				<li class="{% if request.path == qpr %}active{% endif %}">
+				<li class="{% if request.path == qpr or '/quiz/progress' in request.path %}active{% endif %}">
 					<a href="{% url 'quiz_progress' %}"><i class="fas fa-stopwatch"></i><span>{% trans 'Tiến độ kiểm tra' %}</span></a>
 				</li>
 				{% endif %}
@@ -88,60 +90,86 @@
 				{% if request.user.is_superuser or request.user.is_lecturer %}
 				<li class="nav-section-label mt-2">Học vụ &amp; Đào tạo</li>
 
-				<li class="{% if request.path == pro %}active{% endif %}">
-					<a href="{% url 'programs' %}"><i class="fas fa-graduation-cap"></i><span>{% trans 'Chương trình & Môn học' %}</span></a>
+				<li class="{% if '/programs' in request.path and '/course/allocated' not in request.path and '/allocated_course' not in request.path and '/course/assign' not in request.path and '/my_courses' not in request.path and '/course/registration' not in request.path and '/course/drop' not in request.path %}active{% endif %}">
+					<a href="{% url 'programs' %}"><i class="fas fa-layer-group"></i><span>{% trans 'Chương trình đào tạo' %}</span></a>
 				</li>
-				<li class="{% if request.path == qce %}active{% endif %}">
-					<a href="{% url 'quiz_marking' %}"><i class="fas fa-check-double"></i><span>{% trans 'Chấm bài kiểm tra' %}</span></a>
+
+				{% if request.user.is_superuser %}
+				<li class="{% if '/course/allocated' in request.path or '/allocated_course' in request.path or '/course/assign' in request.path %}active{% endif %}">
+					<a href="{% url 'course_allocation_view' %}"><i class="fas fa-tasks"></i><span>{% trans 'Phân công giảng dạy' %}</span></a>
+				</li>
+				<li class="{% if '/session' in request.path %}active{% endif %}">
+					<a href="{% url 'session_list' %}"><i class="fas fa-calendar-alt"></i><span>{% trans 'Niên khóa' %}</span></a>
+				</li>
+				<li class="{% if '/semester' in request.path %}active{% endif %}">
+					<a href="{% url 'semester_list' %}"><i class="fas fa-calendar-check"></i><span>{% trans 'Học kỳ' %}</span></a>
 				</li>
 				{% endif %}
 
 				{% if request.user.is_lecturer %}
-				<li class="{% if request.path == ascore %}active{% endif %}">
+				<li class="{% if request.path == ascore or '/result/manage-score' in request.path %}active{% endif %}">
 					<a href="{% url 'add_score' %}"><i class="fas fa-pen-nib"></i><span>{% trans 'Nhập điểm học phần' %}</span></a>
 				</li>
 				{% endif %}
 
-				<!-- SECTION: QUẢN TRỊ HỆ THỐNG (SUPERUSER) -->
-				{% if request.user.is_superuser %}
-				<li class="nav-section-label mt-2">Quản trị hệ thống</li>
-
-				<li class="{% if request.path == admin_p %}active{% endif %}">
-					<a href="{% url 'admin_panel' %}"><i class="fas fa-sliders-h"></i><span>{% trans 'Trung tâm điều hành' %}</span></a>
-				</li>
-				<li class="{% if request.path == lec %}active{% endif %}">
-					<a href="{% url 'lecturer_list' %}"><i class="fas fa-chalkboard-teacher"></i><span>{% trans 'Quản lý giảng viên' %}</span></a>
-				</li>
-				<li class="{% if request.path == stu %}active{% endif %}">
-					<a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i><span>{% trans 'Quản lý sinh viên' %}</span></a>
-				</li>
-				<li class="{% if request.path == cav %}active{% endif %}">
-					<a href="{% url 'course_allocation_view' %}"><i class="fas fa-calendar-check"></i><span>{% trans 'Phân công giảng dạy' %}</span></a>
-				</li>
-				<li class="{% if request.path == qpr %}active{% endif %}">
-					<a href="{% url 'quiz_progress' %}"><i class="fas fa-poll"></i><span>{% trans 'Hồ sơ kiểm tra' %}</span></a>
-				</li>
-				<li class="{% if request.path == sess %}active{% endif %}">
-					<a href="{% url 'session_list' %}"><i class="fas fa-calendar-alt"></i><span>{% trans 'Quản lý niên khóa' %}</span></a>
-				</li>
-				<li class="{% if request.path == sem %}active{% endif %}">
-					<a href="{% url 'semester_list' %}"><i class="fas fa-hourglass-half"></i><span>{% trans 'Quản lý học kỳ' %}</span></a>
+				<li class="{% if request.path == qce or '/quiz/marking' in request.path %}active{% endif %}">
+					<a href="{% url 'quiz_marking' %}"><i class="fas fa-check-double"></i><span>{% trans 'Chấm bài kiểm tra' %}</span></a>
 				</li>
 				{% endif %}
 
-				<!-- SECTION: CÀI ĐẶT & TÀI KHOẢN -->
-				<li class="nav-section-label mt-2">Tài khoản &amp; Cài đặt</li>
+				<!-- SECTION: DANH BẠ HỌC VỤ -->
+				<li class="nav-section-label mt-2">Danh bạ Học vụ</li>
+				<li class="{% if '/accounts/lecturer' in request.path or '/accounts/staff/' in request.path %}active{% endif %}">
+					<a href="{% url 'lecturer_list' %}"><i class="fas fa-chalkboard-teacher"></i><span>{% trans 'Giảng viên' %}</span></a>
+				</li>
+				<li class="{% if '/accounts/student' in request.path or '/accounts/parents/' in request.path or '/accounts/edit_student_program/' in request.path %}active{% endif %}">
+					<a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i><span>{% trans 'Sinh viên' %}</span></a>
+				</li>
 
-				<li class="{% if request.path == prof %}active{% endif %}">
+				<!-- SECTION: HỆ THỐNG & TÀI KHOẢN -->
+				<li class="nav-section-label mt-2">Hệ thống &amp; Tài khoản</li>
+				{% if request.user.is_superuser %}
+				<li class="{% if request.path == admin_p or '/accounts/admin_panel' in request.path %}active{% endif %}">
+					<a href="{% url 'admin_panel' %}"><i class="fas fa-sliders-h"></i><span>{% trans 'Trung tâm điều hành' %}</span></a>
+				</li>
+				<li class="{% if '/payments/' in request.path or '/invoices' in request.path %}active{% endif %}">
+					<a href="{% url 'create_invoice' %}"><i class="fas fa-file-invoice-dollar"></i><span>{% trans 'Quản lý hóa đơn' %}</span></a>
+				</li>
+				{% endif %}
+
+				<li class="{% if request.path == prof or '/profile/' in request.path and request.path != ep %}active{% endif %}">
 					<a href="{% url 'profile' %}"><i class="fas fa-user-circle"></i><span>{% trans 'Hồ sơ cá nhân' %}</span></a>
 				</li>
-				<li class="{% if request.path == ep %}active{% endif %}">
+				<li class="{% if request.path == ep or '/accounts/setting' in request.path %}active{% endif %}">
 					<a href="{% url 'edit_profile' %}"><i class="fas fa-cog"></i><span>{% trans 'Cài đặt tài khoản' %}</span></a>
 				</li>
-				<li class="{% if request.path == cp %}active{% endif %}">
+				<li class="{% if request.path == cp or '/accounts/change_password' in request.path %}active{% endif %}">
 					<a href="{% url 'change_password' %}"><i class="fas fa-key"></i><span>{% trans 'Đổi mật khẩu' %}</span></a>
 				</li>
+				{% else %}
+				<!-- GUEST NAVIGATION -->
+				<li class="nav-section-label">Cổng thông tin</li>
+				<li class="{% if request.path == hom %}active{% endif %}">
+					<a href="{% url 'home' %}"><i class="fas fa-home"></i><span>{% trans 'Trang chủ' %}</span></a>
+				</li>
+				<li class="{% if '/terms/' in request.path or '/term/' in request.path %}active{% endif %}">
+					<a href="{% url 'terms' %}"><i class="fas fa-file-contract"></i><span>{% trans 'Điều khoản dịch vụ' %}</span></a>
+				</li>
+				<li class="{% if '/privacy/' in request.path %}active{% endif %}">
+					<a href="{% url 'privacy' %}"><i class="fas fa-shield-alt"></i><span>{% trans 'Chính sách bảo mật' %}</span></a>
+				</li>
 
+				<li class="nav-section-label mt-2">Xác thực tài khoản</li>
+				<li>
+					<a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i><span>{% trans 'Đăng nhập' %}</span></a>
+				</li>
+				<li>
+					<a href="{% url 'register' %}"><i class="fas fa-user-plus"></i><span>{% trans 'Đăng ký tài khoản' %}</span></a>
+				</li>
+				<li>
+					<a href="{% url 'password_reset' %}"><i class="fas fa-key"></i><span>{% trans 'Quên mật khẩu' %}</span></a>
+				</li>
+				{% endif %}
 			</ul>
 		</div>
 
@@ -168,8 +196,8 @@
 
 			<div class="text-center small text-muted" style="font-size: 0.75rem; line-height: 1.4;">
 				<div>
-					<a href="/privacy/" class="text-secondary text-decoration-none">Chính sách bảo mật</a> &bull; 
-					<a href="/term/" class="text-secondary text-decoration-none">Điều khoản</a>
+					<a href="{% url 'privacy' %}" class="text-secondary text-decoration-none">Chính sách bảo mật</a> &bull; 
+					<a href="{% url 'terms' %}" class="text-secondary text-decoration-none">Điều khoản</a>
 				</div>
 				<div class="mt-1 text-muted">
 					&copy; 2026 CornLearn LMS

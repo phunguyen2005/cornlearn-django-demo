@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block title %}Chính sách Bảo mật Thông tin Học vụ CornLearn | CornLearn LMS{% endblock title %}
+{% block title %}Chính sách Bảo mật - CornLearn LMS{% endblock title %}
 
 {% block content %}
 <!-- Breadcrumb -->
@@ -89,16 +89,20 @@
                 </section>
             </div>
 
+            <!-- Footer Actions -->
             <div class="card-footer bg-light border-top px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <span class="small text-muted">
                     <i class="fas fa-shield-alt me-1 text-primary"></i>Trung tâm An toàn Thông tin &amp; Quản trị Học vụ CornLearn
                 </span>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#privacy-policy">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#privacy-policy">
                         <i class="fas fa-expand-alt me-1"></i>Xem dạng Hộp thoại
                     </button>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm px-3">
+                        <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                    </a>
                     <a href="{% url 'home' %}" class="btn btn-primary btn-sm px-3">
-                        <i class="fas fa-check me-1"></i>Tôi đã hiểu &amp; Quay lại
+                        <i class="fas fa-home me-1"></i>Về Trang chủ
                     </a>
                 </div>
             </div>
@@ -106,41 +110,5 @@
     </div>
 </div>
 
-<!-- Privacy Modal Compatibility Container (#privacy-policy) -->
-<div class="modal fade" id="privacy-policy" tabindex="-1" aria-labelledby="privacyPolicy" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold" id="privacyPolicy" style="color: var(--primary-navy);">
-                    <i class="fas fa-user-shield me-2" style="color: var(--primary-cta);"></i>Chính sách Bảo mật Thông tin Học vụ CornLearn
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body p-4" style="line-height: 1.7;">
-                <h6 class="fw-bold" style="color: var(--primary-navy);">1. Dữ liệu Thu thập</h6>
-                <p class="small text-muted">
-                    Hệ thống thu thập thông tin định danh học vụ (họ tên, mã số, email, số điện thoại) và kết quả học tập, điểm thi nhằm phục vụ công tác quản lý đào tạo chính quy.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">2. Bảo mật &amp; Phân quyền Truy cập</h6>
-                <p class="small text-muted">
-                    Thông tin mật khẩu được mã hóa an toàn. Bảng điểm và kết quả kiểm tra của từng sinh viên được phân quyền bảo mật riêng biệt, chỉ cá nhân sinh viên, giảng viên bộ môn và Phòng Đào tạo mới có quyền truy cập.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">3. Cam kết Không Chia sẻ Bên thứ ba</h6>
-                <p class="small text-muted">
-                    Nhà trường cam kết không tiết lộ hay cung cấp dữ liệu cá nhân của cán bộ, giảng viên và sinh viên cho bất kỳ bên thứ ba nào ngoài mục đích đào tạo nội bộ.
-                </p>
-
-                <h6 class="fw-bold" style="color: var(--primary-navy);">4. Quyền Cập nhật Hồ sơ</h6>
-                <p class="small text-muted mb-0">
-                    Người dùng có thể chủ động cập nhật thông tin liên hệ và mật khẩu tại mục Cài đặt tài khoản hoặc liên hệ Phòng Đào tạo để được hỗ trợ hiệu đính hồ sơ học vụ.
-                </p>
-            </div>
-            <div class="modal-footer border-top">
-                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Tôi đã hiểu và Đồng ý</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'snippets/privacy_modal.html' %}
 {% endblock content %}

@@ -186,7 +186,7 @@ class StudentAddForm(UserCreationForm):
         widget=forms.Select(
             choices=GENDERS,
             attrs={
-                "class": "browser-default custom-select form-control",
+                "class": "form-select",
             },
         ),
     )
@@ -195,7 +195,7 @@ class StudentAddForm(UserCreationForm):
         widget=forms.Select(
             choices=LEVEL,
             attrs={
-                "class": "browser-default custom-select form-control",
+                "class": "form-select",
             },
         ),
     )
@@ -203,7 +203,7 @@ class StudentAddForm(UserCreationForm):
     program = forms.ModelChoiceField(
         queryset=Program.objects.all(),
         widget=forms.Select(
-            attrs={"class": "browser-default custom-select form-control"}
+            attrs={"class": "form-select"}
         ),
         label="Program",
     )
@@ -223,7 +223,7 @@ class StudentAddForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "type": "password",
-                "class": "form-control",
+                "class": "form-control has-password-toggle",
             }
         ),
         label="Password",
@@ -235,7 +235,7 @@ class StudentAddForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "type": "password",
-                "class": "form-control",
+                "class": "form-control has-password-toggle",
             }
         ),
         label="Password Confirmation",
