@@ -1,0 +1,39 @@
+{% if messages %}
+<div class="messages-container mb-3">
+  {% for message in messages %}
+    {% if message.tags == 'error' or message.tags == 'danger' %}
+      <div class="alert alert-danger d-flex align-items-center justify-content-between p-3 rounded-3 mb-2" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-exclamation-circle fs-5 me-3 text-danger"></i>
+          <span class="fw-medium">{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% elif message.tags == 'warning' %}
+      <div class="alert alert-warning d-flex align-items-center justify-content-between p-3 rounded-3 mb-2" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-exclamation-triangle fs-5 me-3 text-warning"></i>
+          <span class="fw-medium">{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% elif message.tags == 'info' %}
+      <div class="alert alert-info d-flex align-items-center justify-content-between p-3 rounded-3 mb-2" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-info-circle fs-5 me-3 text-primary"></i>
+          <span class="fw-medium">{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% else %}
+      <div class="alert alert-success d-flex align-items-center justify-content-between p-3 rounded-3 mb-2" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-check-circle fs-5 me-3 text-success"></i>
+          <span class="fw-medium">{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block title %}{% trans 'Soạn câu hỏi trắc nghiệm' %} - {{ quiz_obj.title }} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1240px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-secondary">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% if course.program %}
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' course.program.id %}" class="text-decoration-none text-secondary">{{ course.program }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'quiz_index' course.slug %}" class="text-decoration-none text-secondary">{% trans 'Bài kiểm tra' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Thêm câu hỏi trắc nghiệm' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge badge-info">
+                    <i class="fas fa-file-alt me-1"></i> {{ quiz_obj.title }}
+                </span>
+                <span class="badge badge-success">
+                    <i class="fas fa-layer-group me-1"></i> {{ quiz_questions_count }} {% trans 'question added' %}
+                </span>
+            </div>
+            <h1 class="h4 fw-bold text-dark mb-1">
+                <i class="fas fa-list-check text-primary me-2"></i>{% trans 'Soạn câu hỏi trắc nghiệm' %} [{{ quiz_obj|truncatechars:35 }}]
+            </h1>
+            <p class="text-muted small mb-0">
+                {% trans 'Nhập nội dung câu hỏi, hình minh họa (nếu có) và tối thiểu 2 phương án trả lời, đánh dấu 1 phương án đúng.' %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary btn-sm px-3 py-2">
+                <i class="fas fa-arrow-left me-1"></i> {% trans 'Quay lại danh sách đề' %}
+            </a>
+        </div>
+    </div>
+
+    {% if formset.non_form_errors %}
+    <div class="alert alert-danger mb-4">
+        <div class="fw-semibold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> {% trans 'Lỗi cấu hình phương án trả lời:' %}</div>
+        <ul class="mb-0 ps-3">
+        {% for e in formset.non_form_errors %}
+            <li>{{ e }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form action="#" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-circle me-1"></i> {% trans 'Correct the error(s) below.' %}
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Left Column: Question Content & Explanation -->
+            <div class="col-12 col-lg-6">
+                <div class="card border shadow-sm h-100">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-question-circle text-primary"></i>
+                        <span>{% trans 'Nội dung câu hỏi & Giải thích' %}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-2" hidden>
+                            {{ form.quiz }}
+                        </div>
+                        {{ form.content|as_crispy_field }}
+                        {{ form.figure|as_crispy_field }}
+                        {{ form.explanation|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Inline Choice Formset (choice_set) -->
+            <div class="col-12 col-lg-6">
+                <div class="card border shadow-sm h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-check-square text-primary"></i>
+                            <span>{% trans 'Các phương án lựa chọn (Choices)' %}</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border small">{% trans 'Chọn 1 đáp án đúng' %}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        {{ form.choice_order|as_crispy_field }}
+
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold text-dark mb-2">
+                                <i class="fas fa-list-ul me-1 text-primary"></i> {% trans 'Danh sách phương án trả lời' %}
+                            </label>
+                            {{ formset.management_form }}
+
+                            <div class="d-flex flex-column gap-3">
+                                {% for fs in formset %}
+                                <div class="p-3 rounded-3 border" style="background-color: #F8FAFC;">
+                                    {% for hidden in fs.hidden_fields %}{{ hidden }}{% endfor %}
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761;">
+                                            {% trans 'Phương án' %} #{{ forloop.counter }}
+                                        </span>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <label class="d-flex align-items-center gap-1 small fw-semibold text-success mb-0" style="cursor: pointer;">
+                                                {{ fs.correct }}
+                                                <span>{% trans 'Correct' %}</span>
+                                            </label>
+                                            <label class="d-flex align-items-center gap-1 small fw-medium text-danger mb-0" style="cursor: pointer;">
+                                                {{ fs.DELETE }}
+                                                <span>{% trans 'Delete' %}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="choice-input-wrap">
+                                        {{ fs.choice_text }}
+                                    </div>
+                                    {% if fs.errors %}
+                                    <div class="text-danger small mt-1">{{ fs.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a href="{% url 'quiz_index' course.slug %}" class="btn btn-outline-secondary px-4 py-2">
+                {% trans 'Hoàn tất & Quay lại' %}
+            </a>
+            <button type="submit" formnovalidate name="another" class="btn btn-outline-primary px-4 py-2 fw-semibold">
+                <i class="fas fa-plus-circle me-1"></i> Save and add another
+            </button>
+            <button class="btn btn-primary px-4 py-2 fw-semibold" type="submit">
+                <i class="fas fa-save me-1"></i> {% trans 'Save' %}
+            </button>
+        </div>
+    </form>
+
+</div>
+
+<style>
+    .choice-input-wrap input[type="text"] {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #CBD5E1;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        background-color: #FFFFFF;
+    }
+    .choice-input-wrap input[type="text"]:focus {
+        border-color: #2563EB;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+</style>
+{% endblock %}

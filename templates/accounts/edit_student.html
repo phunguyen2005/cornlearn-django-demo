@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title }} | {% trans 'Cập nhật sinh viên - CornLearn' %}{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Trang chủ' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'student_list' %}" class="text-decoration-none">{% trans 'Sinh viên' %}</a></li>
+    <li class="breadcrumb-item active fw-medium" aria-current="page">{% trans 'Cập nhật hồ sơ' %}</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #131B2E;">
+      <i class="fas fa-user-edit me-2 text-primary"></i>Cập nhật hồ sơ Sinh viên
+    </h4>
+    <p class="text-muted small mb-0">Chỉnh sửa thông tin cá nhân, liên lạc và ảnh đại diện của sinh viên trên hệ thống CornLearn.</p>
+  </div>
+  <a href="{% url 'student_list' %}" class="btn btn-outline-secondary btn-sm px-3 py-2" style="border-radius: 8px;">
+    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+  </a>
+</div>
+
+<form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-id-card me-2 text-primary"></i>Thông tin cá nhân & Liên hệ
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.first_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.last_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.phone|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.gender|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.address|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-camera me-2 text-primary"></i>Ảnh đại diện sinh viên
+        </div>
+        <div class="card-body p-4 d-flex flex-column justify-content-between">
+          <div>
+            {{ form.picture|as_crispy_field }}
+            <div class="p-3 rounded-3 small mt-3" style="background-color: #F2F3FF; color: #42474F;">
+              <i class="fas fa-info-circle text-primary me-1"></i> Tải lên ảnh thẻ sinh viên chuẩn tỷ lệ 1:1 hoặc 3:4.
+            </div>
+          </div>
+          <div class="border-top pt-3 mt-3 d-flex justify-content-end gap-2" style="border-color: #E2E8F0 !important;">
+            <a href="{% url 'student_list' %}" class="btn btn-outline-secondary px-4 py-2" style="border-radius: 8px;">Hủy</a>
+            <button class="btn btn-primary px-4 py-2 fw-semibold" type="submit">
+              <i class="fas fa-save me-1"></i> Lưu thay đổi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock content %}

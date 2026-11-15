@@ -1,0 +1,49 @@
+{% load i18n %}
+{% if previous.answers %}
+<div class="table-responsive rounded-3 border overflow-hidden mb-2">
+    <table class="table table-hover align-middle mb-0">
+        <thead>
+            <tr>
+                <th>{% trans "Phương án lựa chọn" %}</th>
+                <th class="text-end" style="width: 240px;">{% trans "Trạng thái đáp án" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for answer in previous.answers %}
+                {% if answer.correct %}
+                <tr style="background-color: #F0FDF4;">
+                    <td class="fw-semibold text-dark">
+                        <i class="fas fa-check-circle text-success me-2"></i>{{ answer }}
+                    </td>
+                    <td class="text-end">
+                        <span class="badge badge-success">
+                            <i class="fas fa-check me-1"></i>{% trans "This is the correct answer" %}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td class="text-secondary">{{ answer }}</td>
+                    <td class="text-end">
+                        {% if previous.question_type.MCQuestion %}
+                            {% if answer.id|add:"0" == previous.previous_answer|add:"0" %}
+                            <span class="badge badge-danger">
+                                <i class="fas fa-user-times me-1"></i>{% trans "This was your answer." %}
+                            </span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if user_was_incorrect %}
+<div class="alert alert-danger py-2 px-3 mb-0 small d-flex align-items-center gap-2">
+    <i class="fas fa-exclamation-circle"></i>
+    <strong>{% trans "You answered the above question incorrectly" %}</strong>
+</div>
+{% endif %}
+{% endif %}

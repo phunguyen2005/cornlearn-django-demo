@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ title }} | {% trans 'Hồ sơ cá nhân - CornLearn' %}{% endblock title %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Trang chủ' %}</a></li>
+    <li class="breadcrumb-item text-muted">{% trans 'Hồ sơ cá nhân' %}</li>
+    <li class="breadcrumb-item active fw-medium" aria-current="page">{{ user.get_full_name }}</li>
+  </ol>
+</nav>
+
+<!-- Stitch Screen 4: Institutional Navy Header Banner & Overlapping Identity Card -->
+<div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; overflow: hidden;">
+  <!-- Institutional Navy Banner -->
+  <div style="background: linear-gradient(135deg, #164E80 0%, #003761 60%, #2563EB 100%); height: 128px; position: relative;">
+    <div class="position-absolute top-0 end-0 p-3 d-none d-md-flex align-items-center gap-2">
+      <span class="badge rounded-pill px-3 py-1.5" style="background: rgba(255,255,255,0.16); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.25); font-size: 0.75rem;">
+        <i class="fas fa-university me-1"></i> Hệ thống Quản lý Học tập CornLearn
+      </span>
+    </div>
+  </div>
+
+  <!-- Profile Identity Bar -->
+  <div class="card-body px-4 pb-4 pt-0">
+    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-end justify-content-between gap-3" style="margin-top: -44px;">
+      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-end gap-3">
+        <!-- Overlapping Avatar -->
+        <div class="position-relative">
+          <img src="{{ user.picture.url }}" alt="{{ user.get_full_name }}" class="rounded-circle shadow" style="width: 96px; height: 96px; object-fit: cover; border: 4px solid #FFFFFF; background-color: #FFFFFF;">
+          <a href="{% url 'edit_profile' %}" class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center shadow-sm text-white text-decoration-none" style="width: 30px; height: 30px; background-color: #2563EB; border: 2px solid #FFFFFF;" title="Cập nhật ảnh đại diện">
+            <i class="fas fa-camera" style="font-size: 0.7rem;"></i>
+          </a>
+        </div>
+
+        <!-- Name, Role Badge & ID -->
+        <div class="pt-2 pt-sm-0">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+            <h3 class="fw-bold mb-0" style="color: #131B2E; font-size: 1.4rem;">{{ user.get_full_name }}</h3>
+            <span class="badge bg-info">
+              <i class="fas fa-user-tag me-1"></i>{{ user.get_user_role }}
+            </span>
+            <span class="badge bg-success">
+              <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>Đang hoạt động
+            </span>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+            <span><i class="fas fa-id-badge me-1 text-primary"></i>Mã định danh: <strong class="text-dark">{{ user.username }}</strong></span>
+            <span><i class="fas fa-envelope me-1 text-primary"></i>{{ user.email|default:"Chưa cập nhật email" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mt-lg-0">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
+          <i class="fas fa-user-edit"></i>
+          <span>Chỉnh sửa hồ sơ</span>
+        </a>
+        <a href="{% url 'change_password' %}" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px;">
+          <i class="fas fa-key"></i>
+          <span>Đổi mật khẩu</span>
+        </a>
+        {% if user.is_superuser %}
+        <a href="{% url 'admin_panel' %}" class="btn btn-institutional btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
+          <i class="fas fa-sliders-h"></i>
+          <span>Trung tâm Quản trị</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Role-Specific KPI Strip -->
+    <div class="row g-3 mt-3 pt-3 border-top" style="border-color: #E2E8F0 !important;">
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DBE1FF; color: #0051D5;">
+            <i class="fas fa-calendar-check fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Học kỳ & Năm học</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">
+              {% if current_semester and current_session %}
+                {{ current_semester }} - {{ current_session }}
+              {% else %}
+                Năm học hiện hành
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if user.is_student %}
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DCFCE7; color: #166534;">
+            <i class="fas fa-layer-group fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Bậc đào tạo</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">
+              {% if level and level.level %}{{ level.level }}{% elif level %}{{ level }}{% else %}Cử nhân / Đại học{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-graduation-cap fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Chương trình đào tạo</div>
+            <div class="fw-bold text-truncate" style="color: #131B2E; font-size: 0.925rem; max-width: 180px;">
+              {% if level and level.program %}{{ level.program }}{% else %}Chính quy CornLearn{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DBE1FF; color: #164E80;">
+            <i class="fas fa-book-open fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Học phần đăng ký</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">
+              {{ courses.count|default:courses|length|default:"0" }} học phần
+            </div>
+          </div>
+        </div>
+      </div>
+      {% elif user.is_lecturer %}
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DCFCE7; color: #166534;">
+            <i class="fas fa-chalkboard-teacher fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Học phần phụ trách</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">
+              {{ courses.count|default:courses|length|default:"0" }} học phần
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-building fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Đơn vị công tác</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">Học viện CornLearn</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DBE1FF; color: #164E80;">
+            <i class="fas fa-shield-alt fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Trạng thái giảng viên</div>
+            <div class="fw-bold text-success" style="font-size: 0.925rem;">Đang giảng dạy</div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DCFCE7; color: #166534;">
+            <i class="fas fa-user-shield fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Cấp độ phân quyền</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">Quản trị viên cấp cao</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-users fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Đội ngũ giảng viên</div>
+            <div class="fw-bold" style="color: #131B2E; font-size: 0.925rem;">{{ staff.count|default:"Đang hoạt động" }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="p-3 rounded-3 h-100 d-flex align-items-center gap-3" style="background-color: #FAF8FF; border: 1px solid #E2E8F0;">
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background-color: #DBE1FF; color: #164E80;">
+            <i class="fas fa-server fa-lg"></i>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size: 0.75rem;">Trạng thái hệ thống</div>
+            <div class="fw-bold text-success" style="font-size: 0.925rem;">Vận hành ổn định</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- 2-Column Bento Grid -->
+<div class="row g-4">
+  <!-- Left Column: Thông tin học vụ / Học phần phụ trách & Thông tin phụ huynh -->
+  <div class="col-lg-7">
+    <!-- Thông tin định danh & học vụ -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-id-card-alt me-2 text-primary"></i>Thông tin cá nhân & Học vụ</span>
+        <span class="badge bg-info">CornLearn Dossier</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Họ và tên đệm</div>
+              <div class="fw-semibold" style="color: #131B2E;">{{ user.first_name|title|default:"Chưa cập nhật" }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Tên</div>
+              <div class="fw-semibold" style="color: #131B2E;">{{ user.last_name|title|default:"Chưa cập nhật" }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Mã định danh (ID)</div>
+              <div class="fw-semibold" style="color: #164E80;">{{ user.username }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Đơn vị đào tạo</div>
+              <div class="fw-semibold" style="color: #131B2E;">Hệ thống Đào tạo Đại học CornLearn</div>
+            </div>
+          </div>
+          {% if user.is_student %}
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Bậc đào tạo</div>
+              <div class="fw-semibold" style="color: #131B2E;">{% if level and level.level %}{{ level.level }}{% elif level %}{{ level }}{% else %}Cử nhân{% endif %}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background-color: #FAF8FF; border: 1px solid #F1F5F9;">
+              <div class="text-muted small mb-1">Chương trình đào tạo</div>
+              <div class="fw-semibold" style="color: #131B2E;">{% if level and level.program %}{{ level.program }}{% else %}Công nghệ Thông tin{% endif %}</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Danh sách học phần (Giảng viên / Sinh viên) -->
+    {% if user.is_lecturer or user.is_student %}
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+          <i class="fas fa-book-open me-2 text-primary"></i>
+          {% if user.is_lecturer %}Học phần phụ trách giảng dạy{% else %}Học phần đang theo học{% endif %}
+        </span>
+        <span class="badge bg-primary">{{ courses.count|default:courses|length|default:"0" }} học phần</span>
+      </div>
+      <div class="card-body">
+        {% if courses %}
+        <div class="list-group list-group-flush">
+          {% for item in courses %}
+          <div class="list-group-item px-0 py-2.5 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2.5">
+              <div class="rounded-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #F2F3FF; color: #2563EB;">
+                <i class="fas fa-book"></i>
+              </div>
+              <div>
+                {% if user.is_student and item.course %}
+                <a href="{{ item.course.get_absolute_url }}" class="fw-semibold text-decoration-none" style="color: #131B2E;">{{ item.course.title }}</a>
+                <div class="text-muted" style="font-size: 0.75rem;">Mã HP: {{ item.course.code }} • {{ item.course.credit }} tín chỉ</div>
+                {% else %}
+                <a href="{{ item.get_absolute_url }}" class="fw-semibold text-decoration-none" style="color: #131B2E;">{{ item }}</a>
+                {% if item.code %}<div class="text-muted" style="font-size: 0.75rem;">Mã HP: {{ item.code }} • {{ item.credit }} tín chỉ</div>{% endif %}
+                {% endif %}
+              </div>
+            </div>
+            <i class="fas fa-chevron-right text-muted small"></i>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+          <div class="text-muted mb-2"><i class="fas fa-folder-open fa-2x"></i></div>
+          <p class="text-muted small mb-0">
+            {% if user.is_lecturer %}Chưa có học phần nào được phân công trong học kỳ này.{% else %}Chưa có học phần đăng ký trong học kỳ hiện tại.{% endif %}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Thông tin phụ huynh (nếu là Sinh viên) -->
+    {% if user.is_student %}
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-user-friends me-2 text-primary"></i>Thông tin Phụ huynh / Người bảo hộ
+      </div>
+      <div class="card-body">
+        {% if parent %}
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="text-muted small">Họ tên phụ huynh</div>
+            <div class="fw-semibold">{{ parent.first_name }} {{ parent.last_name }}</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="text-muted small">Mối quan hệ</div>
+            <div class="fw-semibold">{{ parent.relation_ship }}</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="text-muted small">Số điện thoại</div>
+            <div class="fw-semibold">{{ parent.phone|default:"Chưa cập nhật" }}</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="text-muted small">Email liên hệ</div>
+            <div class="fw-semibold">{{ parent.email|default:"Chưa cập nhật" }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="text-muted small">
+          <i class="fas fa-info-circle me-1"></i>Chưa cập nhật hồ sơ phụ huynh / người bảo hộ trên hệ thống.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Right Column: Thông tin liên hệ & Nhật ký tài khoản -->
+  <div class="col-lg-5">
+    <!-- Thông tin liên hệ -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-address-book me-2 text-primary"></i>Thông tin liên hệ
+      </div>
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom" style="border-color: #F1F5F9 !important;">
+          <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px; background-color: #F2F3FF; color: #2563EB;">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div>
+            <div class="text-muted small">Địa chỉ Email</div>
+            <div class="fw-semibold" style="color: #131B2E;">{{ user.email|default:"Chưa cập nhật" }}</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom" style="border-color: #F1F5F9 !important;">
+          <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px; background-color: #F2F3FF; color: #2563EB;">
+            <i class="fas fa-phone-alt"></i>
+          </div>
+          <div>
+            <div class="text-muted small">Số điện thoại</div>
+            <div class="fw-semibold" style="color: #131B2E;">{{ user.phone|default:"Chưa cập nhật" }}</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px; background-color: #F2F3FF; color: #2563EB;">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div>
+            <div class="text-muted small">Địa chỉ cư trú</div>
+            <div class="fw-semibold" style="color: #131B2E;">{{ user.address|default:"Chưa cập nhật" }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nhật ký tài khoản -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-history me-2 text-primary"></i>Nhật ký hoạt động tài khoản
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: #F1F5F9 !important;">
+          <span class="text-muted small"><i class="far fa-calendar-plus me-2"></i>Ngày tham gia hệ thống</span>
+          <span class="fw-semibold small">{{ user.date_joined|date:"d/m/Y" }}</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: #F1F5F9 !important;">
+          <span class="text-muted small"><i class="far fa-clock me-2"></i>Lần đăng nhập cuối</span>
+          <span class="fw-semibold small">{{ user.last_login|date:"d/m/Y H:i"|default:"Phiên hiện tại" }}</span>
+        </div>
+        {% if current_semester and current_session %}
+        <div class="d-flex justify-content-between align-items-center pt-2">
+          <span class="text-muted small"><i class="fas fa-university me-2"></i>Kỳ học hiện hành</span>
+          <span class="badge bg-info">{{ current_semester }} - {{ current_session }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}

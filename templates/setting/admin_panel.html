@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title }} | {% trans 'Trung tâm Quản trị - CornLearn' %}{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Trang chủ' %}</a></li>
+    <li class="breadcrumb-item active fw-medium" aria-current="page">{% trans 'Trung tâm Quản trị' %}</li>
+  </ol>
+</nav>
+
+<!-- Stitch Command Center Header Banner -->
+<div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; background: linear-gradient(135deg, #164E80 0%, #003761 100%); color: #FFFFFF;">
+  <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.75rem; font-weight: 600;">
+        <i class="fas fa-user-shield"></i>
+        <span>BẢNG ĐIỀU KHIỂN QUẢN TRỊ HỆ THỐNG</span>
+      </div>
+      <h3 class="fw-bold mb-1 text-white">Trung tâm Điều hành Học vụ CornLearn</h3>
+      <p class="mb-0 small" style="color: #D2E4FF;">Quản lý tập trung giảng viên, sinh viên, chương trình đào tạo, kỳ học và cấu hình cổng đăng ký tín chỉ.</p>
+    </div>
+
+    <!-- Interactive Switch for Course Add & Drop -->
+    <div class="p-3 rounded-3 d-flex align-items-center justify-content-between gap-3 flex-shrink-0" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); min-width: 290px;">
+      <div>
+        <div class="fw-semibold small text-white">Đăng ký / Hủy học phần</div>
+        <div class="mt-1">
+          <span id="addDropStatusBadge" class="badge bg-success">ĐANG MỞ (ON)</span>
+        </div>
+      </div>
+      <div class="form-check form-switch m-0">
+        <input class="form-check-input" type="checkbox" role="switch" id="courseAddDropSwitch" checked style="width: 2.75em; height: 1.4em; cursor: pointer;" aria-label="Bật hoặc tắt cổng đăng ký học phần">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8 Management Cards Responsive Grid -->
+<div class="row g-4">
+  <!-- 1. Quản lý Giảng viên -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DBE1FF; color: #0051D5;">
+            <i class="fas fa-chalkboard-teacher fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Giảng viên</h5>
+          <p class="text-muted small mb-3">Thêm mới, cập nhật hồ sơ chuyên môn, tra cứu và xuất danh sách giảng viên toàn trường.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'lecturer_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Danh sách giảng viên <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'add_lecturer' %}" class="btn btn-sm btn-light text-primary" title="Thêm giảng viên mới">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Quản lý Sinh viên -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DCFCE7; color: #166534;">
+            <i class="fas fa-user-graduate fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Sinh viên</h5>
+          <p class="text-muted small mb-3">Quản lý hồ sơ sinh viên, tiếp nhận nhập học, chuyển đổi ngành học và xuất báo cáo PDF.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'student_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Danh sách sinh viên <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'add_student' %}" class="btn btn-sm btn-light text-primary" title="Thêm sinh viên mới">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Quản lý Năm học -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-calendar-alt fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Năm học</h5>
+          <p class="text-muted small mb-3">Thiết lập niên khóa đào tạo, kích hoạt năm học hiện hành và lịch khai giảng niên khóa mới.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'session_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Cấu hình năm học <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'add_session' %}" class="btn btn-sm btn-light text-primary" title="Thêm năm học">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Quản lý Học kỳ -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #F2F3FF; color: #164E80;">
+            <i class="fas fa-clock fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Học kỳ</h5>
+          <p class="text-muted small mb-3">Quản lý học kỳ theo từng năm học, đánh dấu học kỳ hiện tại để mở đăng ký học phần.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'semester_list' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Cấu hình học kỳ <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'add_semester' %}" class="btn btn-sm btn-light text-primary" title="Thêm học kỳ">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Quản lý Chương trình & Học phần -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DBE1FF; color: #0051D5;">
+            <i class="fas fa-book-open fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Chương trình & Học phần</h5>
+          <p class="text-muted small mb-3">Xây dựng chương trình đào tạo các ngành, danh mục học phần bắt buộc và tự chọn.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'programs' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Quản lý chương trình <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'add_program' %}" class="btn btn-sm btn-light text-primary" title="Thêm chương trình">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Phân công Giảng dạy -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #DCFCE7; color: #166534;">
+            <i class="fas fa-tasks fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Phân công Giảng dạy</h5>
+          <p class="text-muted small mb-3">Phân bổ giảng viên phụ trách các lớp học phần trong từng năm học và học kỳ.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'course_allocation_view' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Danh sách phân công <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'course_allocation' %}" class="btn btn-sm btn-light text-primary" title="Phân công mới">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Quản lý Đề thi & Chấm bài -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #FEF3C7; color: #92400E;">
+            <i class="fas fa-file-signature fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Quản lý Đề thi & Bài thi</h5>
+          <p class="text-muted small mb-3">Theo dõi kết quả bài kiểm tra trực tuyến, chấm điểm và quản lý ngân hàng câu hỏi theo học phần.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'quiz_marking' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Quản lý chấm thi <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'programs' %}" class="btn btn-sm btn-light text-primary" title="Chọn học phần">
+            <i class="fas fa-list"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Thống kê Hệ thống & Bản tin -->
+  <div class="col-md-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div>
+          <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; background-color: #F2F3FF; color: #164E80;">
+            <i class="fas fa-chart-pie fa-lg"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #131B2E; font-size: 1.05rem;">Thống kê & Bản tin</h5>
+          <p class="text-muted small mb-3">Xem biểu đồ phân tích toàn hệ thống, nhật ký hoạt động và quản lý thông báo, sự kiện.</p>
+        </div>
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="border-color: #F1F5F9 !important;">
+          <a href="{% url 'dashboard' %}" class="text-decoration-none fw-semibold small" style="color: #2563EB;">
+            Thống kê hệ thống <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'home' %}" class="btn btn-sm btn-light text-primary" title="Bản tin & Sự kiện">
+            <i class="fas fa-bullhorn"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  const switchEl = document.getElementById('courseAddDropSwitch');
+  const badgeEl = document.getElementById('addDropStatusBadge');
+  if (switchEl && badgeEl) {
+    switchEl.addEventListener('change', function() {
+      if (this.checked) {
+        badgeEl.textContent = 'ĐANG MỞ (ON)';
+        badgeEl.className = 'badge bg-success';
+      } else {
+        badgeEl.textContent = 'ĐÃ ĐÓNG (OFF)';
+        badgeEl.className = 'badge bg-danger';
+      }
+    });
+  }
+</script>
+{% endblock js %}

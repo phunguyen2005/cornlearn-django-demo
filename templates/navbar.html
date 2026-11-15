@@ -1,0 +1,104 @@
+{% load static %}
+{% load i18n %}
+<div id="top-navbar">
+	<div class="nav-wrapper d-flex align-items-center justify-content-between w-100">
+
+		<!-- Left: Sidebar Toggle & Portal Badge -->
+		<div class="d-flex align-items-center gap-3">
+			<div class="toggle-btn" id="nav-toggle" onclick="toggleSidebar()" role="button" aria-label="Toggle navigation" title="Thu gọn/Mở rộng menu">
+				<i class="fas fa-bars"></i>
+			</div>
+			<div class="d-none d-md-flex align-items-center gap-2">
+				<span class="badge rounded-pill" style="background-color: #D2E4FF; color: #003761; font-weight: 600; font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+					<i class="fas fa-university me-1"></i> CornLearn LMS
+				</span>
+				<span class="text-secondary small fw-medium">Cổng Thông Tin Đào Tạo</span>
+			</div>
+		</div>
+
+		<!-- Center: Quick Omnisearch -->
+		<form class="form-header mx-2 flex-grow-1" action="{% url 'query' %}" method="GET" style="max-width: 480px;">
+			<input id="primary-search" class="form-control" type="text" name="q" value="{{ request.GET.q|default:'' }}"
+				placeholder="{% trans 'Tìm kiếm... #khóa_học, #chương_trình, #bài_kiểm_tra, #tin_tức' %}" required />
+			<button class="btn" type="submit" aria-label="Search" title="Tìm kiếm">
+				<i class="fas fa-search"></i>
+			</button>
+		</form>
+
+		<!-- Right: User Account Dropdown -->
+		<div class="d-flex align-items-center gap-3">
+			<div class="dropdown">
+				<div class="d-flex align-items-center gap-2" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+					<div class="avatar border" style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center;">
+						{% if request.user.picture %}
+							<img src="{{ request.user.picture.url }}" alt="{{ request.user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+						{% else %}
+							<i class="fas fa-user text-secondary"></i>
+						{% endif %}
+					</div>
+					<div class="d-none d-lg-flex flex-column text-start" style="line-height: 1.2;">
+						<span class="fw-semibold text-dark small" style="max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+							{{ request.user.get_full_name|default:request.user.username }}
+						</span>
+						<span class="text-muted" style="font-size: 0.7rem;">
+							{% if request.user.is_authenticated %}{{ request.user.get_user_role }}{% else %}Khách{% endif %}
+						</span>
+					</div>
+					<i class="fas fa-chevron-down text-muted small d-none d-sm-inline ms-1"></i>
+				</div>
+
+				<div class="dropdown-menu dropdown-menu-end shadow-sm border mt-2" style="min-width: 16rem !important; border-radius: 12px; padding: 0.75rem;">
+					<div class="d-flex flex-column align-items-center p-2 text-center">
+						<div class="avatar mb-2" style="width: 52px; height: 52px; border-radius: 50%; overflow: hidden; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center;">
+							{% if request.user.picture %}
+								<img src="{{ request.user.picture.url }}" alt="{{ request.user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+							{% else %}
+								<i class="fas fa-user fa-lg text-secondary"></i>
+							{% endif %}
+						</div>
+						<span class="fw-bold text-dark">{{ request.user.get_full_name|default:request.user.username }}</span>
+						<span class="badge mt-1" style="background-color: #DBE1FF; color: #00174B; font-size: 0.75rem;">
+							{{ request.user.get_user_role }}
+						</span>
+						{% if request.user.last_login %}
+						<p class="text-muted mb-0 mt-2" style="font-size: 0.75rem;">
+							<i class="far fa-clock me-1"></i>{% trans 'Đăng nhập gần nhất:' %} {{ request.user.last_login|date:"d/m/Y H:i" }}
+						</p>
+						{% endif %}
+					</div>
+					<hr class="my-2">
+
+					{% if request.user.is_lecturer or request.user.is_student %}
+					<a class="dropdown-item py-2 px-3 rounded d-flex align-items-center gap-2" href="{% url 'user_course_list' %}">
+						<i class="fas fa-book-reader text-primary" style="width: 20px;"></i>
+						<span>{% trans 'Khóa học của tôi' %}</span>
+					</a>
+					{% endif %}
+
+					{% if request.user.is_superuser %}
+					<a class="dropdown-item py-2 px-3 rounded d-flex align-items-center gap-2" href="{% url 'admin_panel' %}">
+						<i class="fas fa-sliders-h text-primary" style="width: 20px;"></i>
+						<span>{% trans 'Trung tâm điều hành' %}</span>
+					</a>
+					{% endif %}
+
+					<a class="dropdown-item py-2 px-3 rounded d-flex align-items-center gap-2" href="{% url 'profile' %}">
+						<i class="fas fa-user-circle text-primary" style="width: 20px;"></i>
+						<span>{% trans 'Hồ sơ cá nhân' %}</span>
+					</a>
+					<a class="dropdown-item py-2 px-3 rounded d-flex align-items-center gap-2" href="{% url 'edit_profile' %}">
+						<i class="fas fa-cog text-primary" style="width: 20px;"></i>
+						<span>{% trans 'Cài đặt tài khoản' %}</span>
+					</a>
+					<hr class="my-2">
+					<div class="px-1">
+						<a class="btn btn-outline-danger w-100 btn-sm d-flex align-items-center justify-content-center gap-2" href="{% url 'logout' %}">
+							<i class="fas fa-sign-out-alt"></i> <span>{% trans 'Đăng xuất' %}</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

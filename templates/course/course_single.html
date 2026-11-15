@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ course.title|default:title }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-workspace-shell {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding-bottom: 3.5rem;
+    }
+    .cl-course-hero {
+        background: linear-gradient(135deg, #164E80 0%, #003761 100%);
+        color: #FFFFFF;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(22, 78, 128, 0.14);
+        position: relative;
+        overflow: hidden;
+    }
+    .cl-course-hero::after {
+        content: '';
+        position: absolute;
+        right: -45px;
+        top: -45px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, rgba(22, 78, 128, 0) 70%);
+        pointer-events: none;
+    }
+    .cl-hero-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        color: #FFFFFF;
+        font-size: 0.76rem;
+        font-weight: 600;
+        padding: 0.32rem 0.8rem;
+        border-radius: 9999px;
+    }
+    .cl-lecturer-strip {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+    }
+    .cl-lecturer-card {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 0.9rem 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        height: 100%;
+    }
+    .cl-lecturer-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #DBE1FF;
+        color: #164E80;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0 2px 6px rgba(19, 27, 46, 0.08);
+    }
+    .cl-resource-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+        margin-bottom: 1.5rem;
+    }
+    .cl-resource-header {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+        padding: 1rem 1.35rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+    .cl-item-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .cl-icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+        color: #42474F;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .cl-icon-btn:hover {
+        background: #F2F3FF;
+        color: #164E80;
+    }
+    .cl-icon-btn.danger:hover {
+        background: #FEE2E2;
+        color: #DC2626;
+        border-color: #FECACA;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-workspace-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none text-muted">{% trans 'Học phần của tôi' %}</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' pk=course.program.id %}" class="text-decoration-none text-muted">{{ course.program }}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{{ course.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Course Hero Banner -->
+    <div class="cl-course-hero">
+        <div class="row align-items-center g-4 position-relative" style="z-index: 1;">
+            <div class="col-lg-7">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                    <span class="cl-hero-chip" style="background: #2563EB; border-color: #3B82F6;">
+                        <i class="fas fa-hashtag"></i> {{ course.code }}
+                    </span>
+                    <span class="cl-hero-chip">
+                        <i class="fas fa-layer-group"></i> {{ course.credit }} Tín chỉ
+                    </span>
+                    <span class="cl-hero-chip">
+                        <i class="fas fa-graduation-cap"></i> {{ course.program }}
+                    </span>
+                    <span class="cl-hero-chip">
+                        <i class="fas fa-signal"></i> {{ course.level }}
+                    </span>
+                    <span class="cl-hero-chip">
+                        <i class="fas fa-calendar-alt"></i> Năm {{ course.year }} &bull; {{ course.semester }}
+                    </span>
+                </div>
+
+                <h1 class="h3 fw-bold mb-2 text-white">{{ course.title }}</h1>
+                <p class="mb-0 text-white-50 small" style="max-width: 680px;">
+                    {{ course.summary|default:"Không gian học tập trực tuyến dành cho học phần. Sinh viên có thể theo dõi bài giảng video, tải xuống giáo trình tài liệu và thực hiện bài kiểm tra đánh giá năng lực." }}
+                </p>
+            </div>
+
+            <!-- Action Buttons in Hero -->
+            <div class="col-lg-5">
+                <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+                    <a class="btn btn-warning fw-bold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm text-dark" href="{% url 'quiz_index' slug=course.slug %}">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>{% if request.user.is_superuser or request.user.is_lecturer %}Quản lý Bài kiểm tra{% else %}Làm bài kiểm tra (Quiz){% endif %}</span>
+                    </a>
+
+                    {% if request.user.is_superuser or request.user.is_lecturer %}
+                    <a class="btn btn-primary fw-semibold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm" href="{% url 'upload_video' slug=course.slug %}">
+                        <i class="fas fa-video"></i>
+                        <span>{% trans 'Tải lên Video' %}</span>
+                    </a>
+                    <a class="btn btn-light fw-semibold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm" href="{% url 'upload_file_view' slug=course.slug %}">
+                        <i class="fas fa-file-upload text-primary"></i>
+                        <span>{% trans 'Tải lên Tài liệu' %}</span>
+                    </a>
+                    {% endif %}
+
+                    {% if request.user.is_superuser %}
+                    <a class="btn btn-outline-light px-3 py-2 d-inline-flex align-items-center gap-1" href="{% url 'edit_course' slug=course.slug %}">
+                        <i class="fas fa-pencil-alt"></i>
+                        <span>{% trans 'Sửa học phần' %}</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assigned Lecturers Strip -->
+    <div class="cl-lecturer-strip">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-chalkboard-teacher text-primary"></i>
+                <h2 class="h6 fw-bold mb-0" style="color: #164E80;">{% trans 'Giảng viên phụ trách học phần' %}</h2>
+            </div>
+            <span class="badge bg-primary">{{ lecturers.count }} giảng viên</span>
+        </div>
+
+        <div class="row g-3">
+            {% for lecturer in lecturers %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="cl-lecturer-card">
+                    {% if lecturer.lecturer.picture %}
+                        <img class="cl-lecturer-avatar" src="{{ lecturer.lecturer.picture.url }}" alt="{{ lecturer.lecturer.get_full_name }}">
+                    {% else %}
+                        <div class="cl-lecturer-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    {% endif %}
+                    <div class="min-w-0 flex-grow-1">
+                        <div class="fw-bold text-dark text-truncate">{{ lecturer.lecturer.get_full_name|default:lecturer }}</div>
+                        <div class="text-muted small text-truncate">
+                            <i class="far fa-envelope me-1"></i>{{ lecturer.lecturer.email|default:"Chưa cập nhật email" }}
+                        </div>
+                        <div class="mt-1">
+                            <span class="badge-info" style="font-size: 0.68rem;">Giảng viên chính</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: #F8FAFC; border: 1px dashed #CBD5E1;">
+                    <span class="text-muted small"><i class="fas fa-info-circle me-2 text-primary"></i>{% trans 'Chưa có giảng viên nào được phân công phụ trách học phần này.' %}</span>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'course_allocation' %}" class="btn btn-sm btn-outline-primary">Phân công ngay</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Section 1: Video Lectures -->
+    <div class="cl-resource-card">
+        <div class="cl-resource-header">
+            <div class="d-flex align-items-center gap-2">
+                <span class="cl-item-icon" style="background: #DBE1FF; color: #2563EB;">
+                    <i class="fas fa-play-circle"></i>
+                </span>
+                <div>
+                    <h2 class="h6 fw-bold mb-0" style="color: #164E80;">{% trans 'Bài giảng Video (Video Tutorials)' %}</h2>
+                    <div class="text-muted" style="font-size: 0.76rem;">Danh sách các bài giảng ghi hình trực tuyến thuộc học phần</div>
+                </div>
+            </div>
+            {% if request.user.is_superuser or request.user.is_lecturer %}
+            <a href="{% url 'upload_video' slug=course.slug %}" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-3 py-2">
+                <i class="fas fa-plus"></i> <span>{% trans 'Tải lên Video mới' %}</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">STT</th>
+                        <th>{% trans 'Tiêu đề bài giảng video' %}</th>
+                        <th style="width: 170px;">{% trans 'Ngày đăng tải' %}</th>
+                        <th class="text-center" style="width: 160px;">{% trans 'Trình phát' %}</th>
+                        {% if request.user.is_superuser or request.user.is_lecturer %}
+                        <th class="text-end" style="width: 120px;">{% trans 'Thao tác' %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for video in videos %}
+                    <tr>
+                        <td class="text-muted fw-medium">{{ forloop.counter }}.</td>
+                        <td>
+                            <a href="{% url 'video_single' slug=course.slug video_slug=video.slug %}" class="d-inline-flex align-items-center gap-2 fw-bold text-decoration-none" style="color: #164E80;">
+                                <i class="fas fa-video text-primary"></i>
+                                <span>{{ video.title }}</span>
+                            </a>
+                        </td>
+                        <td class="text-muted"><i class="far fa-calendar-alt me-1"></i>{{ video.timestamp|date }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-primary px-3 py-1 d-inline-flex align-items-center gap-1" href="{% url 'video_single' slug=course.slug video_slug=video.slug %}">
+                                <i class="fas fa-play small"></i>
+                                <span>{% trans 'Xem bài giảng' %}</span>
+                            </a>
+                        </td>
+                        {% if request.user.is_superuser or request.user.is_lecturer %}
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                <a href="{% url 'upload_video_edit' slug=course.slug video_slug=video.slug %}" class="cl-icon-btn" title="{% trans 'Chỉnh sửa video' %}">
+                                    <i class="fas fa-pencil-alt small"></i>
+                                </a>
+                                <a href="{% url 'upload_video_delete' slug=course.slug video_slug=video.slug %}" class="cl-icon-btn danger" title="{% trans 'Xóa video' %}">
+                                    <i class="fas fa-trash-alt small"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle" style="width: 52px; height: 52px; background: #F2F3FF; color: #164E80;">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">{% trans 'Chưa có bài giảng video nào được đăng tải' %}</h6>
+                            <p class="text-muted small mb-3">Các video bài giảng sẽ hiển thị tại đây sau khi giảng viên cập nhật.</p>
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <a href="{% url 'upload_video' slug=course.slug %}" class="btn btn-sm btn-primary px-3 py-2">
+                                <i class="fas fa-upload me-1"></i> {% trans 'Tải lên video đầu tiên' %}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Course Documentation & Files -->
+    <div class="cl-resource-card">
+        <div class="cl-resource-header">
+            <div class="d-flex align-items-center gap-2">
+                <span class="cl-item-icon" style="background: #D2E4FF; color: #003761;">
+                    <i class="fas fa-file-alt"></i>
+                </span>
+                <div>
+                    <h2 class="h6 fw-bold mb-0" style="color: #164E80;">{% trans 'Tài liệu học tập & Giáo trình (Documentations)' %}</h2>
+                    <div class="text-muted" style="font-size: 0.76rem;">Slide bài giảng, đề cương học phần, bài tập thực hành và tài liệu tham khảo</div>
+                </div>
+            </div>
+            {% if request.user.is_superuser or request.user.is_lecturer %}
+            <a href="{% url 'upload_file_view' slug=course.slug %}" class="btn btn-sm btn-institutional d-inline-flex align-items-center gap-1 px-3 py-2">
+                <i class="fas fa-plus"></i> <span>{% trans 'Tải lên Tài liệu mới' %}</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">STT</th>
+                        <th>{% trans 'Tên tài liệu' %}</th>
+                        <th style="width: 160px;">{% trans 'Ngày tải lên' %}</th>
+                        <th style="width: 160px;">{% trans 'Cập nhật gần nhất' %}</th>
+                        <th class="text-center" style="width: 150px;">{% trans 'Tải xuống' %}</th>
+                        {% if request.user.is_superuser or request.user.is_lecturer %}
+                        <th class="text-end" style="width: 120px;">{% trans 'Thao tác' %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td class="text-muted fw-medium">{{ forloop.counter }}.</td>
+                        <td>
+                            <a href="{{ file.file.url }}" target="_blank" class="d-inline-flex align-items-center gap-2 fw-bold text-decoration-none" style="color: #164E80;">
+                                <i class="fas fa-file-{{ file.get_extension_short }} text-primary fa-lg"></i>
+                                <span>{{ file.title }}</span>
+                            </a>
+                        </td>
+                        <td class="text-muted">{{ file.upload_time|date }}</td>
+                        <td class="text-muted">{{ file.updated_date|date }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-primary px-3 py-1 d-inline-flex align-items-center gap-1" href="{{ file.file.url }}" download>
+                                <i class="fas fa-download small"></i>
+                                <span>{% trans 'Tải về' %}</span>
+                            </a>
+                        </td>
+                        {% if request.user.is_superuser or request.user.is_lecturer %}
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                <a href="{% url 'upload_file_edit' slug=course.slug file_id=file.pk %}" class="cl-icon-btn" title="{% trans 'Chỉnh sửa tài liệu' %}">
+                                    <i class="fas fa-pencil-alt small"></i>
+                                </a>
+                                <a href="{% url 'upload_file_delete' slug=course.slug file_id=file.pk %}" class="cl-icon-btn danger" title="{% trans 'Xóa tài liệu' %}">
+                                    <i class="fas fa-trash-alt small"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle" style="width: 52px; height: 52px; background: #F2F3FF; color: #164E80;">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">{% trans 'Chưa có tài liệu học tập nào' %}</h6>
+                            <p class="text-muted small mb-3">Tài liệu tham khảo và đề cương bài giảng sẽ được cập nhật tại đây.</p>
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <a href="{% url 'upload_file_view' slug=course.slug %}" class="btn btn-sm btn-primary px-3 py-2">
+                                <i class="fas fa-file-upload me-1"></i> {% trans 'Tải lên tài liệu ngay' %}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

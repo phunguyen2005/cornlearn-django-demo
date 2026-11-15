@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}Điều khoản Sử dụng Hệ thống Quản lý Học tập CornLearn | CornLearn LMS{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Điều khoản Sử dụng</li>
+    </ol>
+</nav>
+
+<!-- Standalone Institutional Document Card -->
+<div class="row justify-content-center mb-5">
+    <div class="col-12 col-lg-10 col-xl-9">
+        <div class="card overflow-hidden">
+            <!-- Institutional Navy Header Banner -->
+            <div class="p-4 p-md-5 text-white" style="background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.18); color: #FFFFFF; font-weight: 600; padding: 0.4rem 0.85rem;">
+                        <i class="fas fa-gavel me-1"></i>Văn bản Quy chế Học vụ
+                    </span>
+                    <span class="small" style="color: #D2E4FF;">
+                        <i class="far fa-calendar-check me-1"></i>Hiệu lực: Năm học 2026 &ndash; 2027
+                    </span>
+                </div>
+                <h1 class="h3 fw-bold text-white mb-2">
+                    Điều khoản Sử dụng Hệ thống Quản lý Học tập CornLearn
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    Quy định về quyền hạn, nghĩa vụ, liêm chính học thuật và quy chuẩn sử dụng tài nguyên số trên Cổng Thông tin Đào tạo CornLearn LMS.
+                </p>
+            </div>
+
+            <!-- Legal Content Body -->
+            <div class="card-body p-4 p-md-5" style="line-height: 1.75; color: var(--text-main);">
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        1. Quy định chung và Phạm vi áp dụng
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Hệ thống Quản lý Học tập <strong>CornLearn LMS</strong> là nền tảng công nghệ giáo dục chính thức phục vụ công tác giảng dạy, học tập, đăng ký học phần, đánh giá kết quả và quản lý đào tạo của Nhà trường. Khi đăng nhập và sử dụng hệ thống, toàn thể cán bộ quản trị, giảng viên và sinh viên mặc nhiên xác nhận đã đọc, hiểu rõ và cam kết tuân thủ nghiêm chỉnh các quy định trong Điều khoản này.
+                    </p>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        2. Quản lý Tài khoản và Định danh Học vụ
+                    </h2>
+                    <ul class="text-muted mb-0 ps-3">
+                        <li class="mb-1">Mỗi giảng viên và sinh viên được cấp một mã định danh học vụ duy nhất gắn liền với hồ sơ đào tạo tại trường.</li>
+                        <li class="mb-1">Người dùng có trách nhiệm tự bảo mật mật khẩu, đăng xuất sau khi kết thúc phiên làm việc trên thiết bị dùng chung và thông báo ngay cho Phòng Đào tạo hoặc Quản trị hệ thống khi phát hiện truy cập trái phép.</li>
+                        <li>Nghiêm cấm mọi hành vi cho mượn, chuyển nhượng tài khoản, hoặc mạo danh người khác để đăng ký học phần, làm bài kiểm tra trực tuyến hoặc can thiệp dữ liệu điểm số.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        3. Quy chế Đăng ký Học phần và Học tập Trực tuyến
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Sinh viên thực hiện đăng ký và điều chỉnh học phần trong đúng khung thời gian học kỳ do Phòng Đào tạo công bố. Dữ liệu đăng ký trên CornLearn LMS là căn cứ chính thức để xếp lớp học phần, tính tổng số tín chỉ tích lũy, lập danh sách thi và xét kết quả học tập cuối kỳ.
+                    </p>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        4. Liêm chính Học thuật (Academic Integrity)
+                    </h2>
+                    <p class="text-muted mb-2">
+                        Nhà trường đề cao tính trung thực và công bằng trong mọi hoạt động kiểm tra, đánh giá trên hệ thống CornLearn:
+                    </p>
+                    <ul class="text-muted mb-0 ps-3">
+                        <li class="mb-1">Mọi bài kiểm tra trắc nghiệm trực tuyến (Quiz), bài tập quá trình và tiểu luận nộp trên hệ thống phải do chính sinh viên tự thực hiện.</li>
+                        <li class="mb-1">Nghiêm cấm sử dụng công cụ tự động hóa, tập lệnh can thiệp trình duyệt, sao chép câu hỏi hoặc nhờ người thi hộ dưới mọi hình thức.</li>
+                        <li>Vi phạm liêm chính học thuật sẽ bị lập biên bản tự động qua nhật ký hệ thống và xử lý kỷ luật theo Quy chế Đào tạo đại học hiện hành.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-4">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        5. Quyền Sở hữu Trí tuệ đối với Học liệu Số
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Toàn bộ giáo trình điện tử, đề cương môn học, bài giảng video, tài liệu tham khảo và ngân hàng câu hỏi đăng tải trên CornLearn LMS thuộc bản quyền của Nhà trường và đội ngũ giảng viên biên soạn. Người học chỉ được phép tải xuống và sử dụng cho mục đích học tập cá nhân; nghiêm cấm phát tán, thương mại hóa hoặc đăng tải lại trên các nền tảng bên ngoài khi chưa có sự chấp thuận bằng văn bản.
+                    </p>
+                </section>
+
+                <section class="mb-0">
+                    <h2 class="h5 fw-bold mb-2" style="color: var(--primary-navy);">
+                        6. Bảo trì Hệ thống và Hỗ trợ Kỹ thuật
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Ban Quản trị Công nghệ Thông tin thực hiện sao lưu dữ liệu hàng ngày và bảo trì định kỳ nhằm đảm bảo độ ổn định cao nhất. Các đợt nâng cấp hệ thống sẽ được thông báo trước trên Bảng tin Học vụ. Mọi thắc mắc về quy chế sử dụng vui lòng liên hệ Phòng Đào tạo hoặc Trung tâm Quản trị Hệ thống CornLearn.
+                    </p>
+                </section>
+            </div>
+
+            <div class="card-footer bg-light border-top px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="small text-muted">
+                    <i class="fas fa-university me-1 text-primary"></i>Ban Quản trị Hệ thống Quản lý Học tập CornLearn LMS
+                </span>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#term-of-service">
+                        <i class="fas fa-expand-alt me-1"></i>Xem dạng Hộp thoại
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-sm px-3">
+                        <i class="fas fa-check me-1"></i>Tôi đã hiểu &amp; Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Term Modal Compatibility Container (#term-of-service) -->
+<div class="modal fade" id="term-of-service" tabindex="-1" aria-labelledby="termOfService" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold" id="termOfService" style="color: var(--primary-navy);">
+                    <i class="fas fa-gavel me-2" style="color: var(--primary-cta);"></i>Điều khoản Sử dụng Hệ thống Quản lý Học tập CornLearn
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-4" style="line-height: 1.7;">
+                <h6 class="fw-bold" style="color: var(--primary-navy);">1. Quy định chung</h6>
+                <p class="small text-muted">
+                    Hệ thống Quản lý Học tập CornLearn LMS phục vụ công tác giảng dạy, đăng ký học phần, lưu trữ học liệu số và đánh giá kết quả học tập chính thức của Nhà trường.
+                </p>
+
+                <h6 class="fw-bold" style="color: var(--primary-navy);">2. Bảo mật Tài khoản Định danh</h6>
+                <p class="small text-muted">
+                    Người dùng chịu trách nhiệm bảo mật thông tin đăng nhập cá nhân, không chia sẻ tài khoản hoặc sử dụng tài khoản của cá nhân khác để truy cập trái phép vào dữ liệu học vụ.
+                </p>
+
+                <h6 class="fw-bold" style="color: var(--primary-navy);">3. Liêm chính Học thuật &amp; Bản quyền Học liệu</h6>
+                <p class="small text-muted">
+                    Sinh viên cam kết thực hiện trung thực các bài kiểm tra trực tuyến và tuân thủ bản quyền đối với toàn bộ giáo trình, bài giảng video và tài liệu chuyên môn được giảng viên cung cấp trên CornLearn.
+                </p>
+
+                <h6 class="fw-bold" style="color: var(--primary-navy);">4. Xử lý Vi phạm</h6>
+                <p class="small text-muted mb-0">
+                    Mọi hành vi gian lận thi cử, phát tán học liệu trái phép hoặc tấn công kỹ thuật vào hệ thống sẽ bị khóa tài khoản và xử lý theo Quy chế Đào tạo hiện hành.
+                </p>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Tôi đã hiểu và Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

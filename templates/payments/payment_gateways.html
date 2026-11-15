@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Cổng thanh toán trực tuyến' %} | CornLearn{% endblock title %}
+
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript" src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+{% url 'gopay_payment' as gopay_payment_url %}
+{% url 'gopay_charge' as gopay_charge_url %}
+{% url 'charge' as legacy_charge_url %}
+{% url 'stripe_charge' as stripe_charge_url %}
+
+<div class="container-fluid py-2" style="max-width: 1240px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'create_invoice' %}" class="text-decoration-none text-secondary">{% trans 'Hóa đơn' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Cổng thanh toán' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Checkout Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-shield-alt me-1"></i> {% trans 'Thanh toán bảo mật SSL' %}
+                    </span>
+                    {% if invoice_session %}
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {% trans 'Mã phiên:' %} {{ invoice_session|truncatechars:20 }}
+                    </span>
+                    {% endif %}
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-credit-card me-2"></i>Payment GateWays — {% trans 'Chọn phương thức thanh toán' %}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Hỗ trợ thanh toán học phí qua thẻ quốc tế Stripe, ví điện tử PayPal, tiền mã hóa Coinbase, Paylike và GoPay.' %}
+                </p>
+            </div>
+
+            <div class="p-3 rounded-3 text-end" style="background-color: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="small" style="color: #D2E4FF;">{% trans 'Số tiền thanh toán' %}</div>
+                <div class="h4 fw-bold text-white mb-0">${{ amount|default:"500" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Gateway Cards Grid -->
+    <div class="row g-4">
+        <!-- 1. PayPal Gateway Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border shadow-sm card-payment paypal" style="border-radius: 12px; border-top: 4px solid #FFC439 !important;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="fw-bold text-dark mb-0"><i class="fab fa-paypal text-primary me-2"></i>PayPal</h5>
+                            <span class="badge badge-info">Ví điện tử &amp; Thẻ</span>
+                        </div>
+                        <p class="text-muted small mb-4">
+                            {% trans 'Thanh toán tức thì bằng số dư tài khoản PayPal hoặc thẻ tín dụng/ghi nợ quốc tế.' %}
+                        </p>
+                    </div>
+                    <div>
+                        <div id="paypal-button-container" class="mb-2"></div>
+                        <a href="{% url 'paypal' %}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="fas fa-external-link-alt me-1"></i> {% trans 'Mở trang PayPal' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Stripe Gateway Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border shadow-sm card-payment stripe" style="border-radius: 12px; border-top: 4px solid #635BFF !important;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="fw-bold text-dark mb-0"><i class="fab fa-stripe-s text-primary me-2"></i>Stripe</h5>
+                            <span class="badge badge-success">Visa / MasterCard</span>
+                        </div>
+                        <p class="text-muted small mb-4">
+                            {% trans 'Make payment with stripe and get jobs done. Cổng thanh toán thẻ quốc tế tiêu chuẩn PCI-DSS.' %}
+                        </p>
+                    </div>
+                    <div>
+                        <form action="{{ legacy_charge_url|default:stripe_charge_url }}" method="POST" class="mb-2 text-center">
+                            {% csrf_token %}
+                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                data-key="{{ key }}"
+                                data-description="{{ description }}"
+                                data-amount="{{ amount }}"
+                                data-locale="auto">
+                            </script>
+                        </form>
+                        <a href="{% url 'stripe' %}" class="btn btn-primary w-100 fw-semibold">
+                            <i class="fas fa-lock me-1"></i> {% trans 'Thanh toán qua Stripe' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Coinbase Commerce Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border shadow-sm card-payment coinbase" style="border-radius: 12px; border-top: 4px solid #1652F0 !important;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="fw-bold text-dark mb-0"><i class="fab fa-bitcoin text-primary me-2"></i>CoinBase</h5>
+                            <span class="badge badge-info">Web3 / Crypto</span>
+                        </div>
+                        <p class="text-muted small mb-4">
+                            {% trans 'Hỗ trợ thanh toán học phí qua tài sản số (USDC, USDT, BTC, ETH) với xác nhận tự động.' %}
+                        </p>
+                    </div>
+                    <div>
+                        <a href="{% url 'coinbase' %}" class="btn btn-primary w-100 fw-semibold">
+                            <span class="fw-bold me-1">C</span> {% trans 'Thanh toán qua CoinBase' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Paylike Gateway Card -->
+        <div class="col-12 col-md-6 col-xl-6">
+            <div class="card h-100 border shadow-sm card-payment paylike" style="border-radius: 12px; border-top: 4px solid #16A34A !important;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="fw-bold text-dark mb-0"><i class="fas fa-wallet text-success me-2"></i>Paylike</h5>
+                            <span class="badge badge-success">Châu Âu &amp; Quốc tế</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            {% trans 'Xử lý giao dịch thẻ ngân hàng nhanh chóng với xác thực 3D Secure.' %}
+                        </p>
+                    </div>
+                    <div>
+                        <a href="{% url 'paylike' %}" class="btn btn-outline-success w-100 fw-semibold">
+                            <i class="fas fa-check-circle me-1"></i> {% trans 'Chọn cổng Paylike' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. GoPay Gateway Card -->
+        <div class="col-12 col-md-6 col-xl-6">
+            <div class="card h-100 border shadow-sm card-payment gopay" style="border-radius: 12px; border-top: 4px solid #164E80 !important;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="fw-bold text-dark mb-0"><i class="fas fa-university text-primary me-2"></i>GoPay</h5>
+                            <span class="badge badge-info">Chuyển khoản ngân hàng</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            {% trans 'Thanh toán trực tiếp qua tài khoản ngân hàng nội địa và quốc tế tích hợp GoPay.' %}
+                        </p>
+                    </div>
+                    <div>
+                        <form method="POST" action="{{ gopay_payment_url|default:gopay_charge_url }}">
+                            {% csrf_token %}
+                            <button name="pay" type="submit" class="btn btn-institutional w-100 fw-semibold">
+                                <i class="fas fa-paper-plane me-1"></i> Zaplatit / {% trans 'Thanh toán qua GoPay' %}
+                            </button>
+                        </form>
+                        <script type="text/javascript" src="https://gw.sandbox.gopay.com/gp-gw/js/embed.js"></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<!-- Include the PayPal JavaScript SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=AabPcZJCP3oBL_2GTVXO58VnsyvVEzUrWORwilbX9fA5ywWdR9YSaIdu4v-nDVMIszpI1PEy9K-76jlW&currency=USD"></script>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function completeOrder() {
+        var invoice = '{{ invoice_session }}';
+        var url = "{% url 'complete' %}";
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                'invoice': invoice
+            })
+        });
+    }
+
+    if (typeof paypal !== 'undefined' && document.getElementById('paypal-button-container')) {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '1.44'
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    completeOrder();
+                    window.location = "{% url 'payment-succeed' %}";
+                });
+            }
+        }).render('#paypal-button-container');
+    }
+</script>
+{% endblock js %}

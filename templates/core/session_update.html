@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load i18n crispy_forms_tags static %}
+
+{% block title %}Thiết lập Niên khóa | CornLearn LMS{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'session_list' %}" class="text-decoration-none">Quản lý Niên khóa</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {% if form.instance.pk %}Cập nhật niên khóa{% else %}Thêm niên khóa mới{% endif %}
+        </li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-2 d-flex align-items-center justify-content-center"
+                         style="width: 34px; height: 34px; background-color: var(--primary-cta-light); color: var(--primary-navy);">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h1 class="h6 fw-bold mb-0" style="color: var(--primary-navy);">
+                        {% if form.instance.pk %}Cập nhật Niên khóa Đào tạo{% else %}Thêm Niên khóa Đào tạo mới{% endif %}
+                    </h1>
+                </div>
+                <span class="badge badge-info">Niên khóa</span>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="alert alert-info mb-4 py-2 px-3 small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Lưu ý: Khi đánh dấu niên khóa này là <strong>Niên khóa hiện tại</strong>, hệ thống sẽ tự động chuyển các niên khóa trước đó sang trạng thái đã kết thúc.
+                </div>
+
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <div class="d-flex justify-content-end align-items-center gap-2 pt-3 mt-3 border-top">
+                        <a class="btn btn-outline-secondary px-4" href="{% url 'session_list' %}">
+                            <i class="fas fa-times me-1"></i>Hủy bỏ
+                        </a>
+                        <button class="btn btn-primary px-4" type="submit">
+                            <i class="fas fa-save me-1"></i>Lưu niên khóa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

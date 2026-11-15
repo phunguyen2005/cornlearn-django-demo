@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title|default:"Thiết lập Chương trình đào tạo" }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-form-shell {
+        max-width: 760px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+    .cl-form-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(19, 27, 46, 0.05);
+    }
+    .cl-form-header {
+        background: linear-gradient(135deg, #164E80 0%, #003761 100%);
+        color: #FFFFFF;
+        padding: 1.5rem 1.75rem;
+    }
+    .cl-form-body {
+        padding: 1.75rem;
+    }
+    .cl-form-body .form-control, .cl-form-body textarea {
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.85rem;
+    }
+    .cl-form-body .form-control:focus, .cl-form-body textarea:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .cl-form-body label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #131B2E;
+        margin-bottom: 0.35rem;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-form-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Thiết lập chương trình' %}</li>
+        </ol>
+    </nav>
+
+    <div class="cl-form-card">
+        <div class="cl-form-header d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 44px; height: 44px; background: rgba(255, 255, 255, 0.15);">
+                <i class="fas fa-graduation-cap fa-lg text-white"></i>
+            </div>
+            <div>
+                <div class="text-uppercase fw-semibold text-white-50" style="font-size: 0.72rem; letter-spacing: 0.05em;">Quản lý danh mục học thuật</div>
+                <h1 class="h5 fw-bold mb-0 text-white">{% trans 'Thông tin Chương trình Đào tạo' %}</h1>
+            </div>
+        </div>
+
+        <div class="cl-form-body">
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex align-items-center justify-content-end gap-2 pt-3 mt-3 border-top">
+                    <a href="{% url 'programs' %}" class="btn btn-light border px-4 py-2 text-secondary">
+                        <i class="fas fa-times me-1"></i> {% trans 'Hủy bỏ' %}
+                    </a>
+                    <button class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2" type="submit">
+                        <i class="fas fa-save"></i>
+                        <span>{% trans 'Lưu chương trình' %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

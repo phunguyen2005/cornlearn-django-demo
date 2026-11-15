@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ video.title }} | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-cinema-shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding-bottom: 3.5rem;
+    }
+    .cl-cinema-frame {
+        background: #0F172A;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22);
+        border: 1px solid #1E293B;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .cl-cinema-frame video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000000;
+        display: block;
+    }
+    .cl-meta-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 1.5rem 1.75rem;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+    }
+    .cl-course-badge {
+        background: #D2E4FF;
+        color: #003761;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.28rem 0.75rem;
+        border-radius: 9999px;
+    }
+    .cl-summary-box {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 1.15rem 1.25rem;
+        margin-top: 1.15rem;
+        color: #42474F;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-cinema-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none text-muted">{% trans 'Chương trình đào tạo' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'program_detail' pk=course.program.id %}" class="text-decoration-none text-muted">{{ course.program }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none text-muted">{{ course.title }}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{{ video.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Top Back Bar -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <a href="{% url 'course_detail' slug=course.slug %}" class="btn btn-light border btn-sm px-3 py-2 d-inline-flex align-items-center gap-2 text-dark fw-medium">
+            <i class="fas fa-arrow-left text-primary"></i>
+            <span>Quay lại học phần: {{ course.title }}</span>
+        </a>
+
+        {% if request.user.is_superuser or request.user.is_lecturer %}
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'upload_video_edit' slug=course.slug video_slug=video.slug %}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                <i class="fas fa-edit"></i> <span>{% trans 'Chỉnh sửa video' %}</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 16:9 Responsive HTML5 Video Player -->
+    <div class="cl-cinema-frame mb-4">
+        <video src="{{ video.video.url }}" controls preload="metadata">
+            Trình duyệt của bạn không hỗ trợ phát video HTML5.
+        </video>
+    </div>
+
+    <!-- Video Metadata & Description Card -->
+    <div class="cl-meta-card">
+        <div class="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 pb-3 border-bottom">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="cl-course-badge"><i class="fas fa-book-open me-1"></i>{{ course.code }}</span>
+                    <span class="text-muted small"><i class="far fa-clock me-1 text-primary"></i>Đăng tải {{ video.timestamp|timesince }} {% trans 'trước' %}</span>
+                </div>
+                <h1 class="h4 fw-bold mb-0" style="color: #164E80;">{{ video.title }}</h1>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{{ video.video.url }}" download class="btn btn-outline-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1">
+                    <i class="fas fa-download"></i>
+                    <span>Tải video bài giảng</span>
+                </a>
+                <a href="{% url 'quiz_index' slug=course.slug %}" class="btn btn-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Bài kiểm tra học phần</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="cl-summary-box">
+            <div class="fw-bold text-dark small text-uppercase mb-2" style="letter-spacing: 0.04em;">
+                <i class="fas fa-align-left me-1 text-primary"></i> Nội dung tóm tắt bài giảng
+            </div>
+            {% if video.summary %}
+                <p class="mb-0">{{ video.summary }}</p>
+            {% else %}
+                <p class="mb-0 text-muted fst-italic">{% trans 'Chưa có phần tóm tắt nội dung chi tiết cho bài giảng video này.' %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

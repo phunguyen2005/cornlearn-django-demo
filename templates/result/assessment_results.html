@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Kết quả đánh giá quá trình' %} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1280px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Đánh giá quá trình' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-user-graduate me-1"></i> {{ student.level }} {% trans 'Result' %}
+                    </span>
+                    {% if student.program %}
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {{ student.program }}
+                    </span>
+                    {% endif %}
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-tasks me-2"></i>{% trans 'Assesment Results' %} — {% trans 'Chi tiết điểm quá trình' %}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Bảng phân rã chi tiết các đầu điểm thành phần: Bài tập, Giữa kỳ, Kiểm tra nhanh, Chuyên cần và Cuối kỳ.' %}
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'grade_results' %}" class="btn btn-light btn-sm px-3 py-2 fw-semibold" style="color: #164E80;">
+                    <i class="fas fa-award me-1"></i> {% trans 'Xem bảng điểm GPA/CGPA' %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Semester Breakdown Card -->
+    <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-bold text-dark">
+                <i class="fas fa-calendar-alt text-primary me-2"></i>{% trans 'First Semester:' %} ({% trans 'Học kỳ I' %})
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 52px;">#</th>
+                        <th>{% trans 'Course Title' %}</th>
+                        <th>{% trans 'Course Code' %}</th>
+                        <th class="text-center">{% trans 'Cr.Hr(s)' %}</th>
+                        <th class="text-center">{% trans 'Assignment' %}</th>
+                        <th class="text-center">{% trans 'Mid exam' %}</th>
+                        <th class="text-center">{% trans 'Quiz' %}</th>
+                        <th class="text-center">{% trans 'Attendance' %}</th>
+                        <th class="text-center">{% trans 'Final exam' %}</th>
+                        <th class="text-end">{% trans 'Total' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    {% if course.course.semester == "First" %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{{ course.course.get_absolute_url }}" class="fw-semibold text-decoration-none text-dark">
+                                {{ course.course.title }}
+                            </a>
+                        </td>
+                        <td><span class="badge badge-info">{{ course.course.code }}</span></td>
+                        <td class="text-center">{{ course.course.credit }}</td>
+                        <td class="text-center">{{ course.assignment }}</td>
+                        <td class="text-center">{{ course.mid_exam }}</td>
+                        <td class="text-center">{{ course.quiz }}</td>
+                        <td class="text-center">{{ course.attendance }}</td>
+                        <td class="text-center">{{ course.final_exam }}</td>
+                        <td class="text-end">
+                            {% if course.total >= 45 %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{{ course.total }}</span>
+                            {% else %}
+                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{{ course.total }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Second Semester Breakdown Card -->
+    <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-bold text-dark">
+                <i class="fas fa-calendar-check text-primary me-2"></i>{% trans 'Second Semester:' %} ({% trans 'Học kỳ II' %})
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 52px;">#</th>
+                        <th>{% trans 'Course Title' %}</th>
+                        <th>{% trans 'Course Code' %}</th>
+                        <th class="text-center">{% trans 'Cr.Hr(s)' %}</th>
+                        <th class="text-center">{% trans 'Assignment' %}</th>
+                        <th class="text-center">{% trans 'Mid exam' %}</th>
+                        <th class="text-center">{% trans 'Quiz' %}</th>
+                        <th class="text-center">{% trans 'Attendance' %}</th>
+                        <th class="text-center">{% trans 'Final exam' %}</th>
+                        <th class="text-end">{% trans 'Total' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    {% if course.course.semester == "Second" %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{{ course.course.get_absolute_url }}" class="fw-semibold text-decoration-none text-dark">
+                                {{ course.course.title }}
+                            </a>
+                        </td>
+                        <td><span class="badge badge-info">{{ course.course.code }}</span></td>
+                        <td class="text-center">{{ course.course.credit }}</td>
+                        <td class="text-center">{{ course.assignment }}</td>
+                        <td class="text-center">{{ course.mid_exam }}</td>
+                        <td class="text-center">{{ course.quiz }}</td>
+                        <td class="text-center">{{ course.attendance }}</td>
+                        <td class="text-center">{{ course.final_exam }}</td>
+                        <td class="text-end">
+                            {% if course.total >= 45 %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{{ course.total }}</span>
+                            {% else %}
+                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle me-1"></i>{{ course.total }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

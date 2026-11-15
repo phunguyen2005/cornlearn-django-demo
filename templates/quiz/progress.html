@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Tiến độ & Lịch sử kiểm tra" %} | CornLearn{% endblock %}
+{% block description %}{% trans "User Progress Page" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1240px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Tiến độ kiểm tra' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-chart-line me-1"></i> {% trans 'Hồ sơ đánh giá' %}
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        {{ exams_counter|default:0 }} {% trans 'Bài thi hoàn thành' %}
+                    </span>
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-stopwatch me-2"></i>{% trans 'Tiến độ & Lịch sử làm bài kiểm tra' %}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% if request.user.is_superuser %}
+                        {% trans "Theo dõi toàn bộ kết quả bài kiểm tra và đề thi đã hoàn thành của sinh viên trên hệ thống." %}
+                    {% else %}
+                        {% trans "Tổng hợp điểm số theo danh mục và lịch sử các bài kiểm tra, đề thi bạn đã hoàn thành." %}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Accuracy Table -->
+    {% if cat_scores %}
+    <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-bold"><i class="fas fa-layer-group text-primary me-2"></i>{% trans "Thống kê độ chính xác theo danh mục" %}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Danh mục (Category)" %}</th>
+                        <th class="text-center">{% trans "Số câu đúng" %}</th>
+                        <th class="text-center">{% trans "Tổng số câu" %}</th>
+                        <th class="text-end">{% trans "Tỷ lệ (%)" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat, value in cat_scores.items %}
+                    <tr>
+                        <td class="fw-semibold text-dark">
+                            <span class="badge badge-info me-2">{{ cat|title }}</span>
+                        </td>
+                        <td class="text-center text-success fw-semibold">{{ value.0 }}</td>
+                        <td class="text-center text-secondary">{{ value.1 }}</td>
+                        <td class="text-end fw-bold text-primary">{{ value.2 }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Completed Exam Papers Table -->
+    {% if exams %}
+    <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div>
+                <span class="fw-bold"><i class="fas fa-file-alt text-primary me-2"></i>{% trans "Lịch sử các bài thi đã hoàn thành" %}</span>
+            </div>
+            <span class="badge badge-info">
+                {% trans 'Total complete exams:' %} {{ exams_counter }}
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">#</th>
+                        {% if request.user.is_superuser %}
+                        <th>{% trans "Sinh viên" %}</th>
+                        {% endif %}
+                        <th>{% trans "Tên đề thi / Bài kiểm tra" %}</th>
+                        <th>{% trans "Học phần" %}</th>
+                        <th class="text-center">{% trans "Điểm đạt được" %}</th>
+                        <th class="text-center">{% trans "Điểm tối đa" %}</th>
+                        <th class="text-center">{% trans "Tỷ lệ (100%)" %}</th>
+                        <th class="text-end">{% trans "Trạng thái" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in exams %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                        {% if request.user.is_superuser %}
+                        <td class="fw-medium text-dark">
+                            <i class="fas fa-user-graduate text-secondary me-1"></i>{{ exam.user.get_full_name|default:exam.user.username }}
+                        </td>
+                        {% endif %}
+                        <td class="fw-semibold text-dark">{{ exam.quiz.title }}</td>
+                        <td class="text-secondary small">{{ exam.course|default:exam.quiz.course }}</td>
+                        <td class="text-center fw-bold text-dark">{{ exam.current_score }}</td>
+                        <td class="text-center text-muted">{{ exam.get_max_score }}</td>
+                        <td class="text-center">
+                            <span class="fw-bold {% if exam.check_if_passed %}text-success{% else %}text-danger{% endif %}">
+                                {{ exam.get_percent_correct }}%
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            {% if exam.check_if_passed %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>{% trans "Đạt" %}</span>
+                            {% else %}
+                            <span class="badge badge-danger"><i class="fas fa-times-circle me-1"></i>{% trans "Chưa đạt" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not cat_scores and not exams %}
+    <div class="card border shadow-sm text-center py-5 px-4" style="border-radius: 14px;">
+        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #F2F3FF; color: #164E80;">
+            <i class="fas fa-folder-open fa-2x"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có dữ liệu tiến độ kiểm tra' %}</h5>
+        <p class="text-muted small mb-0 mx-auto" style="max-width: 440px;">
+            {% trans 'Progress records will appear here' %} — {% trans 'Khi bạn hoàn thành các bài kiểm tra hoặc đề thi, điểm số sẽ được lưu trữ tại đây.' %}
+        </p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

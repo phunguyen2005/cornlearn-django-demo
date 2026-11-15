@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Nhập điểm học phần' %} - {{ course.title }} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1360px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'add_score' %}" class="text-decoration-none text-secondary">{% trans 'Nhập điểm học phần' %}</a></li>
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none text-secondary">{{ course }}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Bảng điểm thành phần' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Course Header & Switcher Bar -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-book me-1"></i> {{ course.code }}
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        <i class="fas fa-calendar-check me-1"></i> {{ current_semester }} {% trans 'Semester' %} — {{ current_session }}
+                    </span>
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-users me-1"></i> {{ students|length }} {% trans 'Sinh viên' %}
+                    </span>
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    {% trans 'Students result form' %} | {{ course.title }}
+                </h1>
+                {% if course.summary %}
+                <p class="mb-0 small" style="color: #D2E4FF;">{{ course.summary|truncatechars:140 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <!-- Course Switcher Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle fw-semibold px-3 py-2" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #164E80;">
+                        <i class="fas fa-exchange-alt me-1"></i> {{ course|truncatechars:28 }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end shadow border mt-1" style="min-width: 260px; border-radius: 10px;">
+                        {% for c in courses %}
+                            <a class="dropdown-item py-2 px-3 d-flex align-items-center justify-content-between {% if c.id == course.id %}active{% endif %}" href="{% url 'add_score_for' c.id %}" title="{{ c.code }}">
+                                <span>{{ c.title }}</span>
+                                <span class="badge bg-light text-dark ms-2">{{ c.code }}</span>
+                            </a>
+                        {% empty %}
+                            <span class="dropdown-item text-muted small">{% trans 'No course.' %}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Export PDF Result Sheet Button -->
+                <a target="_blank" href="{% url 'result_sheet_pdf_view' id=course.id %}" class="btn btn-warning btn-sm px-3 py-2 fw-semibold text-dark">
+                    <i class="far fa-file-pdf me-1"></i> {% trans 'Grade report' %} (PDF)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score Entry Matrix Form (CRITICAL POSITIONAL CONTRACT: 5 inputs per student.id) -->
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <div class="card border shadow-sm" style="border-radius: 12px;">
+            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 py-3">
+                <div>
+                    <span class="fw-bold text-dark">
+                        <i class="fas fa-calculator text-primary me-2"></i>{% trans 'Ma trận điểm thành phần & Tổng kết' %}
+                    </span>
+                    <span class="text-muted small ms-2">({{ current_semester }} {% trans 'Semester' %} - {{ current_session }})</span>
+                </div>
+                <button title="Save Score" type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+                    <i class="fas fa-save me-1"></i> {% trans 'Save' %}
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 48px;">#</th>
+                            <th style="min-width: 180px;">{% trans 'Student' %}</th>
+                            <th class="text-center" style="width: 115px;">{% trans 'Assignment' %}</th>
+                            <th class="text-center" style="width: 115px;">{% trans 'Mid exam' %}</th>
+                            <th class="text-center" style="width: 115px;">{% trans 'Quiz' %}</th>
+                            <th class="text-center" style="width: 115px;">{% trans 'Attendance' %}</th>
+                            <th class="text-center" style="width: 115px;">{% trans 'Final exam' %}</th>
+                            <th class="text-center" style="width: 90px;">{% trans 'Total' %}</th>
+                            <th class="text-center" style="width: 80px;">{% trans 'Point' %}</th>
+                            <th class="text-center" style="width: 80px;">{% trans 'Grade' %}</th>
+                            <th class="text-end" style="width: 110px;">{% trans 'Comment' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="text-muted fw-semibold">{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{{ student.student.student.get_absolute_url }}" class="fw-semibold text-decoration-none text-dark d-block">
+                                    {{ student.student.student.get_full_name|default:student.student.student.username }}
+                                </a>
+                                <span class="small text-muted">{{ student.student.student.username }}</span>
+                            </td>
+                            <td class="text-center">
+                                <input id="assignment" type="number" step="any" name="{{ student.id }}" value="{{ student.assignment }}" class="form-control form-control-sm text-center mx-auto score-input">
+                            </td>
+                            <td class="text-center">
+                                <input id="mid_exam" type="number" step="any" name="{{ student.id }}" value="{{ student.mid_exam }}" class="form-control form-control-sm text-center mx-auto score-input">
+                            </td>
+                            <td class="text-center">
+                                <input id="quiz" type="number" step="any" name="{{ student.id }}" value="{{ student.quiz }}" class="form-control form-control-sm text-center mx-auto score-input">
+                            </td>
+                            <td class="text-center">
+                                <input id="attendance" type="number" step="any" name="{{ student.id }}" value="{{ student.attendance }}" class="form-control form-control-sm text-center mx-auto score-input">
+                            </td>
+                            <td class="text-center">
+                                <input id="final_exam" type="number" step="any" name="{{ student.id }}" value="{{ student.final_exam }}" class="form-control form-control-sm text-center mx-auto score-input">
+                            </td>
+                            <td class="text-center fw-bold text-dark">{{ student.total }}</td>
+                            <td class="text-center text-secondary fw-medium">{{ student.point }}</td>
+                            <td class="text-center">
+                                <span class="badge {% if student.grade == 'F' or student.grade == 'NG' %}badge-danger{% else %}badge-success{% endif %}">
+                                    {{ student.grade|default:"—" }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                {% if student.comment == 'PASS' %}
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle me-1"></i>{{ student.comment }}
+                                </span>
+                                {% elif student.comment == 'FAIL' %}
+                                <span class="badge badge-danger">
+                                    <i class="fas fa-times-circle me-1"></i>{{ student.comment }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted small">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="11" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-user-slash fa-2x mb-2 d-block text-secondary"></i>
+                                    <span class="fw-semibold text-danger">{% trans 'No Student.' %}</span>
+                                    <p class="small mb-0 mt-1">{% trans 'Chưa có sinh viên nào đăng ký học phần này trong học kỳ hiện tại.' %}</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if students %}
+            <div class="card-footer bg-white border-top p-3 d-flex align-items-center justify-content-between">
+                <span class="small text-muted">
+                    <i class="fas fa-info-circle me-1"></i>{% trans 'Hệ thống tự động tính Tổng điểm, Điểm chữ (Grade), Điểm quy đổi (Point) và GPA/CGPA khi nhấn Lưu.' %}
+                </span>
+                <button title="Save Score" type="submit" class="btn btn-primary px-4 py-2 fw-semibold">
+                    <i class="fas fa-save me-1"></i> {% trans 'Save' %}
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+
+</div>
+
+<style>
+    .score-input {
+        max-width: 92px;
+        border-radius: 8px;
+        border: 1px solid #CBD5E1;
+        font-weight: 600;
+    }
+    .score-input:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,606 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Đăng ký học phần | CornLearn{% endblock title %}
+
+{% block header %}
+<style>
+    .cl-reg-shell {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding-bottom: 3.5rem;
+    }
+    .cl-context-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.35rem;
+        height: 100%;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .cl-context-header {
+        background: #F2F3FF;
+        border-radius: 8px;
+        padding: 0.65rem 0.95rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .cl-stat-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        height: 100%;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .cl-stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+    .cl-meter-track {
+        width: 100%;
+        height: 7px;
+        background: #EAEDFF;
+        border-radius: 9999px;
+        overflow: hidden;
+        margin-top: 0.65rem;
+    }
+    .cl-meter-fill {
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 0.3s ease;
+    }
+    .cl-section-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(19, 27, 46, 0.04);
+        margin-bottom: 1.75rem;
+    }
+    .cl-section-header {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+        padding: 1rem 1.35rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+    .cl-semester-subhead {
+        background: #F2F3FF;
+        color: #164E80;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 0.65rem 1.25rem;
+        border-bottom: 1px solid #E2E8F0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .cl-code-pill {
+        background: #D2E4FF;
+        color: #003761;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-type-core {
+        background: #164E80;
+        color: #FFFFFF;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-type-elective {
+        background: #FEF3C7;
+        color: #92400E;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+    .cl-checkbox-input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #2563EB;
+    }
+    .cl-checkbox-drop {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #DC2626;
+    }
+    .cl-selection-banner {
+        background: linear-gradient(90deg, #164E80 0%, #2563EB 100%);
+        color: #FFFFFF;
+        border-radius: 12px;
+        padding: 0.9rem 1.35rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<div class="cl-reg-shell">
+
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Đăng ký học phần' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 small fw-semibold text-uppercase mb-1" style="color: #2563EB; letter-spacing: 0.05em;">
+                <span><i class="fas fa-university me-1"></i>Cổng sinh viên</span>
+                <span>&bull;</span>
+                <span>Đăng ký môn học trực tuyến</span>
+            </div>
+            <h1 class="h3 fw-bold mb-1" style="color: #164E80;">{% trans 'Đăng ký học phần' %}</h1>
+            <p class="text-muted small mb-0">Lựa chọn học phần mở trong kỳ, theo dõi hạn mức tín chỉ và xuất phiếu xác nhận đăng ký học tập.</p>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3" style="background-color: #EAEDFF; border: 1px solid #D2E4FF;">
+                <i class="fas fa-calendar-check text-primary"></i>
+                <div>
+                    <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Học kỳ hiện tại</div>
+                    <div class="fw-bold small" style="color: #164E80;">{{ current_semester|default:"Chưa kích hoạt" }}</div>
+                </div>
+            </div>
+            <a href="{% url 'course_registration_form' %}" target="_blank" class="btn btn-institutional d-inline-flex align-items-center gap-2 px-3 py-2">
+                <i class="fas fa-file-pdf"></i>
+                <span>In phiếu đăng ký PDF</span>
+            </a>
+        </div>
+    </div>
+
+    {% if current_semester %}
+        {% if is_calender_on == False %}
+        <!-- Academic Calendar Closed Alert -->
+        <div class="alert alert-danger d-flex align-items-center gap-3 p-4 mb-4">
+            <i class="fas fa-calendar-times fa-2x text-danger"></i>
+            <div>
+                <h5 class="fw-bold mb-1">{% trans 'Cổng đăng ký học phần hiện đang đóng' %}</h5>
+                <p class="mb-0 small">{% trans 'Thời hạn đăng ký hoặc điều chỉnh học phần theo lịch học vụ của trường đã khép lại. Vui lòng kiểm tra thông báo từ Phòng Đào tạo.' %}</p>
+            </div>
+        </div>
+        {% else %}
+
+        <!-- Top Academic Context & Credit KPI Grid -->
+        <div class="row g-3 mb-4">
+            <!-- Academic Context Card -->
+            <div class="col-12 col-xl-4">
+                <div class="cl-context-card">
+                    <div>
+                        <div class="cl-context-header">
+                            <span class="fw-bold small text-uppercase" style="color: #164E80; letter-spacing: 0.04em;">
+                                <i class="fas fa-user-graduate me-1"></i> Hồ sơ chương trình đào tạo
+                            </span>
+                            <span class="cl-code-pill">Chính quy</span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="text-muted" style="font-size: 0.75rem;">Chương trình đào tạo</div>
+                                <div class="fw-bold text-dark small mt-1">{{ student.program.title|default:"Chưa cập nhật" }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-muted" style="font-size: 0.75rem;">Trình độ / Cấp bậc</div>
+                                <div class="fw-bold text-dark small mt-1">{{ student.level|default:"Đại học" }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-muted" style="font-size: 0.75rem;">Học kỳ áp dụng</div>
+                                <div class="fw-semibold text-primary small mt-1">{{ current_semester }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-muted" style="font-size: 0.75rem;">Tình trạng học vụ</div>
+                                <div class="mt-1">
+                                    <span class="badge-success"><i class="fas fa-check-circle me-1"></i>Đủ điều kiện</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 1: First Semester Available Credits -->
+            <div class="col-12 col-sm-6 col-xl-2">
+                <div class="cl-stat-card">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div>
+                            <div class="text-muted fw-semibold" style="font-size: 0.72rem; text-transform: uppercase;">Tín chỉ Học kỳ 1</div>
+                            <div class="h3 fw-bold mb-0 mt-1" style="color: #164E80;" id="first_semester_credit">{{ total_first_semester_credit|default:0 }}</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">tín chỉ khả dụng</div>
+                        </div>
+                        <div class="cl-stat-icon" style="background: #DBE1FF; color: #2563EB;">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                    </div>
+                    <div class="cl-meter-track">
+                        <div class="cl-meter-fill" style="width: 65%; background: #2563EB;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 2: Second Semester Available Credits -->
+            <div class="col-12 col-sm-6 col-xl-2">
+                <div class="cl-stat-card">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div>
+                            <div class="text-muted fw-semibold" style="font-size: 0.72rem; text-transform: uppercase;">Tín chỉ Học kỳ 2</div>
+                            <div class="h3 fw-bold mb-0 mt-1" style="color: #164E80;" id="second_semester_credit">{{ total_sec_semester_credit|default:0 }}</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">tín chỉ khả dụng</div>
+                        </div>
+                        <div class="cl-stat-icon" style="background: #D2E4FF; color: #003761;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="cl-meter-track">
+                        <div class="cl-meter-fill" style="width: 65%; background: #164E80;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 3: Total Registered Credits + Live Selected Counter -->
+            <div class="col-12 col-xl-4">
+                <div class="cl-stat-card">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div>
+                            <div class="text-muted fw-semibold" style="font-size: 0.72rem; text-transform: uppercase;">Tổng tín chỉ đã đăng ký</div>
+                            <div class="d-flex align-items-baseline gap-2 mt-1">
+                                <span class="h3 fw-bold mb-0" style="color: #2563EB;" id="units">{{ total_registered_credit|default:0 }}</span>
+                                <span class="text-muted small">TC đã lưu</span>
+                                <span class="badge-info ms-1">
+                                    +<span id="selected-credits-counter">0</span> TC đang chọn
+                                </span>
+                            </div>
+                        </div>
+                        <div class="cl-stat-icon" style="background: #DCFCE7; color: #166534;">
+                            <i class="fas fa-award"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cl-meter-track">
+                            <div class="cl-meter-fill" id="registered-credit-bar" style="width: 50%; background: #16A34A;"></div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-2" style="font-size: 0.75rem;">
+                            <span class="text-muted">Đã đăng ký: <strong>{{ registered_courses.count|default:0 }}</strong> môn</span>
+                            <span class="text-muted">Tổng mở: <strong>{{ total_sec_semester_credit|add:total_first_semester_credit }}</strong> TC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client-side Search & Filter Bar (Outside POST forms to preserve POST keys contract) -->
+        <div class="filter-bar-card d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 460px;">
+                <i class="fas fa-search text-muted"></i>
+                <input type="text" id="regSearchInput" class="form-control" placeholder="Tìm nhanh học phần theo mã môn hoặc tên học phần...">
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="small text-muted me-1">Đang chọn thêm:</span>
+                <span class="badge bg-primary"><span id="selected-courses-count">0</span> học phần (<span id="selected-credits-badge">0</span> TC)</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: Available Courses Enrollment Form -->
+        {% if not all_courses_are_registered %}
+        <form action="{% url 'course_registration' %}" method="POST" id="enroll-course-form">
+            {% csrf_token %}
+            <div class="cl-section-card">
+                <div class="cl-section-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: #DBE1FF; color: #2563EB;">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <div>
+                            <h2 class="h6 fw-bold mb-0 text-dark">{% trans 'Danh mục học phần mở đăng ký (Course Add)' %}</h2>
+                            <div class="text-muted" style="font-size: 0.76rem;">Tích chọn vào ô vuông các học phần muốn đăng ký và nhấn nút Xác nhận đăng ký</div>
+                        </div>
+                    </div>
+                    <button title="{% trans 'Đăng ký các học phần đã chọn' %}" type="submit" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>{% trans 'Đăng ký học phần đã chọn' %}</span>
+                    </button>
+                </div>
+
+                <!-- First Semester Courses Table -->
+                <div class="cl-semester-subhead">
+                    <span><i class="fas fa-bookmark me-2"></i>{% trans 'Học kỳ 1 (First Semester)' %}</span>
+                    <span>Tổng tín chỉ Học kỳ 1: <strong>{{ total_first_semester_credit }} TC</strong></span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 64px;">{% trans 'Chọn' %}</th>
+                                <th style="width: 140px;">{% trans 'Mã học phần' %}</th>
+                                <th>{% trans 'Tên học phần' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Số tín chỉ' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Năm học' %}</th>
+                                <th style="width: 140px;">{% trans 'Phân loại' %}</th>
+                                <th style="width: 130px;">{% trans 'Nhóm tự chọn' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            {% if course.semester == "First" %}
+                            <tr class="reg-course-row" data-search="{{ course.code|lower }} {{ course.title|lower }}">
+                                <th scope="row" class="text-center">
+                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox" class="cl-checkbox-input enroll-checkbox" data-credit="{{ course.credit|default:0 }}">
+                                </th>
+                                <td><span class="cl-code-pill">{{ course.code }}</span></td>
+                                <td class="fw-semibold text-dark">{{ course.title }}</td>
+                                <td class="text-center fw-bold">{{ course.credit }} TC</td>
+                                <td class="text-center">Năm {{ course.year }}</td>
+                                <td>
+                                    {% if course.is_elective %}
+                                    <span class="cl-type-elective">{% trans 'Tự chọn' %}</span>
+                                    {% else %}
+                                    <span class="cl-type-core">{% trans 'Bắt buộc' %}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{% if course.is_elective %}Nhóm TC{% else %}-{% endif %}</td>
+                            </tr>
+                            {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i> {% trans 'Không có học phần nào khả dụng trong Học kỳ 1.' %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: #F8FAFC;">
+                                <td colspan="5" class="text-end fw-semibold text-muted">Tổng số tín chỉ mở Học kỳ 1:</td>
+                                <td colspan="2" class="fw-bold" style="color: #164E80;">{{ total_first_semester_credit }} TC</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Second Semester Courses Table -->
+                <div class="cl-semester-subhead border-top">
+                    <span><i class="fas fa-bookmark me-2"></i>{% trans 'Học kỳ 2 (Second Semester)' %}</span>
+                    <span>Tổng tín chỉ Học kỳ 2: <strong>{{ total_sec_semester_credit }} TC</strong></span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 64px;">{% trans 'Chọn' %}</th>
+                                <th style="width: 140px;">{% trans 'Mã học phần' %}</th>
+                                <th>{% trans 'Tên học phần' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Số tín chỉ' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Năm học' %}</th>
+                                <th style="width: 140px;">{% trans 'Phân loại' %}</th>
+                                <th style="width: 130px;">{% trans 'Nhóm tự chọn' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            {% if course.semester == "Second" %}
+                            <tr class="reg-course-row" data-search="{{ course.code|lower }} {{ course.title|lower }}">
+                                <th scope="row" class="text-center">
+                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox" class="cl-checkbox-input enroll-checkbox" data-credit="{{ course.credit|default:0 }}">
+                                </th>
+                                <td><span class="cl-code-pill">{{ course.code }}</span></td>
+                                <td class="fw-semibold text-dark">{{ course.title }}</td>
+                                <td class="text-center fw-bold">{{ course.credit }} TC</td>
+                                <td class="text-center">Năm {{ course.year }}</td>
+                                <td>
+                                    {% if course.is_elective %}
+                                    <span class="cl-type-elective">{% trans 'Tự chọn' %}</span>
+                                    {% else %}
+                                    <span class="cl-type-core">{% trans 'Bắt buộc' %}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{% if course.is_elective %}Nhóm TC{% else %}-{% endif %}</td>
+                            </tr>
+                            {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i> {% trans 'Không có học phần nào khả dụng trong Học kỳ 2.' %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: #F8FAFC;">
+                                <td colspan="3" class="fw-semibold text-dark">
+                                    <i class="fas fa-check-double text-success me-1"></i> Tín chỉ đã đăng ký: <strong>{{ total_registered_credit }} TC</strong>
+                                </td>
+                                <td colspan="2" class="text-end fw-semibold text-muted">Tổng tín chỉ Học kỳ 2: <strong>{{ total_sec_semester_credit }} TC</strong></td>
+                                <td colspan="2" class="fw-bold" style="color: #164E80;">Tổng cộng: {{ total_sec_semester_credit|add:total_first_semester_credit }} TC</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-success d-flex align-items-center justify-content-between p-4 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle fa-2x text-success"></i>
+                <div>
+                    <h6 class="fw-bold mb-1">Hoàn tất đăng ký toàn bộ học phần</h6>
+                    <p class="mb-0 small">Bạn đã đăng ký đầy đủ tất cả các học phần thuộc chương trình đào tạo ở trình độ hiện tại.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SECTION 2: Registered Courses & Course Drop Form -->
+        {% if not no_course_is_registered %}
+        <form action="{% url 'course_drop' %}" method="POST" id="drop-course-form">
+            {% csrf_token %}
+            <div class="cl-section-card">
+                <div class="cl-section-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: #DCFCE7; color: #166534;">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <div>
+                            <h2 class="h6 fw-bold mb-0 text-dark">{% trans 'Học phần đã đăng ký & Hủy học phần (Course Drop)' %}</h2>
+                            <div class="text-muted" style="font-size: 0.76rem;">Cấp bậc: <strong>{{ student.level }}</strong> &bull; Chọn học phần bên dưới nếu bạn muốn rút/hủy môn</div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <a class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 px-3 py-2" href="{% url 'course_registration_form' %}" target="_blank" title="{% trans 'Print Registration Form' %}">
+                            <i class="fas fa-print"></i> <span>{% trans 'In phiếu đăng ký' %}</span>
+                        </a>
+                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-2 px-3 py-2">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>{% trans 'Hủy học phần đã chọn' %}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 64px;">{% trans 'Chọn' %}</th>
+                                <th style="width: 140px;">{% trans 'Mã học phần' %}</th>
+                                <th>{% trans 'Tên học phần' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Số tín chỉ' %}</th>
+                                <th class="text-center" style="width: 110px;">{% trans 'Năm học' %}</th>
+                                <th style="width: 140px;">{% trans 'Phân loại' %}</th>
+                                <th style="width: 140px;">{% trans 'Trạng thái' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in registered_courses %}
+                            <tr class="reg-course-row" data-search="{{ course.code|lower }} {{ course.title|lower }}">
+                                <th scope="row" class="text-center">
+                                    <input name="course_ids" value="{{ course.id }}" type="checkbox" class="cl-checkbox-drop drop-checkbox" data-credit="{{ course.credit|default:0 }}">
+                                </th>
+                                <td><span class="cl-code-pill">{{ course.code }}</span></td>
+                                <td class="fw-semibold text-dark">{{ course.title }}</td>
+                                <td class="text-center fw-bold">{{ course.credit }} TC</td>
+                                <td class="text-center">Năm {{ course.year }}</td>
+                                <td>
+                                    {% if course.is_elective %}
+                                    <span class="cl-type-elective">{% trans 'Tự chọn' %}</span>
+                                    {% else %}
+                                    <span class="cl-type-core">{% trans 'Bắt buộc' %}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge-success"><i class="fas fa-check-circle me-1"></i>Đã đăng ký</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    {% trans 'Chưa có học phần nào được đăng ký.' %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: #F8FAFC;">
+                                <td colspan="5" class="text-end fw-semibold text-muted">{% trans 'Tổng số tín chỉ đã đăng ký:' %}</td>
+                                <td colspan="2" class="fw-bold text-primary">{{ total_registered_credit }} TC</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+        {% endif %}
+    {% else %}
+        <!-- No Active Semester Fallback -->
+        <div class="alert alert-warning d-flex align-items-center gap-3 p-4">
+            <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+            <div>
+                <h5 class="fw-bold mb-1">Chưa có học kỳ hoạt động</h5>
+                <p class="mb-0 small">Hệ thống hiện chưa kích hoạt học kỳ hiện tại để mở cổng đăng ký học phần. Vui lòng liên hệ Quản trị viên hoặc Phòng Đào tạo.</p>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const enrollCheckboxes = document.querySelectorAll('.enroll-checkbox');
+        const selectedCreditsCounter = document.getElementById('selected-credits-counter');
+        const selectedCreditsBadge = document.getElementById('selected-credits-badge');
+        const selectedCoursesCount = document.getElementById('selected-courses-count');
+        const regSearchInput = document.getElementById('regSearchInput');
+
+        function recalculateSelectedCredits() {
+            let selectedCredits = 0;
+            let selectedCount = 0;
+            enrollCheckboxes.forEach(function(cb) {
+                if (cb.checked) {
+                    selectedCount++;
+                    const c = parseInt(cb.getAttribute('data-credit') || '0', 10);
+                    if (!isNaN(c)) selectedCredits += c;
+                }
+            });
+            if (selectedCreditsCounter) selectedCreditsCounter.textContent = selectedCredits;
+            if (selectedCreditsBadge) selectedCreditsBadge.textContent = selectedCredits;
+            if (selectedCoursesCount) selectedCoursesCount.textContent = selectedCount;
+        }
+
+        enrollCheckboxes.forEach(function(cb) {
+            cb.addEventListener('change', recalculateSelectedCredits);
+        });
+
+        if (regSearchInput) {
+            regSearchInput.addEventListener('input', function() {
+                const q = regSearchInput.value.trim().toLowerCase();
+                document.querySelectorAll('.reg-course-row').forEach(function(row) {
+                    const text = row.getAttribute('data-search') || '';
+                    if (!q || text.indexOf(q) !== -1) {
+                        row.classList.remove('d-none');
+                    } else {
+                        row.classList.add('d-none');
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock js %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Quản lý & Nhập điểm học phần' %} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-2" style="max-width: 1200px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">{% trans 'Nhập điểm học phần' %}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: linear-gradient(135deg, #164E80 0%, #003761 100%);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill" style="background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF;">
+                        <i class="fas fa-pen-nib me-1"></i> {% trans 'Quản lý điểm số' %}
+                    </span>
+                    {% if current_semester and current_session %}
+                    <span class="badge rounded-pill" style="background-color: #DBE1FF; color: #003761; font-weight: 600;">
+                        <i class="fas fa-calendar-alt me-1"></i> {{ current_semester }} {% trans 'Semester' %} — {{ current_session }}
+                    </span>
+                    {% endif %}
+                </div>
+                <h1 class="h4 fw-bold mb-1 text-white">
+                    <i class="fas fa-table me-2"></i>{% trans 'Manage Score' %} — {% trans 'Chọn học phần nhập điểm' %}
+                </h1>
+                <p class="mb-0 small" style="color: #D2E4FF;">
+                    {% trans 'Chọn một học phần được phân công giảng dạy trong học kỳ hiện tại để nhập điểm thành phần và xuất bảng điểm.' %}
+                </p>
+            </div>
+
+            {% if current_semester %}
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle fw-semibold px-3 py-2 shadow-sm" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #164E80;">
+                    <i class="fas fa-book-open me-1"></i> {% trans 'Select Your Course Here' %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow border mt-1" style="min-width: 260px; border-radius: 10px;">
+                    {% for course in courses %}
+                        <a class="dropdown-item py-2 px-3 d-flex align-items-center justify-content-between" href="{% url 'add_score_for' course.id %}" title="{{ course.code }}">
+                            <span class="fw-medium">{{ course.title }}</span>
+                            <span class="badge badge-info ms-2">{{ course.code }}</span>
+                        </a>
+                    {% empty %}
+                        <span class="dropdown-item text-muted small py-2">{% trans 'No course.' %}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if current_semester %}
+    <!-- Allocated Courses Grid -->
+    <div class="row g-4">
+        {% for course in courses %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border shadow-sm d-flex flex-column justify-content-between" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge badge-info">
+                            <i class="fas fa-hashtag me-1"></i>{{ course.code }}
+                        </span>
+                        <span class="badge badge-success">
+                            {{ course.credit }} {% trans 'Tín chỉ' %}
+                        </span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">{{ course.title }}</h5>
+                    <p class="text-muted small mb-3">
+                        {% if course.summary %}
+                            {{ course.summary|truncatechars:110 }}
+                        {% else %}
+                            {% trans 'Học phần được phân công giảng dạy trong học kỳ hiện hành.' %}
+                        {% endif %}
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 small text-secondary">
+                        <span><i class="fas fa-layer-group me-1 text-primary"></i>{{ course.level }}</span>
+                        <span>&bull;</span>
+                        <span><i class="fas fa-clock me-1 text-primary"></i>{{ course.semester }} {% trans 'Semester' %}</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-3">
+                    <a href="{% url 'add_score_for' course.id %}" class="btn btn-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                        <i class="fas fa-edit"></i>
+                        <span>{% trans 'Mở bảng nhập điểm' %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border shadow-sm text-center py-5 px-4" style="border-radius: 14px;">
+                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #F2F3FF; color: #164E80;">
+                    <i class="fas fa-book-reader fa-2x"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có học phần được phân công' %}</h5>
+                <p class="text-muted small mb-0 mx-auto" style="max-width: 440px;">
+                    {% trans 'Bạn hiện chưa được phân công giảng dạy học phần nào trong học kỳ này.' %}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card border shadow-sm text-center py-5 px-4" style="border-radius: 14px;">
+        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #FEF3C7; color: #D97706;">
+            <i class="fas fa-exclamation-triangle fa-2x"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-1">{% trans 'Chưa có học kỳ hoạt động' %}</h5>
+        <p class="text-muted small mb-0">
+            {% trans 'Vui lòng liên hệ quản trị viên hệ thống để kích hoạt niên khóa và học kỳ hiện tại.' %}
+        </p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}

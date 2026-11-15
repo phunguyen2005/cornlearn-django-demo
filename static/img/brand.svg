@@ -1,0 +1,32 @@
+<svg width="693" height="140" viewBox="0 0 693 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Brand Emblem (Academic Navy Squircle) -->
+  <rect width="140" height="140" rx="28" fill="#164E80"/>
+  
+  <!-- Subtle Gradient Accent Inside Emblem -->
+  <circle cx="110" cy="30" r="45" fill="#2563EB" fill-opacity="0.25"/>
+
+  <!-- Academic Mortarboard Cap Top -->
+  <polygon points="70,32 116,56 70,80 24,56" fill="#F59E0B"/>
+  
+  <!-- Mortarboard Cap Center Button & Outline -->
+  <circle cx="70" cy="56" r="4.5" fill="#B45309"/>
+  <polygon points="70,32 116,56 70,80 24,56" stroke="#D97706" stroke-width="2" fill="none"/>
+
+  <!-- Cap Skull Base -->
+  <polygon points="46,68 94,68 88,88 52,88" fill="#FFFFFF"/>
+  <polygon points="46,68 94,68 88,88 52,88" stroke="#E2E8F0" stroke-width="1.5" fill="none"/>
+
+  <!-- Golden Tassel -->
+  <path d="M116 56C118 68 116 80 116 92" stroke="#F59E0B" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="116" cy="94" r="3.5" fill="#D97706"/>
+
+  <!-- Open Book Pages Under Mortarboard -->
+  <path d="M42 102C54 95 66 95 70 101C74 95 86 95 98 102V109C86 102 74 102 70 108C66 102 54 102 42 109Z" fill="#FFFFFF"/>
+  <path d="M70 101V108" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- Brand Typography -->
+  <text x="170" y="86" font-family="'Be Vietnam Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="700" fill="#164E80" letter-spacing="-1">Corn<tspan font-weight="600" fill="#2563EB">Learn</tspan></text>
+  
+  <!-- Institutional Subtitle -->
+  <text x="172" y="116" font-family="'Be Vietnam Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="3.5">HỆ THỐNG QUẢN LÝ HỌC TẬP LMS</text>
+</svg>

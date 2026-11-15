@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title }} | {% trans 'Thêm giảng viên - CornLearn' %}{% endblock title %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Trang chủ' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'lecturer_list' %}" class="text-decoration-none">{% trans 'Giảng viên' %}</a></li>
+    <li class="breadcrumb-item active fw-medium" aria-current="page">{% trans 'Thêm giảng viên mới' %}</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #131B2E;">
+      <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>Thêm mới hồ sơ Giảng viên
+    </h4>
+    <p class="text-muted small mb-0">Khởi tạo tài khoản giảng viên mới trên hệ thống CornLearn. Thông tin đăng nhập sẽ được gửi tự động qua email.</p>
+  </div>
+  <a href="{% url 'lecturer_list' %}" class="btn btn-outline-secondary btn-sm px-3 py-2" style="border-radius: 8px;">
+    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+  </a>
+</div>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="row g-4 mb-4">
+    <!-- Column 1: Thông tin cá nhân -->
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-user-tie me-2 text-primary"></i>Thông tin cá nhân & Liên hệ
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.first_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.last_name|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.gender|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+              {{ form.phone|as_crispy_field }}
+            </div>
+            <div class="col-12">
+              {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-12">
+              {{ form.address|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Thông tin tài khoản -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">
+          <i class="fas fa-shield-alt me-2 text-primary"></i>Thông tin tài khoản hệ thống
+        </div>
+        <div class="card-body p-4 d-flex flex-column justify-content-between">
+          <div>
+            <div class="p-3 rounded-3 mb-3 small" style="background-color: #F2F3FF; border: 1px solid #DBE1FF; color: #164E80;">
+              <div class="fw-semibold mb-1"><i class="fas fa-magic me-1"></i> Cấp phát mã định danh tự động</div>
+              <span class="text-muted">Hệ thống CornLearn sẽ tự động khởi tạo Mã Giảng viên (Mã GV) và gửi mật khẩu kích hoạt tới địa chỉ email đã đăng ký.</span>
+            </div>
+            {% if form.password1 %}
+              {{ form.password1|as_crispy_field }}
+            {% endif %}
+            {% if form.password2 %}
+              {{ form.password2|as_crispy_field }}
+            {% endif %}
+          </div>
+          <div class="border-top pt-3 mt-3 d-flex justify-content-end gap-2" style="border-color: #E2E8F0 !important;">
+            <a href="{% url 'lecturer_list' %}" class="btn btn-outline-secondary px-4 py-2" style="border-radius: 8px;">Hủy</a>
+            <button class="btn btn-primary px-4 py-2 fw-semibold" type="submit">
+              <i class="fas fa-save me-1"></i> Lưu giảng viên
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock content %}

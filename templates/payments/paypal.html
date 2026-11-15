@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Thanh toán qua PayPal' %} | CornLearn{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-3" style="max-width: 720px;">
+
+    <!-- Breadcrumb Navigation -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 small bg-white px-3 py-2 rounded-3 border">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary"><i class="fas fa-home me-1"></i>{% trans 'Trang chủ' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'payment_gateways' %}" class="text-decoration-none text-secondary">{% trans 'Cổng thanh toán' %}</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">PayPal</li>
+        </ol>
+    </nav>
+
+    <div class="card border shadow-sm" style="border-radius: 16px;">
+        <div class="card-header bg-white p-4 border-bottom d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fab fa-paypal fa-lg text-primary"></i>
+                <span class="fw-bold text-dark">{% trans 'Xác nhận thanh toán qua PayPal' %}</span>
+            </div>
+            <span class="badge badge-info">PayPal Smart Checkout</span>
+        </div>
+
+        <div class="card-body p-4 p-md-5 text-center">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 64px; height: 64px; background-color: #DBE1FF; color: #164E80;">
+                <i class="fab fa-paypal fa-2x"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-2">{% trans 'Thanh toán an toàn với PayPal' %}</h4>
+            <p class="text-muted small mb-4 mx-auto" style="max-width: 460px;">
+                {% trans 'Nhấn vào nút PayPal bên dưới để đăng nhập tài khoản ví hoặc sử dụng thẻ thanh toán quốc tế của bạn.' %}
+            </p>
+
+            <!-- PayPal Button Container -->
+            <div id="paypal-button-container" class="mx-auto mb-4" style="max-width: 360px;"></div>
+
+            <div class="pt-3 border-top">
+                <a href="{% url 'payment_gateways' %}" class="btn btn-outline-secondary btn-sm px-4 py-2">
+                    <i class="fas fa-arrow-left me-1"></i> {% trans 'Đổi phương thức thanh toán khác' %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="https://www.paypal.com/sdk/js?client-id=AabPcZJCP3oBL_2GTVXO58VnsyvVEzUrWORwilbX9fA5ywWdR9YSaIdu4v-nDVMIszpI1PEy9K-76jlW&currency=USD"></script>
+<script>
+    if (typeof paypal !== 'undefined' && document.getElementById('paypal-button-container')) {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '88.44'
+                        }
+                    }]
+                });
+            },
+            style: {
+                color: 'blue',
+                shape: 'pill',
+                label: 'pay',
+                height: 40
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    window.location = "{% url 'payment-succeed' %}";
+                });
+            }
+        }).render('#paypal-button-container');
+    }
+</script>
+{% endblock js %}

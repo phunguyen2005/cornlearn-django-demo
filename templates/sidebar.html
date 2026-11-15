@@ -1,0 +1,193 @@
+{% load static %}
+{% load i18n %}
+
+<div id="side-nav">
+	<div class="main-menu d-flex flex-column h-100 justify-content-between">
+		<div>
+			<!-- Top Header: Brand Logo & User Role -->
+			<div class="top-side text-center py-3 px-3">
+				<div class="desktop-hide d-flex justify-content-end mb-2">
+					<div class="toggle-btn p-1 text-secondary" onclick="toggleSidebar()" role="button" aria-label="Close navigation" style="cursor: pointer;">
+						<i class="fas fa-times fa-lg"></i>
+					</div>
+				</div>
+				<a href="{% url 'home' %}" class="d-inline-block text-decoration-none mb-2">
+					<img src="{% static 'img/brand.svg' %}" alt="CornLearn" style="max-height: 44px; width: auto;">
+				</a>
+				<div>
+					<span class="badge" style="background-color: #D2E4FF; color: #003761; font-weight: 600; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: 9999px;">
+						<i class="fas fa-user-shield me-1"></i>
+						{% if request.user.is_authenticated %}
+							{{ request.user.get_user_role }}
+						{% else %}
+							Khách
+						{% endif %}
+					</span>
+				</div>
+			</div>
+
+			<!-- URL Variable Definitions for Active State Matching -->
+			{% url 'home' as hom %}
+			{% url 'dashboard' as dash %}
+			{% url 'profile' as prof %}
+			{% url 'lecturer_list' as lec %}
+			{% url 'student_list' as stu %}
+			{% url 'course_allocation_view' as cav %}
+			{% url 'programs' as pro %}
+			{% url 'session_list' as sess %}
+			{% url 'semester_list' as sem %}
+			{% url 'add_score' as ascore %}
+			{% url 'grade_results' as vr %}
+			{% url 'ass_results' as ar %}
+			{% url 'course_registration' as cr %}
+			{% url 'edit_profile' as ep %}
+			{% url 'change_password' as cp %}
+			{% url 'quiz_progress' as qpr %}
+			{% url 'quiz_marking' as qce %}
+			{% url 'user_course_list' as ucl %}
+			{% url 'admin_panel' as admin_p %}
+
+			<!-- Navigation Menus -->
+			<ul class="nav flex-column">
+
+				<!-- SECTION: HỌC TẬP & TỔNG QUAN -->
+				<li class="nav-section-label">Học tập &amp; Tổng quan</li>
+
+				{% if request.user.is_superuser %}
+				<li class="{% if request.path == dash %}active{% endif %}">
+					<a href="{% url 'dashboard' %}"><i class="fas fa-chart-line"></i><span>{% trans 'Thống kê tổng quan' %}</span></a>
+				</li>
+				{% endif %}
+
+				<li class="{% if request.path == hom %}active{% endif %}">
+					<a href="{% url 'home' %}"><i class="fas fa-home"></i><span>{% trans 'Trang chủ' %}</span></a>
+				</li>
+
+				{% if request.user.is_lecturer or request.user.is_student %}
+				<li class="{% if request.path == ucl %}active{% endif %}">
+					<a href="{% url 'user_course_list' %}"><i class="fas fa-book-reader"></i><span>{% trans 'Khóa học của tôi' %}</span></a>
+				</li>
+				{% endif %}
+
+				{% if request.user.is_student %}
+				<li class="{% if request.path == cr %}active{% endif %}">
+					<a href="{% url 'course_registration' %}"><i class="fas fa-clipboard-check"></i><span>{% trans 'Đăng ký học phần' %}</span></a>
+				</li>
+				<li class="{% if request.path == vr %}active{% endif %}">
+					<a href="{% url 'grade_results' %}"><i class="fas fa-award"></i><span>{% trans 'Bảng điểm' %}</span></a>
+				</li>
+				<li class="{% if request.path == ar %}active{% endif %}">
+					<a href="{% url 'ass_results' %}"><i class="fas fa-tasks"></i><span>{% trans 'Đánh giá quá trình' %}</span></a>
+				</li>
+				<li class="{% if request.path == qpr %}active{% endif %}">
+					<a href="{% url 'quiz_progress' %}"><i class="fas fa-stopwatch"></i><span>{% trans 'Tiến độ kiểm tra' %}</span></a>
+				</li>
+				{% endif %}
+
+				<!-- SECTION: GIẢNG DẠY & HỌC VỤ (LECTURER / ADMIN) -->
+				{% if request.user.is_superuser or request.user.is_lecturer %}
+				<li class="nav-section-label mt-2">Học vụ &amp; Đào tạo</li>
+
+				<li class="{% if request.path == pro %}active{% endif %}">
+					<a href="{% url 'programs' %}"><i class="fas fa-graduation-cap"></i><span>{% trans 'Chương trình & Môn học' %}</span></a>
+				</li>
+				<li class="{% if request.path == qce %}active{% endif %}">
+					<a href="{% url 'quiz_marking' %}"><i class="fas fa-check-double"></i><span>{% trans 'Chấm bài kiểm tra' %}</span></a>
+				</li>
+				{% endif %}
+
+				{% if request.user.is_lecturer %}
+				<li class="{% if request.path == ascore %}active{% endif %}">
+					<a href="{% url 'add_score' %}"><i class="fas fa-pen-nib"></i><span>{% trans 'Nhập điểm học phần' %}</span></a>
+				</li>
+				{% endif %}
+
+				<!-- SECTION: QUẢN TRỊ HỆ THỐNG (SUPERUSER) -->
+				{% if request.user.is_superuser %}
+				<li class="nav-section-label mt-2">Quản trị hệ thống</li>
+
+				<li class="{% if request.path == admin_p %}active{% endif %}">
+					<a href="{% url 'admin_panel' %}"><i class="fas fa-sliders-h"></i><span>{% trans 'Trung tâm điều hành' %}</span></a>
+				</li>
+				<li class="{% if request.path == lec %}active{% endif %}">
+					<a href="{% url 'lecturer_list' %}"><i class="fas fa-chalkboard-teacher"></i><span>{% trans 'Quản lý giảng viên' %}</span></a>
+				</li>
+				<li class="{% if request.path == stu %}active{% endif %}">
+					<a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i><span>{% trans 'Quản lý sinh viên' %}</span></a>
+				</li>
+				<li class="{% if request.path == cav %}active{% endif %}">
+					<a href="{% url 'course_allocation_view' %}"><i class="fas fa-calendar-check"></i><span>{% trans 'Phân công giảng dạy' %}</span></a>
+				</li>
+				<li class="{% if request.path == qpr %}active{% endif %}">
+					<a href="{% url 'quiz_progress' %}"><i class="fas fa-poll"></i><span>{% trans 'Hồ sơ kiểm tra' %}</span></a>
+				</li>
+				<li class="{% if request.path == sess %}active{% endif %}">
+					<a href="{% url 'session_list' %}"><i class="fas fa-calendar-alt"></i><span>{% trans 'Quản lý niên khóa' %}</span></a>
+				</li>
+				<li class="{% if request.path == sem %}active{% endif %}">
+					<a href="{% url 'semester_list' %}"><i class="fas fa-hourglass-half"></i><span>{% trans 'Quản lý học kỳ' %}</span></a>
+				</li>
+				{% endif %}
+
+				<!-- SECTION: CÀI ĐẶT & TÀI KHOẢN -->
+				<li class="nav-section-label mt-2">Tài khoản &amp; Cài đặt</li>
+
+				<li class="{% if request.path == prof %}active{% endif %}">
+					<a href="{% url 'profile' %}"><i class="fas fa-user-circle"></i><span>{% trans 'Hồ sơ cá nhân' %}</span></a>
+				</li>
+				<li class="{% if request.path == ep %}active{% endif %}">
+					<a href="{% url 'edit_profile' %}"><i class="fas fa-cog"></i><span>{% trans 'Cài đặt tài khoản' %}</span></a>
+				</li>
+				<li class="{% if request.path == cp %}active{% endif %}">
+					<a href="{% url 'change_password' %}"><i class="fas fa-key"></i><span>{% trans 'Đổi mật khẩu' %}</span></a>
+				</li>
+
+			</ul>
+		</div>
+
+		<!-- Embedded Sidebar Footer -->
+		<footer>
+			<div class="mb-2">
+				<form action="{% url 'set_language' %}" method="post" id="lang-form">{% csrf_token %}
+					<input name="next" type="hidden" value="{{ redirect_to }}">
+					<div class="d-flex align-items-center gap-1">
+						<i class="fas fa-globe text-secondary small"></i>
+						<select class="form-select form-select-sm" name="language" id="lang-select" style="font-size: 0.78rem;">
+							{% get_current_language as LANGUAGE_CODE %}
+							{% get_available_languages as LANGUAGES %}
+							{% get_language_info_list for LANGUAGES as languages %}
+							{% for language in languages %}
+								<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+									{{ language.name_local }} ({{ language.code }})
+								</option>
+							{% endfor %}
+						</select>
+					</div>
+				</form>
+			</div>
+
+			<div class="text-center small text-muted" style="font-size: 0.75rem; line-height: 1.4;">
+				<div>
+					<a href="/privacy/" class="text-secondary text-decoration-none">Chính sách bảo mật</a> &bull; 
+					<a href="/term/" class="text-secondary text-decoration-none">Điều khoản</a>
+				</div>
+				<div class="mt-1 text-muted">
+					&copy; 2026 CornLearn LMS
+				</div>
+			</div>
+		</footer>
+
+	</div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const langSelect = document.getElementById("lang-select");
+		if (langSelect) {
+			langSelect.addEventListener("change", function() {
+				const langForm = document.getElementById("lang-form");
+				if (langForm) langForm.submit();
+			});
+		}
+	});
+</script>
