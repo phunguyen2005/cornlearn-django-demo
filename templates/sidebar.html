@@ -3,29 +3,30 @@
 
 <div id="side-nav">
 	<div class="main-menu d-flex flex-column h-100 justify-content-between">
-		<div>
-			<!-- Top Header: Brand Logo & User Role -->
-			<div class="top-side text-center py-3 px-3">
-				<div class="desktop-hide d-flex justify-content-end mb-2">
-					<div class="toggle-btn p-1 text-secondary" onclick="toggleSidebar()" role="button" aria-label="Close navigation" style="cursor: pointer;">
-						<i class="fas fa-times fa-lg"></i>
-					</div>
-				</div>
-				<a href="{% url 'home' %}" class="d-inline-block text-decoration-none mb-2">
-					<img src="{% static 'img/brand.svg' %}" alt="CornLearn" style="max-height: 44px; width: auto;">
-				</a>
-				<div>
-					<span class="badge" style="background-color: #D2E4FF; color: #003761; font-weight: 600; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: 9999px;">
-						<i class="fas fa-user-shield me-1"></i>
-						{% if request.user.is_authenticated %}
-							{{ request.user.get_user_role }}
-						{% else %}
-							Khách
-						{% endif %}
-					</span>
+		<!-- Top Header: Brand Logo & User Role (Pinned) -->
+		<div class="top-side text-center py-3 px-3">
+			<div class="d-flex d-lg-none justify-content-end mb-2">
+				<div class="toggle-btn p-1 text-secondary" onclick="toggleSidebar()" role="button" aria-label="Close navigation" style="cursor: pointer;">
+					<i class="fas fa-times fa-lg"></i>
 				</div>
 			</div>
+			<a href="{% url 'home' %}" class="d-inline-block text-decoration-none mb-2">
+				<img src="{% static 'img/brand.svg' %}" alt="CornLearn" style="max-height: 44px; width: auto;">
+			</a>
+			<div>
+				<span class="badge" style="background-color: #D2E4FF; color: #003761; font-weight: 600; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: 9999px;">
+					<i class="fas fa-user-shield me-1"></i>
+					{% if request.user.is_authenticated %}
+						{{ request.user.get_user_role }}
+					{% else %}
+						Khách
+					{% endif %}
+				</span>
+			</div>
+		</div>
 
+		<!-- Middle Navigation Area (Scrollable) -->
+		<div class="sidebar-scroll-area flex-grow-1">
 			<!-- URL Variable Definitions for Active State Matching -->
 			{% url 'home' as hom %}
 			{% url 'dashboard' as dash %}
