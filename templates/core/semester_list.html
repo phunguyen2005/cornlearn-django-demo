@@ -12,17 +12,6 @@
     </ol>
 </nav>
 
-{% if request.user.is_superuser %}
-<div class="manage-wrap d-flex justify-content-between align-items-center">
-    <span class="small text-muted d-none d-md-inline">
-        <i class="fas fa-hourglass-half me-1 text-primary"></i>Thiết lập học kỳ đào tạo và thời gian đăng ký học phần
-    </span>
-    <a class="btn btn-primary btn-sm px-3" href="{% url 'add_semester' %}">
-        <i class="fas fa-plus me-1"></i>Thêm Học kỳ mới
-    </a>
-</div>
-{% endif %}
-
 <!-- Page Header -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
@@ -91,7 +80,7 @@
                     {% if request.user.is_superuser %}
                     <td class="text-end">
                         <div class="dropdown">
-                            <button class="btn btn-sm btn-light border text-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Tùy chọn thao tác">
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border">
